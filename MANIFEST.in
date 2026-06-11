@@ -1,0 +1,2 @@
+include README.md LICENSE CHANGELOG.md SECURITY.md Dockerfile
+recursive-include tests *.py

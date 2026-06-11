@@ -511,13 +511,22 @@ def _redact_result(result):
 # modest memory/CPU so a runaway analysis can't exhaust the host. Override any of
 # them per call via run_safely(..., docker_image=..., memory=..., cpus=...,
 # network=...).
+#
+# IMPORTANT: the image must ALREADY have safedata + pandas/numpy installed.
+# The locked-down defaults (no network, read-only root fs) deliberately make a
+# run-time `pip install` impossible — there is nothing to download from and
+# nowhere to write it. Build the bundled image once (see the repo Dockerfile):
+#     docker build -t safedata-guard-runner:1.0.7 .
+# then this mode runs offline and read-only. `pip_install` stays None by default
+# for exactly that reason; set it (and relax network/read_only) only if you
+# really want run-time installation in a throwaway, trusted-network container.
 DOCKER_DEFAULTS = {
-    "image": "python:3.11-slim",
+    "image": "safedata-guard-runner:1.0.7",
     "memory": "512m",
     "cpus": "1.0",
     "network": "none",       # no network at all
     "read_only": True,        # read-only root fs; only the work mount is writable
-    "pip_install": "safedata-guard",  # installed into the container at run time
+    "pip_install": None,      # image must already contain safedata (see Dockerfile)
 }
 
 

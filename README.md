@@ -55,6 +55,13 @@ The default (`isolate=True`) runs in a separate process with a timeout â€” 
 and hang safety, but the child still shares your filesystem permissions. For
 genuinely untrusted model output, switch to container isolation:
 
+Build the runner image once (it bundles safedata + pandas/numpy so the container
+needs no network at run time — see the repo `Dockerfile`):
+
+```bash
+docker build -t safedata-guard-runner:1.0.7 .
+```
+
 ```python
 agent = safedata.Agent(model=..., isolation="docker",
                        memory="512m", cpus="1.0", network="none")
@@ -63,8 +70,9 @@ safedata.run_safely(code, df, isolation="docker")
 ```
 
 The container runs with **no network**, a **read-only root filesystem**, and
-**memory/CPU caps**; only a throwaway work directory is writable. Requires Docker
-and an image with safedata installed (configurable via `docker_image=`).
+**memory/CPU caps**; only a throwaway work directory is writable. The image must
+already contain safedata (the locked-down defaults make a run-time `pip install`
+impossible by design); point at your own with `docker_image=`.
 
 ### Guarding the result
 
