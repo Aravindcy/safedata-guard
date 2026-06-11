@@ -51,12 +51,12 @@ heuristics, not a compliance guarantee.
 
 ### Hardened isolation for untrusted code
 
-The default (`isolate=True`) runs in a separate process with a timeout — crash
+The default (`isolate=True`) runs in a separate process with a timeout; crash
 and hang safety, but the child still shares your filesystem permissions. For
 genuinely untrusted model output, switch to container isolation:
 
 Build the runner image once (it bundles safedata + pandas/numpy so the container
-needs no network at run time — see the repo `Dockerfile`):
+needs no network at run time; see the repo `Dockerfile`):
 
 ```bash
 docker build -t safedata-guard-runner:1.0.7 .
