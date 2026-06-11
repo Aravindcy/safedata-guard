@@ -10,7 +10,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Container isolation mode.** `run_safely(..., isolation="docker")` and
   `Agent(..., isolation="docker")` run generated code inside a throwaway
   container with no network, a read-only root filesystem, and memory/CPU limits
-  â€” a real boundary for genuinely untrusted model output. Tune with
+  — a real boundary for genuinely untrusted model output. Tune with
   `docker_image=`, `memory=`, `cpus=`, `network=`.
 - **Result guards.** `max_result_rows`, `max_result_bytes`, and
   `redact_result_pii` on `run_safely`/`Agent` cap the size of the returned value
