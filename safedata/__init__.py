@@ -1,4 +1,4 @@
-﻿"""
+"""
 safedata, a safety layer and translator between an AI and your data.
 
 It does two things existing AI-data tools don't combine:

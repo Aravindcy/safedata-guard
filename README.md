@@ -1,4 +1,4 @@
-﻿# safedata-guard
+# safedata-guard
 
 [![CI](https://github.com/Aravindcy/safedata-guard/actions/workflows/ci.yml/badge.svg)](https://github.com/Aravindcy/safedata-guard/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/safedata-guard.svg)](https://pypi.org/project/safedata-guard/)
