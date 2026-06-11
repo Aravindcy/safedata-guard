@@ -1,0 +1,41 @@
+﻿[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safedata-guard"
+version = "1.0.7"
+description = "A lightweight framework for safely enabling LLMs to analyze pandas/Polars data without exposing raw data or blindly executing generated code."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{ name = "Aravind Chakravarthy" }]
+keywords = ["ai", "agent", "llm", "pandas", "data", "safety", "sandbox"]
+dependencies = ["pandas>=1.3", "numpy>=1.20"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "openpyxl>=3.0", "xlrd>=2.0", "polars>=0.20"]
+polars = ["polars>=0.20"]
+# openpyxl reads/writes .xlsx; xlrd is needed for legacy .xls files.
+excel = ["openpyxl>=3.0", "xlrd>=2.0"]
+
+[project.scripts]
+safedata = "safedata.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Aravindcy/safedata-guard"
+Repository = "https://github.com/Aravindcy/safedata-guard"
+Issues = "https://github.com/Aravindcy/safedata-guard/issues"
+Changelog = "https://github.com/Aravindcy/safedata-guard/blob/main/CHANGELOG.md"
+"Security Policy" = "https://github.com/Aravindcy/safedata-guard/blob/main/SECURITY.md"
+
+[tool.setuptools.packages.find]
+include = ["safedata*"]
+
+[tool.setuptools.package-data]
+safedata = ["py.typed"]
