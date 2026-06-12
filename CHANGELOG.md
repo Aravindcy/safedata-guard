@@ -24,6 +24,24 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   fields are left untouched.
 
 ### Added
+- **Question-aware column firewall.** `create_contract(df, question)` now
+  returns `blocked_columns` = the PII columns the question doesn't reference, and
+  `run_safely(..., blocked_columns=[...])` refuses generated code that touches
+  them (by subscript or attribute). `Agent.safe()`/`strict()` enable it by
+  default — least-privilege access, not just redaction. Only PII columns are
+  firewalled, so a legitimate aggregate is never blocked for not naming a column.
+- **Result-minimisation guard.** `run_safely(..., enforce_minimal_result=True)`
+  (and `Agent(enforce_minimal_result=True)`) blocks a result that returns the
+  full, unaggregated input frame.
+- **`ai_risk_score(df, question=None)`** — a 0..100 risk score with reasons and a
+  recommended mode, composed from the PII/quality signals. Also `safedata risk
+  <file> [question]` on the CLI (exit 2 on high risk, to gate pipelines).
+- **`detect_ai_traps(df)`** — the data traps that make an AI answer *wrong*
+  (text-numeric, dates-as-text, Excel serials, messy categories, …), each with a
+  short instruction for the model.
+- **`shadow(df)`** — a synthetic DataFrame with the same columns/types but no real
+  values (typed fakes for PII, cardinality-preserving labels otherwise), for
+  testing generated code or sharing a dataset's shape safely.
 - **`Agent.safe()` / `Agent.strict()` presets.** One call gives the secure
   configuration: result-size caps + PII redaction + process isolation (`safe`)
   or full container isolation (`strict`). Any keyword overrides the preset.

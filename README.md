@@ -100,17 +100,39 @@ agent = safedata.Agent.strict(model)   # same, but runs code in a locked-down co
 
 Any keyword overrides the preset (e.g. `Agent.safe(model, timeout=30)`).
 
-### Data Safety Contract
+### Data Safety Contract & question-aware firewall
 
 Turn the read-only checks into a machine-readable policy you can gate AI access
-on (no code is run):
+on (no code is run). Pass the question to get a **least-privilege firewall** — the
+PII columns the question doesn't need are blocked:
 
 ```python
-contract = safedata.create_contract(df)
-# {"allowed_columns": [...], "blocked_columns": ["email", ...],
-#  "data_traps": [...], "allowed_operations": [...], "blocked_operations": [...],
-#  "column_types": {...}, "privacy_level": "strict"}
+contract = safedata.create_contract(df, question="total revenue by region")
+# {"allowed_columns": ["revenue","region",...], "blocked_columns": ["email","customer_name"],
+#  "data_traps": [...], "max_result_rows": 50, "privacy_level": "strict", ...}
+
+safedata.run_safely(code, df, blocked_columns=contract["blocked_columns"])
+# refuses code that touches a blocked column:
+#   Blocked: the code accessed restricted column(s) the question does not need: email
 ```
+
+`Agent.safe()` / `Agent.strict()` enable this firewall automatically. Add
+`enforce_minimal_result=True` to also refuse a full-table answer to an aggregate
+question.
+
+### Is it safe to send this to an AI?
+
+```python
+safedata.ai_risk_score(df, "total revenue by region")
+# {"risk_level": "high", "score": 65, "recommended_mode": "strict",
+#  "reasons": ["High-sensitivity PII columns: email", ...]}
+
+safedata.detect_ai_traps(df)   # traps that make an AI answer wrong, with fixes
+safedata.shadow(df)            # synthetic same-shape frame, no real values
+```
+
+On the CLI: `safedata risk customers.csv "What is total revenue by region?"`
+(exit code 2 on high risk, so it can gate a pipeline).
 
 ### Audit trail for an answer
 

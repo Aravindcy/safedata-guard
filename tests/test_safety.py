@@ -1459,3 +1459,71 @@ def test_build_prompt_masks_pii_by_default():
     assert "Alice Smith" in safedata.build_prompt(df, "q", mask_pii=False)
     # a pre-built summary string is used verbatim
     assert "RAW" in safedata.build_prompt("RAW", "q")
+
+
+# --- 1.0.8: column firewall, result minimisation, risk/traps/shadow --------
+
+def _firewall_df():
+    return pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                         "email": ["a@b.com", "c@d.com"],
+                         "revenue": [10, 20], "region": ["N", "S"]})
+
+
+def test_blocked_columns_firewall():
+    df = _firewall_df()
+    with pytest.raises(SafetyError):
+        run_safely("result = df[['customer_name','revenue']]", df,
+                   blocked_columns=["customer_name", "email"])
+    with pytest.raises(SafetyError):
+        run_safely("result = df.email.tolist()", df,
+                   blocked_columns=["email"])
+    # clean code untouched
+    out = run_safely("result = df.groupby('region')['revenue'].sum()", df,
+                     blocked_columns=["customer_name", "email"])
+    assert out.to_dict() == {"N": 10, "S": 20}
+
+
+def test_enforce_minimal_result():
+    df = _firewall_df()
+    with pytest.raises(SafetyError):
+        run_safely("result = df", df, enforce_minimal_result=True)
+    # an aggregate is fine
+    out = run_safely("result = df.groupby('region')['revenue'].sum()", df,
+                     enforce_minimal_result=True)
+    assert out.to_dict() == {"N": 10, "S": 20}
+
+
+def test_create_contract_question_aware():
+    df = _firewall_df()
+    c = safedata.create_contract(df, "total revenue by region")
+    assert set(c["blocked_columns"]) == {"customer_name", "email"}
+    assert "revenue" in c["allowed_columns"]
+    # a question that needs emails keeps the email column allowed
+    c2 = safedata.create_contract(df, "list customer emails")
+    assert "email" not in c2["blocked_columns"]
+
+
+def test_agent_strict_enforces_column_firewall():
+    def m(p):
+        return "result = df[['customer_name','revenue']].head(1)"
+    out = safedata.Agent.strict(m, isolation="process").ask(
+        _firewall_df(), "total revenue by region")
+    assert out.blocked is True
+    assert "customer_name" in (out.reason or "")
+
+
+def test_ai_risk_score_and_traps():
+    df = _firewall_df()
+    r = safedata.ai_risk_score(df, "total revenue by region")
+    assert r["risk_level"] == "high" and r["recommended_mode"] == "strict"
+    traps = safedata.detect_ai_traps(pd.DataFrame({"amount": ["$5", "$6"]}))
+    assert any(t["trap"] == "TEXT_NUMERIC" for t in traps)
+
+
+def test_shadow_has_no_real_values():
+    df = _firewall_df()
+    sh = safedata.shadow(df, rows=4)
+    assert list(sh.columns) == list(df.columns)
+    assert "Alice Smith" not in sh["customer_name"].tolist()
+    assert "a@b.com" not in sh["email"].tolist()
+    assert str(sh["revenue"].dtype).startswith(("int", "float"))
