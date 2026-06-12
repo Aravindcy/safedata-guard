@@ -151,7 +151,41 @@ def build_parser() -> argparse.ArgumentParser:
                             "found; 'pii' fails on any PII, 'any' on any issue")
     check.set_defaults(func=_cmd_check)
 
+    risk = sub.add_parser(
+        "risk", help="score how risky it is to send a dataset (and question) to AI")
+    risk.add_argument("file", help="path to a data file")
+    risk.add_argument("question", nargs="?", default=None,
+                      help="optional question, to flag PII the answer doesn't need")
+    risk.add_argument("--json", action="store_true",
+                      help="emit machine-readable JSON")
+    risk.set_defaults(func=_cmd_risk)
+
     return parser
+
+
+def _cmd_risk(args) -> int:
+    from .analysis import ai_risk_score
+    try:
+        df = _load_dataframe(args.file)
+    except (FileNotFoundError, ValueError) as e:
+        if args.json:
+            import json
+            print(json.dumps({"error": str(e)}))
+        else:
+            print(f"error: {e}", file=sys.stderr)
+        return 1
+
+    r = ai_risk_score(df, args.question)
+    if args.json:
+        import json
+        print(json.dumps(r, indent=2, default=str))
+    else:
+        print(f"AI risk: {r['risk_level'].upper()} ({r['score']}/100) "
+              f"| recommended mode: {r['recommended_mode']}")
+        for reason in r["reasons"]:
+            print(f"  - {reason}")
+    # non-zero exit for high risk, so it can gate a pipeline
+    return 2 if r["risk_level"] == "high" else 0
 
 
 def main(argv=None) -> int:

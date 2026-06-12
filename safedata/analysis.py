@@ -674,7 +674,30 @@ _BLOCKED_OPERATIONS = ["file_read", "file_write", "network", "shell",
                        "code_eval", "raw_row_return"]
 
 
-def create_contract(df) -> dict:
+def _token_in_question(tok: str, q_tokens) -> bool:
+    """A column token is present if a question token equals it or differs only by
+    a trailing 's' (so 'email' matches 'emails'), avoiding false blocks of a
+    column the question explicitly names."""
+    return any(q == tok or q == tok + "s" or tok == q + "s" for q in q_tokens)
+
+
+def _question_mentions_column(question: str, col) -> bool:
+    """True if a column's name tokens all appear in the question text.
+
+    Token-based (not substring) so 'region' matches "...by region" but 'name' in
+    'customer_name' doesn't match the word 'rename'. Requiring ALL of a column's
+    tokens avoids matching 'customer_name' on the bare word 'customer'. Used only
+    to decide which PII columns a question legitimately needs.
+    """
+    if not question:
+        return False
+    q_tokens = _name_tokens(question)
+    c_tokens = _name_tokens(col)
+    return bool(c_tokens) and all(_token_in_question(t, q_tokens)
+                                  for t in c_tokens)
+
+
+def create_contract(df, question: str = None) -> dict:
     """Build a machine-readable Data Safety Contract for `df`.
 
     A declarative policy derived from the same read-only heuristics as the rest
@@ -683,13 +706,33 @@ def create_contract(df) -> dict:
     guardrail permits/refuses, and an overall privacy level. It runs no code and
     mutates nothing.
 
+    question : optional. When given, enables a LEAST-PRIVILEGE firewall: PII
+        columns the question doesn't reference are added to `blocked_columns`, so
+        `run_safely(..., blocked_columns=contract["blocked_columns"])` refuses
+        code that touches sensitive columns the question never needed. Only PII
+        columns are firewalled this way — non-PII columns stay allowed, so the
+        firewall never blocks a legitimate aggregate just because the question
+        didn't name every column.
+
     This is a POLICY VIEW, not a guarantee: it is built from best-effort PII and
     data-quality heuristics (see safedata.pii / privacy_report). Use it to gate
     or document AI access to a dataset.
     """
     df = _as_pandas(df)
     rep = privacy_report(df)
-    blocked_cols = rep["pii_columns"]
+    pii_cols = rep["pii_columns"]
+
+    if question:
+        # Block the PII columns the question does not mention; keep the rest.
+        blocked_cols = [c for c in pii_cols
+                        if not _question_mentions_column(question, c)]
+        reason = (f"Question references "
+                  f"{[c for c in df.columns if _question_mentions_column(question, c)] or 'no columns by name'}; "
+                  f"PII columns not needed are blocked.")
+    else:
+        blocked_cols = list(pii_cols)
+        reason = "All detected PII columns are blocked (no question supplied)."
+
     allowed_cols = [c for c in df.columns if c not in set(blocked_cols)]
 
     traps = []
@@ -706,13 +749,168 @@ def create_contract(df) -> dict:
         privacy_level = "low"
 
     return {
+        "question": question,
         "allowed_columns": allowed_cols,
         "blocked_columns": blocked_cols,
         "allowed_operations": list(_ALLOWED_OPERATIONS),
         "blocked_operations": list(_BLOCKED_OPERATIONS),
         "data_traps": traps,
         "privacy_level": privacy_level,
+        "max_result_rows": 50,
         "column_types": infer_columns(df),
+        "reason": reason,
         "note": ("declarative policy from best-effort heuristics; not a "
                  "compliance guarantee. See safedata.pii / privacy_report."),
     }
+
+
+def ai_risk_score(df, question: str = None) -> dict:
+    """Score how risky it is to hand `df` (and `question`) to an AI: 0..100.
+
+    Composes the existing privacy and data-quality signals into a single risk
+    view with human-readable reasons and a recommended Agent mode. Read-only.
+    Higher score = higher risk.
+    """
+    df = _as_pandas(df)
+    rep = privacy_report(df)
+    issues = validate(df)
+    rules = {i.rule_id for i in issues}
+    pii_cols = rep["pii_columns"]
+
+    score = 0
+    reasons = []
+    if rep["high_risk"]:
+        score += 50
+        hi = [h["column"] for h in rep["high_risk"]]
+        reasons.append(f"High-sensitivity PII columns: {', '.join(hi)}")
+    elif rep["medium_risk"]:
+        score += 25
+        md = [m["column"] for m in rep["medium_risk"]]
+        reasons.append(f"Possible PII columns (review): {', '.join(md)}")
+
+    if question and pii_cols:
+        unneeded = [c for c in pii_cols
+                    if not _question_mentions_column(question, c)]
+        if unneeded:
+            score += 15
+            reasons.append(
+                f"Question doesn't need PII column(s) {', '.join(unneeded)}; "
+                f"raw access is unnecessary.")
+
+    trap_rules = rules & {"TEXT_NUMERIC", "DATE_AS_TEXT", "EXCEL_SERIAL_DATE",
+                          "MESSY_CATEGORY", "DUPLICATE_COLUMNS"}
+    if trap_rules:
+        score += min(20, 5 * len(trap_rules))
+        reasons.append(
+            "Data traps that can cause wrong answers: "
+            + ", ".join(sorted(trap_rules)))
+
+    score = min(100, score)
+    if score >= 60:
+        level, mode = "high", "strict"
+    elif score >= 30:
+        level, mode = "medium", "safe"
+    else:
+        level, mode = "low", "safe"
+    if not reasons:
+        reasons.append("No PII or major data traps detected.")
+
+    return {
+        "risk_level": level,
+        "score": score,
+        "reasons": reasons,
+        "pii_columns": pii_cols,
+        "recommended_mode": mode,
+    }
+
+
+def detect_ai_traps(df) -> list:
+    """The data traps that make an AI write a WRONG answer, AI-framed.
+
+    A focused view of validate(): only the hazards that cause incorrect analysis
+    (text-numeric, dates-as-text, Excel serials, messy categories, duplicate
+    names, non-unique ids, unexpected negatives), each with a short instruction
+    to give the model. Read-only.
+    """
+    out = []
+    for iss in validate(df):
+        if iss.rule_id in _TRAP_RULES and iss.rule_id not in (
+                "CONSTANT_COLUMN", "HIGH_CARDINALITY"):
+            out.append({
+                "column": iss.column,
+                "trap": iss.rule_id,
+                "warning": iss.message,
+                "tell_the_model": iss.suggestion,
+            })
+    return out
+
+
+def shadow(df, rows: int = None, seed: int = 0):
+    """Return a SYNTHETIC DataFrame with the same columns/types as `df` but no
+    real values. Useful to test generated code (does it run?) without exposing
+    real data, and to share a dataset's shape safely.
+
+    Per column: numerics get random values in the observed range; datetimes get
+    random dates in range; PII columns get typed fakes (user001@example.com,
+    NAME_001); other text columns get cardinality-preserving synthetic labels.
+    Missingness is approximately preserved. Deterministic for a given seed.
+    """
+    import numpy as np
+    df = _as_pandas(df)
+    n_src = len(df)
+    n = rows if rows is not None else min(max(n_src, 1), 20)
+    rng = np.random.default_rng(seed)
+    pii = _all_pii(df)
+    out = {}
+
+    for col in df.columns:
+        s = df[col]
+        nn = s.dropna()
+        null_frac = (s.isna().mean() if n_src else 0.0)
+
+        if pd.api.types.is_datetime64_any_dtype(s):
+            if len(nn):
+                lo, hi = nn.min().value, nn.max().value
+                vals = pd.to_datetime(rng.integers(lo, max(hi, lo + 1), n))
+            else:
+                vals = pd.to_datetime(rng.integers(0, 10**9, n))
+            col_vals = list(vals)
+        elif pd.api.types.is_numeric_dtype(s):
+            if len(nn):
+                lo, hi = float(nn.min()), float(nn.max())
+            else:
+                lo, hi = 0.0, 100.0
+            raw = rng.uniform(lo, hi if hi > lo else lo + 1.0, n)
+            if pd.api.types.is_integer_dtype(s):
+                raw = np.round(raw).astype("int64")
+            col_vals = list(raw)
+        elif col in pii:
+            kind = (pii[col]["kinds"] or ["sensitive"])[0]
+            if kind == "email":
+                col_vals = [f"user{i:03d}@example.com" for i in range(n)]
+            elif kind == "phone":
+                col_vals = [f"+10000{i:06d}" for i in range(n)]
+            elif kind in ("name", "address", "national_id", "postcode",
+                          "date_of_birth"):
+                col_vals = [f"{kind.upper()}_{i:03d}" for i in range(n)]
+            else:
+                col_vals = [f"REDACTED_{i:03d}" for i in range(n)]
+        else:
+            # cardinality-preserving synthetic labels for categorical/text
+            uniques = list(pd.unique(nn))[:max(1, len(pd.unique(nn)))]
+            k = max(1, len(uniques))
+            labels = [f"{col}_{j}" for j in range(k)]
+            col_vals = [labels[int(rng.integers(0, k))] for _ in range(n)]
+
+        # reapply approximate missingness
+        if null_frac > 0 and n:
+            mask = rng.random(n) < null_frac
+            col_vals = [None if m else v for v, m in zip(col_vals, mask)]
+        out[col] = col_vals
+
+    shadow_df = pd.DataFrame(out, columns=list(df.columns))
+    # preserve datetime dtype where the source was datetime
+    for col in df.columns:
+        if pd.api.types.is_datetime64_any_dtype(df[col]):
+            shadow_df[col] = pd.to_datetime(shadow_df[col])
+    return shadow_df
