@@ -37,17 +37,31 @@ SYSTEM_INSTRUCTIONS = (
 )
 
 
-def build_prompt(summary_or_df, question: str, previous_error: str = None) -> str:
+def build_prompt(summary_or_df, question: str, previous_error: str = None,
+                 mask_pii: bool = True) -> str:
     """Build the model prompt from a question and a data summary.
 
     The first argument may be either an already-computed summary string (as the
     Agent passes internally) or a DataFrame (pandas or polars), in the latter
     case it is summarized for you. This makes the function safe to call directly
     without a surprising type error.
+
+    mask_pii : when a DataFrame is passed, withhold detected PII columns' values
+        from the summary by default (names/addresses regex can't catch). Set
+        False for raw samples. Ignored when a summary string is passed (that text
+        is used verbatim — make it safe before passing it in).
     """
     if not isinstance(summary_or_df, str):
-        # treat anything non-str as a frame and summarize it
-        summary = summarize(summary_or_df)
+        # treat anything non-str as a frame and summarize it, masking PII columns
+        # so a direct build_prompt(df, ...) is privacy-safe like Agent.ask().
+        mask = set()
+        if mask_pii:
+            try:
+                from .analysis import privacy_report
+                mask = set(privacy_report(summary_or_df)["pii_columns"])
+            except Exception:
+                mask = set()
+        summary = summarize(summary_or_df, mask_columns=mask)
     else:
         summary = summary_or_df
     parts = [SYSTEM_INSTRUCTIONS, "", "DATA SUMMARY:", summary,

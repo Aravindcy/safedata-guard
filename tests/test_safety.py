@@ -1451,3 +1451,11 @@ def test_redaction_does_not_overmask_product_name():
     df = pd.DataFrame({"product_name": ["Widget", "Gadget"], "qty": [1, 2]})
     out = _run_safely("result = df[['product_name']]", df, redact_result_pii=True)
     assert out["product_name"].tolist() == ["Widget", "Gadget"]
+
+
+def test_build_prompt_masks_pii_by_default():
+    df = pd.DataFrame({"customer_name": ["Alice Smith"], "amount": [1]})
+    assert "Alice Smith" not in safedata.build_prompt(df, "q")
+    assert "Alice Smith" in safedata.build_prompt(df, "q", mask_pii=False)
+    # a pre-built summary string is used verbatim
+    assert "RAW" in safedata.build_prompt("RAW", "q")

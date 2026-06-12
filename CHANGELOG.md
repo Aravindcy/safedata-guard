@@ -13,6 +13,10 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   report. It now masks detected PII columns' values (new `mask_prompt_pii=True`
   default; set False to opt out). Column names/types are still shown, so the
   model can still operate on them.
+- **`build_prompt(df, ...)` masks PII by default.** Called directly on a
+  DataFrame it used plain `summarize(df)` and could leak name/address samples;
+  it now withholds detected PII columns (new `mask_pii=True` default). A summary
+  string is still used verbatim.
 - **`redact_result_pii` is now deep and name-aware.** It fully redacts PII
   columns of a returned DataFrame/Series (catching `customer_name`, not just
   regex-matchable emails) and recurses into dict/list/tuple/set results,
