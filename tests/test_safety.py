@@ -20,6 +20,27 @@ def run_safely(code, df, **kwargs):
     return _run_safely(code, df, **kwargs)
 
 
+def _subprocess_available():
+    """True if we can actually spawn a Python subprocess. When False (locked-down
+    sandboxes), isolate=True falls back to an in-process daemon thread that can't
+    be killed — so an infinite-loop timeout test would leave a thread spinning
+    `while True` and could wedge interpreter shutdown. We skip those tests then."""
+    import subprocess as _sp
+    try:
+        return _sp.run([sys.executable, "-c", "pass"],
+                       capture_output=True, timeout=30).returncode == 0
+    except Exception:
+        return False
+
+
+import sys
+_SUBPROCESS_OK = _subprocess_available()
+needs_subprocess = pytest.mark.skipif(
+    not _SUBPROCESS_OK,
+    reason="subprocess unavailable; isolate=True would fall back to an "
+           "unkillable in-process thread")
+
+
 def test_subprocess_isolation_smoke():
     # One explicit exercise of the real subprocess path (isolate=True).
     assert _run_safely("result = df['amount'].sum()", sample_df(),
@@ -430,6 +451,7 @@ def test_allows_any_all_builtins():
                       isolate=False) is False
 
 
+@needs_subprocess
 def test_isolation_works_from_source_checkout():
     # The subprocess child must be able to import safedata even when the package
     # is only on this process's sys.path (running from a source checkout). If the
@@ -502,6 +524,7 @@ def test_blocks_from_import_of_reexported_os():
             run_safely(code, df, isolate=False)
 
 
+@needs_subprocess
 def test_timeout_stops_infinite_loop():
     # Real boundary win: a hang is stopped instead of freezing the host.
     df = sample_df()

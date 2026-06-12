@@ -84,6 +84,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and token saving.
 
 ### Fixed
+- **Test suite exits cleanly in subprocess-restricted sandboxes.** The two
+  infinite-loop timeout tests now `skip` when a Python subprocess can't be
+  spawned — otherwise `isolate=True` falls back to an unkillable in-process
+  thread spinning `while True`, which could wedge interpreter shutdown. CI also
+  has a per-step `timeout-minutes` guard. (CI itself runs the full suite green.)
 - **Object-cell mutation.** `run_safely(..., isolate=False)` could mutate the
   caller's original DataFrame when a cell held a mutable object (e.g. a list),
   because `.copy(deep=True)` (and `copy.deepcopy`, which pandas delegates to it)
