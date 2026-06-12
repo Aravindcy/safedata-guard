@@ -30,7 +30,7 @@ from .analysis import (validate, Issue, suggest_fixes, explain_issue,
                        quality_score, ai_readiness, privacy_report,
                        infer_columns, build_safe_prompt)
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "SafetyError", "check_code", "CodeCheck", "build_prompt", "report",
            "wrap", "extract_code", "ModelError",

@@ -133,6 +133,15 @@ _DUAL_WRITERS = {"to_html", "to_markdown", "to_string"}
 # tell the model to write the expression as normal code instead.
 _EXPR_CHANNELS = {"eval", "query"}
 
+# str.format / str.format_map are a second string mini-language the AST never
+# sees. A field like '{0.__init__.__globals__}' performs attribute traversal
+# INSIDE the literal, walking object -> __init__ -> __globals__ to read a
+# module's globals (config, secrets, API keys) and return them as a string.
+# f-strings are safe because their fields are real AST nodes the dunder screen
+# already inspects; .format()/.format_map() are not. We refuse any format whose
+# template we cannot prove harmless, and tell the model to use an f-string.
+_FORMAT_CHANNELS = {"format", "format_map"}
+
 # Modules a data analyst legitimately needs. `import pandas as pd` is a near-
 # universal reflex even though pd is already provided, and date/number work
 # needs these. We allow only this small set; anything else (os, sys, requests,
@@ -173,6 +182,37 @@ def _refuse_blocked_components(parts, full_name):
                 f"Blocked: '{full_name}' reaches the internal '{part}' "
                 f"namespace (filesystem/system access) through an allowed "
                 f"package. Compute the answer in memory instead.")
+
+
+def _format_field_is_dangerous(field_name: str) -> bool:
+    """True if a format replacement field traverses into the object.
+
+    A plain field ('', '0', 'name') only substitutes a value and is safe. A
+    field with attribute access ('0.attr') or indexing ('0[key]') reaches INTO
+    the argument, which is the escape route ('{0.__init__.__globals__}'). We
+    treat any '.' or '[' in the field name as dangerous.
+    """
+    return bool(field_name) and ("." in field_name or "[" in field_name)
+
+
+def _format_template_is_dangerous(template: str) -> bool:
+    """Scan a literal format string for fields that traverse the argument.
+
+    Also recurses into nested fields inside a format spec (e.g.
+    '{0:{1.__class__}}'). If the template can't be parsed, treat it as dangerous
+    (fail closed)."""
+    import string as _string
+    try:
+        for _lit, field, spec, _conv in _string.Formatter().parse(template):
+            if _format_field_is_dangerous(field):
+                return True
+            if spec and "{" in spec:
+                for _l2, f2, _s2, _c2 in _string.Formatter().parse(spec):
+                    if _format_field_is_dangerous(f2):
+                        return True
+    except Exception:
+        return True
+    return False
 
 
 def _static_screen(code: str):
@@ -304,6 +344,26 @@ def _static_screen(code: str):
                     f"this safety screen cannot inspect. Write the calculation as "
                     f"normal Python on `df` instead (e.g. df['a'] * 2, not "
                     f"df.eval('a * 2')).")
+            if name in _FORMAT_CHANNELS:
+                recv = node.func.value
+                # A literal template we can inspect: refuse only if a field
+                # traverses the argument ('{0.attr}'); plain '{:.2f}' stays fine.
+                if (isinstance(recv, ast.Constant)
+                        and isinstance(recv.value, str)):
+                    if _format_template_is_dangerous(recv.value):
+                        raise SafetyError(
+                            f"Blocked: '.{name}(...)' uses a format field that "
+                            f"reaches into the object (e.g. "
+                            f"'{{0.__init__.__globals__}}'), a known way to read "
+                            f"internals past this screen. Use an f-string or plain "
+                            f"Python instead.")
+                else:
+                    # Non-literal template: the screen can't see its contents,
+                    # so it can't prove safety. Refuse, like df.eval/df.query.
+                    raise SafetyError(
+                        f"Blocked: '.{name}(...)' on a non-literal template, "
+                        f"whose contents this screen cannot inspect. Build the "
+                        f"string with an f-string or normal Python instead.")
 
 
 class CodeCheck:
@@ -516,12 +576,12 @@ def _redact_result(result):
 # The locked-down defaults (no network, read-only root fs) deliberately make a
 # run-time `pip install` impossible — there is nothing to download from and
 # nowhere to write it. Build the bundled image once (see the repo Dockerfile):
-#     docker build -t safedata-guard-runner:1.0.7 .
+#     docker build -t safedata-guard-runner:1.0.8 .
 # then this mode runs offline and read-only. `pip_install` stays None by default
 # for exactly that reason; set it (and relax network/read_only) only if you
 # really want run-time installation in a throwaway, trusted-network container.
 DOCKER_DEFAULTS = {
-    "image": "safedata-guard-runner:1.0.7",
+    "image": "safedata-guard-runner:1.0.8",
     "memory": "512m",
     "cpus": "1.0",
     "network": "none",       # no network at all

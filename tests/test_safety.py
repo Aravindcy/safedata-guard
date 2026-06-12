@@ -1312,3 +1312,41 @@ def test_docker_missing_raises_clear_error(monkeypatch):
     df = pd.DataFrame({"a": [1, 2, 3]})
     with pytest.raises(RuntimeError):
         _run_safely("result = df['a'].sum()", df, isolation="docker")
+
+
+# --- regression tests for the str.format/format_map escape (1.0.8) ----------
+
+def test_format_attribute_escape_blocked():
+    # The classic info-disclosure escape and its variants must be refused.
+    for code in [
+        "result = '{0.__init__.__globals__}'.format(df)",
+        "result = '{0.__class__}'.format(df)",
+        "result = '{x.__init__}'.format_map({'x': df})",
+        "result = '{0[0]}'.format(df['a'].tolist())",
+    ]:
+        assert not safedata.check_code(code).safe, code
+
+
+def test_format_nonliteral_template_blocked():
+    # A template the screen can't see (built in a variable) is refused.
+    code = "t = '{0.__class__}'\nresult = t.format(df)"
+    assert not safedata.check_code(code).safe
+
+
+def test_format_escape_blocked_at_runtime():
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    with pytest.raises(SafetyError):
+        run_safely("result = '{0.__init__.__globals__}'.format(df)", df)
+
+
+def test_safe_format_still_allowed():
+    # Plain value substitution / format specs must keep working.
+    for code in [
+        "result = '{:.2f}'.format(3.14159)",
+        "result = '{}'.format(df['a'].sum())",
+        "result = '{0} rows'.format(len(df))",
+        "result = '{name}'.format(name='hi')",
+    ]:
+        assert safedata.check_code(code).safe, code
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    assert run_safely("result = '{:.1f}'.format(df['a'].mean())", df) == "2.0"

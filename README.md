@@ -59,7 +59,7 @@ Build the runner image once (it bundles safedata + pandas/numpy so the container
 needs no network at run time; see the repo `Dockerfile`):
 
 ```bash
-docker build -t safedata-guard-runner:1.0.7 .
+docker build -t safedata-guard-runner:1.0.8 .
 ```
 
 ```python
