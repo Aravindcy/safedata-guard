@@ -213,9 +213,15 @@ By default safedata masks obvious PII (emails, cards, phones, SSNs, IPs) before
 the summary leaves your machine and notes which columns were masked.
 
 ```python
-safedata.summarize(df)                    # PII masked by default
+safedata.summarize(df)                    # regex PII (emails/cards/…) masked
+safedata.summarize(df, mask_pii=True)     # ALSO withhold name/address columns
 safedata.summarize(df, redact_pii=False)  # raw samples, if you are sure
 ```
+
+Note: plain `summarize(df)` masks only **regex-detectable** PII (emails, cards,
+phones, SSNs, IPs) — it does **not** hide names/addresses, so its raw output can
+still contain `"Alice Smith"`. Pass `mask_pii=True` (or use `build_safe_prompt()`
+/ `Agent.ask()`, which do this for you) before sending a summary to a model.
 
 Regex masking cannot catch names or addresses; `build_safe_prompt(..., privacy=
 "mask")` (below) goes further and **fully withholds** every detected PII column.

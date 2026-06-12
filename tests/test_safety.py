@@ -1587,3 +1587,13 @@ def test_agent_safe_firewall_masks_indirect():
         lambda p: "result = df.iloc[:, 0].tolist()", isolate=False
     ).ask(df, "total revenue by region")
     assert "Alice Smith" not in str(out.answer)
+
+
+def test_summarize_mask_pii_flag():
+    df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                       "email": ["a@b.com", "c@d.com"], "amount": [1, 2]})
+    # default: regex PII masked, names NOT (documented low-level behaviour)
+    assert "Alice Smith" in summarize(df)
+    # opt-in: name columns withheld
+    out = summarize(df, mask_pii=True)
+    assert "Alice Smith" not in out and "[REDACTED]" in out

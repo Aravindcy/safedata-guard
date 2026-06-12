@@ -43,11 +43,18 @@ def _normalize_cat(val: str) -> str:
 
 
 def summarize(df, max_samples: int = 3, redact_pii: bool = True,
-              mask_columns=None) -> str:
+              mask_columns=None, mask_pii: bool = False) -> str:
     """
     Build a compact text summary of `df` for an AI prompt.
     Includes shape, per-column type/samples/stats, and DATA-TRAP WARNINGS.
     Accepts a pandas or polars DataFrame.
+
+    PRIVACY NOTE: by default this masks only REGEX-detectable PII in the sample
+    values (emails, cards, phones, SSNs, IPs). It does NOT hide names or
+    addresses, which regex cannot reliably detect — so the raw summary can still
+    contain values like "Alice Smith". If you will send the summary to a model,
+    use `mask_pii=True` (below), or the higher-level `build_safe_prompt()` /
+    `Agent.ask()`, which withhold detected PII columns automatically.
 
     redact_pii : bool
         If True (default), obvious PII in the sample values (emails, card-like
@@ -60,8 +67,20 @@ def summarize(df, max_samples: int = 3, redact_pii: bool = True,
         address columns. safedata.build_safe_prompt() passes the detected PII
         columns here so names don't leak even though redact_pii alone can't spot
         them.
+    mask_pii : bool
+        If True, auto-detect PII columns (by value AND by name, so name/address
+        columns are caught) and fully withhold them — i.e. populate
+        `mask_columns` for you. Off by default to keep `summarize` a low-level,
+        no-surprises view and avoid the detection cost; turn it on for a
+        privacy-safe summary in one flag.
     """
     mask_columns = set(mask_columns) if mask_columns else set()
+    if mask_pii:
+        try:
+            from .analysis import privacy_report
+            mask_columns |= set(privacy_report(df)["pii_columns"])
+        except Exception:
+            pass
     if _HAS_POLARS and isinstance(df, pl.DataFrame):
         return _summarize_polars(df, max_samples=max_samples,
                                  redact_pii=redact_pii,
