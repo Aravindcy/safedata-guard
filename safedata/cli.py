@@ -86,8 +86,10 @@ def _cmd_check(args) -> int:
             print(f"error: {e}", file=sys.stderr)
         return 1
 
+    scan_rows = "all" if getattr(args, "pii_scan_all", False) else \
+        getattr(args, "pii_scan_rows", 20)
     issues = validate(df)
-    priv = privacy_report(df)
+    priv = privacy_report(df, scan_rows=scan_rows)
     pii = priv["pii_columns"]
 
     if args.json:
@@ -149,6 +151,12 @@ def build_parser() -> argparse.ArgumentParser:
                        choices=["low", "medium", "high", "pii", "any"],
                        help="exit non-zero (2) if an issue at/above LEVEL is "
                             "found; 'pii' fails on any PII, 'any' on any issue")
+    check.add_argument("--pii-scan-rows", type=int, default=20, metavar="N",
+                       dest="pii_scan_rows",
+                       help="unique values per column scanned for PII (default "
+                            "20; higher catches rarer PII, slower)")
+    check.add_argument("--pii-scan-all", action="store_true", dest="pii_scan_all",
+                       help="scan every value for PII (most thorough, slowest)")
     check.set_defaults(func=_cmd_check)
 
     risk = sub.add_parser(

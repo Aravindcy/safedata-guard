@@ -394,32 +394,43 @@ def _pii_name_hints(df) -> dict:
     return out
 
 
-def _all_pii(df):
+# How many unique values per column the value-based PII scan inspects by
+# default. Small = fast; a rare PII value past this window can be missed, so
+# privacy_report(scan_rows=...) / "all" let callers scan deeper.
+_DEFAULT_PII_SCAN = 20
+
+
+def _all_pii(df, scan_rows=_DEFAULT_PII_SCAN):
     """Merge value-detected PII (high confidence) with name-hinted PII.
 
     Returns {column: {"kinds": [...], "by": "value"|"name"}}. Value evidence wins
-    when a column is detected both ways.
+    when a column is detected both ways. `scan_rows` controls how many unique
+    values the value scan inspects ("all" or None = every value).
     """
     df = _as_pandas(df)
     merged = {}
     for col, kind in _pii_name_hints(df).items():
         merged[col] = {"kinds": [kind], "by": "name"}
-    for col, kinds in _detect_pii_columns(df).items():
+    for col, kinds in _detect_pii_columns(df, scan_rows=scan_rows).items():
         merged[col] = {"kinds": kinds, "by": "value"}
     return merged
 
 
-def _detect_pii_columns(df):
+def _detect_pii_columns(df, scan_rows=_DEFAULT_PII_SCAN):
     """Return {column: [kinds]} for columns whose VALUES match a PII pattern.
 
     Each sample value is tested on its own. We must NOT join samples and search
     the blob: consecutive values (e.g. dates '2024-01-15 2024-02-20') can form a
     digit run that spuriously matches the card/phone patterns across the join.
+    `scan_rows` is the number of unique values inspected per column ("all"/None
+    scans every value, slower but catches rare PII).
     """
     df = _as_pandas(df)
+    unlimited = scan_rows in (None, "all")
     hits = {}
     for col in df.select_dtypes(include=["object", "string"]).columns:
-        samples = df[col].dropna().astype(str).unique()[:20]
+        uniques = df[col].dropna().astype(str).unique()
+        samples = uniques if unlimited else uniques[:int(scan_rows)]
         kinds = set()
         for label, pattern in _pii._PATTERNS:
             for s in samples:
@@ -434,12 +445,16 @@ def _detect_pii_columns(df):
     return hits
 
 
-def privacy_report(df) -> dict:
-    """A privacy view: which columns hold PII (by value or by name) and what to do."""
+def privacy_report(df, scan_rows=_DEFAULT_PII_SCAN) -> dict:
+    """A privacy view: which columns hold PII (by value or by name) and what to do.
+
+    `scan_rows` controls how many unique values per column the value scan checks
+    ("all"/None for an exhaustive but slower scan that catches rare PII).
+    """
     df = _as_pandas(df)
     high, medium, actions = [], [], []
 
-    for col, info in _all_pii(df).items():
+    for col, info in _all_pii(df, scan_rows=scan_rows).items():
         kinds = info["kinds"]
         if info["by"] == "value":
             high.append({"column": col, "kinds": kinds, "by": "value"})
