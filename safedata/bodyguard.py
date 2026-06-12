@@ -486,7 +486,8 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                      allow_row_reduction: bool = False,
                      max_result_rows=None, max_result_bytes=None,
                      redact_result_pii: bool = False, deepcopy_input: bool = True,
-                     enforce_minimal_result: bool = False, blocked_columns=None):
+                     enforce_minimal_result: bool = False, blocked_columns=None,
+                     block_1d_row_results: bool = False):
     """
     Run already-screened `code` against a deep copy of `df` and enforce the
     runtime invariants. Returns ('ok', result) or ('blocked', message).
@@ -566,10 +567,16 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
     # the answer to an aggregate question and over-exposes data. We deliberately
     # do NOT flag a 1-D aggregate (a groupby Series) that merely happens to have
     # original_rows entries, to avoid false-blocking legitimate aggregates.
-    if (enforce_minimal_result and original_rows > 1
-            and _looks_row_level(result)):
+    if enforce_minimal_result and original_rows > 1:
         rrows = _result_rows(result)
-        if rrows is not None and rrows == original_rows:
+        # block_1d_row_results widens this to 1-D per-row results (a Series or
+        # list of scalars with one value per input row), which leak row-level
+        # data even though they aren't full-width. Stricter, with a small chance
+        # of flagging a groupby that happens to have original_rows groups — which
+        # is why it's opt-in (on in Agent.strict).
+        row_level = _looks_row_level(result) or (
+            block_1d_row_results and rrows is not None)
+        if row_level and rrows is not None and rrows == original_rows:
             return ("blocked",
                     f"Your result returns all {original_rows} input rows. The "
                     f"question expects an aggregated/summary answer, not the full "
@@ -775,7 +782,8 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                allow_row_reduction: bool = False, isolation: str = None,
                max_result_rows: int = None, max_result_bytes: int = None,
                redact_result_pii: bool = False, blocked_columns=None,
-               enforce_minimal_result: bool = False, **docker_opts):
+               enforce_minimal_result: bool = False,
+               block_1d_row_results: bool = False, **docker_opts):
     """
     Execute `code` against a copy of `df`, enforcing safety invariants.
 
@@ -839,6 +847,7 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                   max_result_bytes=max_result_bytes,
                   redact_result_pii=redact_result_pii,
                   enforce_minimal_result=enforce_minimal_result,
+                  block_1d_row_results=block_1d_row_results,
                   blocked_columns=list(blocked_columns) if blocked_columns else None)
 
     mode = _resolve_isolation(isolation, isolate)

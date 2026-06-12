@@ -38,7 +38,7 @@ SYSTEM_INSTRUCTIONS = (
 
 
 def build_prompt(summary_or_df, question: str, previous_error: str = None,
-                 mask_pii: bool = True) -> str:
+                 mask_pii: bool = True, scan_rows=20) -> str:
     """Build the model prompt from a question and a data summary.
 
     The first argument may be either an already-computed summary string (as the
@@ -58,7 +58,8 @@ def build_prompt(summary_or_df, question: str, previous_error: str = None,
         if mask_pii:
             try:
                 from .analysis import privacy_report
-                mask = set(privacy_report(summary_or_df)["pii_columns"])
+                mask = set(privacy_report(
+                    summary_or_df, scan_rows=scan_rows)["pii_columns"])
             except Exception:
                 mask = set()
         summary = summarize(summary_or_df, mask_columns=mask)
@@ -113,7 +114,9 @@ class Agent:
                  isolation: str = None, max_result_rows: int = None,
                  max_result_bytes: int = None, redact_result_pii: bool = False,
                  mask_prompt_pii: bool = True, column_firewall: bool = False,
-                 enforce_minimal_result: bool = False, **docker_opts):
+                 enforce_minimal_result: bool = False,
+                 block_1d_row_results: bool = False, pii_scan_rows=20,
+                 **docker_opts):
         self.model = model
         self.max_retries = max_retries
         self.isolate = isolate
@@ -131,6 +134,9 @@ class Agent:
         # off elsewhere. Both default off on a bare Agent(...).
         self.column_firewall = column_firewall
         self.enforce_minimal_result = enforce_minimal_result
+        self.block_1d_row_results = block_1d_row_results
+        # how many unique values/column the PII scan inspects (int or "all").
+        self.pii_scan_rows = pii_scan_rows
         self.docker_opts = docker_opts
 
     # Preset constructors so the SECURE configuration is the easy one to reach
@@ -154,11 +160,12 @@ class Agent:
         opts = dict(cls._SAFE_DEFAULTS)
         opts["isolation"] = "docker"
         opts["enforce_minimal_result"] = True
+        opts["block_1d_row_results"] = True
         opts.update(overrides)
         return cls(model, **opts)
 
     def ask(self, df, question: str, verbose: bool = False):
-        facts = _audit_facts(df, question)   # quality issues + detected PII columns
+        facts = _audit_facts(df, question, scan_rows=self.pii_scan_rows)
         # Step 1: cheap, quality-aware summary. Withhold detected PII columns'
         # sample values (names/addresses regex can't catch) so they never reach
         # the model — this is what makes the agent privacy-aware by default.
@@ -200,6 +207,7 @@ class Agent:
                     redact_result_pii=self.redact_result_pii,
                     blocked_columns=blocked_columns,
                     enforce_minimal_result=self.enforce_minimal_result,
+                    block_1d_row_results=self.block_1d_row_results,
                     **self.docker_opts)
                 trace.append({"code": code, "blocked": False, "reason": None})
                 return _result(answer=result, code=code, blocked=False)
@@ -212,7 +220,7 @@ class Agent:
         return _result(answer=None, code=attempts[-1], blocked=True, reason=error)
 
 
-def _audit_facts(df, question):
+def _audit_facts(df, question, scan_rows=20):
     """Collect the data-quality and privacy facts shown in the audit report.
 
     Returns a dict with question/summary/issues/pii_columns; the caller fills in
@@ -224,7 +232,7 @@ def _audit_facts(df, question):
     try:
         from .analysis import validate, privacy_report
         facts["issues"] = [i.to_dict() for i in validate(df)]
-        facts["pii_columns"] = privacy_report(df)["pii_columns"]
+        facts["pii_columns"] = privacy_report(df, scan_rows=scan_rows)["pii_columns"]
     except Exception:
         pass
     return facts

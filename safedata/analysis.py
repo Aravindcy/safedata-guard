@@ -712,7 +712,8 @@ def _question_mentions_column(question: str, col) -> bool:
                                   for t in c_tokens)
 
 
-def create_contract(df, question: str = None) -> dict:
+def create_contract(df, question: str = None,
+                    scan_rows=_DEFAULT_PII_SCAN) -> dict:
     """Build a machine-readable Data Safety Contract for `df`.
 
     A declarative policy derived from the same read-only heuristics as the rest
@@ -734,7 +735,7 @@ def create_contract(df, question: str = None) -> dict:
     or document AI access to a dataset.
     """
     df = _as_pandas(df)
-    rep = privacy_report(df)
+    rep = privacy_report(df, scan_rows=scan_rows)
     pii_cols = rep["pii_columns"]
 
     if question:
@@ -779,7 +780,8 @@ def create_contract(df, question: str = None) -> dict:
     }
 
 
-def ai_risk_score(df, question: str = None) -> dict:
+def ai_risk_score(df, question: str = None,
+                 scan_rows=_DEFAULT_PII_SCAN) -> dict:
     """Score how risky it is to hand `df` (and `question`) to an AI: 0..100.
 
     Composes the existing privacy and data-quality signals into a single risk
@@ -787,7 +789,7 @@ def ai_risk_score(df, question: str = None) -> dict:
     Higher score = higher risk.
     """
     df = _as_pandas(df)
-    rep = privacy_report(df)
+    rep = privacy_report(df, scan_rows=scan_rows)
     issues = validate(df)
     rules = {i.rule_id for i in issues}
     pii_cols = rep["pii_columns"]

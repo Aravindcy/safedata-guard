@@ -107,8 +107,12 @@ def _cmd_check(args) -> int:
         }
         print(json.dumps(payload, indent=2, default=str))
     else:
+        # Default output is privacy-aware: fully withhold detected PII columns
+        # (names/addresses regex can't catch), not just regex-mask. --no-redact
+        # opts out entirely.
         print(summarize(df, max_samples=args.samples,
-                        redact_pii=not args.no_redact))
+                        redact_pii=not args.no_redact,
+                        mask_columns=set() if args.no_redact else set(pii)))
         print()
         print(token_savings(df))
         sc = quality_score(df)
@@ -166,6 +170,11 @@ def build_parser() -> argparse.ArgumentParser:
                       help="optional question, to flag PII the answer doesn't need")
     risk.add_argument("--json", action="store_true",
                       help="emit machine-readable JSON")
+    risk.add_argument("--pii-scan-rows", type=int, default=20, metavar="N",
+                      dest="pii_scan_rows",
+                      help="unique values per column scanned for PII (default 20)")
+    risk.add_argument("--pii-scan-all", action="store_true", dest="pii_scan_all",
+                      help="scan every value for PII (most thorough, slowest)")
     risk.set_defaults(func=_cmd_risk)
 
     return parser
@@ -183,7 +192,9 @@ def _cmd_risk(args) -> int:
             print(f"error: {e}", file=sys.stderr)
         return 1
 
-    r = ai_risk_score(df, args.question)
+    scan_rows = "all" if getattr(args, "pii_scan_all", False) else \
+        getattr(args, "pii_scan_rows", 20)
+    r = ai_risk_score(df, args.question, scan_rows=scan_rows)
     if args.json:
         import json
         print(json.dumps(r, indent=2, default=str))
