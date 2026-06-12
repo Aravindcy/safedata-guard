@@ -88,6 +88,14 @@ safedata.run_safely(code, df,
 Oversized results are blocked with a message telling the model to aggregate,
 rather than silently truncated. The same options are accepted by `Agent(...)`.
 
+> **Limitation:** `redact_result_pii` works on DataFrames/Series (it knows the
+> column) and on emails/phones in strings, but once names are flattened into a
+> plain list (`df['customer_name'].tolist()`) the column context is lost and
+> regex can't tell a name from any other text — so names can still leak that way.
+> The robust defence is the **column firewall** (`blocked_columns=` /
+> `Agent.safe()`), which masks unneeded PII columns *before* the code runs, so
+> the values aren't there to leak in the first place.
+
 ### Secure presets
 
 The secure configuration is one call away, so you don't have to remember the

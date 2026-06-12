@@ -496,8 +496,12 @@ def _risk_label(score):
     return "High"
 
 
-def quality_score(df) -> dict:
-    """A 0..100 data-quality score with a per-dimension breakdown."""
+def quality_score(df, scan_rows=_DEFAULT_PII_SCAN) -> dict:
+    """A 0..100 data-quality score with a per-dimension breakdown.
+
+    `scan_rows` controls the PII scan depth used for the privacy_risk field
+    ("all"/None for an exhaustive scan), so it agrees with privacy_report.
+    """
     df = _as_pandas(df)
     n, ncols = len(df), df.shape[1]
     issues = validate(df)
@@ -533,7 +537,7 @@ def quality_score(df) -> dict:
     # Privacy risk is NOT a proportion of columns: a single email column makes
     # raw sharing unsafe even among 100 clean ones. Derive it from the kind of
     # PII found, kept separate from the data-quality score.
-    rep = privacy_report(df)
+    rep = privacy_report(df, scan_rows=scan_rows)
     if rep["high_risk"]:
         privacy_risk = "High"
     elif rep["medium_risk"]:
@@ -553,13 +557,19 @@ def quality_score(df) -> dict:
 
 # --- AI readiness ------------------------------------------------------------
 
-def ai_readiness(df) -> dict:
-    """Is this dataset ready to hand to an LLM? Returns checks + a verdict."""
+def ai_readiness(df, scan_rows=_DEFAULT_PII_SCAN) -> dict:
+    """Is this dataset ready to hand to an LLM? Returns checks + a verdict.
+
+    `scan_rows` controls PII scan depth ("all"/None for an exhaustive scan), so
+    the no_pii check agrees with privacy_report at the same depth.
+    """
     from .tokens import token_stats
     df = _as_pandas(df)
     issues = validate(df)
     rules = {iss.rule_id for iss in issues}
-    pii_cols = sorted({iss.column for iss in issues if iss.rule_id == "PII"})
+    # Use privacy_report at the requested depth (validate uses the fast default),
+    # so a deep scan here can surface rare PII the quick pass missed.
+    pii_cols = sorted(privacy_report(df, scan_rows=scan_rows)["pii_columns"])
 
     checks = []
 

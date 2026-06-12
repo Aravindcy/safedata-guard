@@ -820,7 +820,12 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
         rather than silently truncated.
     redact_result_pii : bool
         Apply best-effort PII redaction to the returned value before it leaves
-        the runner.
+        the runner. LIMITATION: once values are flattened into a plain list/array
+        (e.g. ``df['customer_name'].tolist()``) their column context is gone, and
+        regex cannot reliably tell that "Alice Smith" is a name — so names CAN
+        still leak this way. To stop that, pass ``blocked_columns`` (or use
+        ``Agent.safe()``, whose column firewall masks unneeded PII columns BEFORE
+        the code runs, so the values aren't present to leak).
     blocked_columns : iterable of str or None
         Column names the generated code may NOT touch (a least-privilege
         firewall). Referencing one — by subscript ``df['col']`` or attribute

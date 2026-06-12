@@ -11,10 +11,10 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   masked emails but still printed name/address samples; it now fully withholds
   detected PII columns (`--no-redact` opts out).
 - **`scan_rows` threads through the privacy-aware APIs.** `ai_risk_score`,
-  `create_contract`, and `build_prompt` take `scan_rows=N|"all"`, `Agent(...)`
-  takes `pii_scan_rows`, and `safedata risk` gains `--pii-scan-rows/--pii-scan-all`
-  — so rare PII past the fast default window can be caught everywhere, not just
-  in `privacy_report`.
+  `create_contract`, `build_prompt`, `quality_score`, and `ai_readiness` take
+  `scan_rows=N|"all"`, `Agent(...)` takes `pii_scan_rows`, and `safedata
+  check`/`risk` gain `--pii-scan-rows/--pii-scan-all` — so rare PII past the fast
+  default window is caught consistently everywhere, not just in `privacy_report`.
 - **`Agent.strict()` now blocks 1-D per-row results** (`block_1d_row_results`):
   a Series/list with one value per input row (e.g. `df['name'].tolist()`) is
   refused in strict mode, closing a row-level leak that the full-width-only

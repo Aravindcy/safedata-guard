@@ -1635,3 +1635,12 @@ def test_strict_blocks_1d_row_results():
     assert run_safely("result = df['a'].tolist()", df,
                       enforce_minimal_result=True) == [1, 2, 3, 4]
     assert safedata.Agent.strict(lambda p: "").block_1d_row_results is True
+
+
+def test_quality_and_readiness_accept_scan_rows():
+    df = pd.DataFrame({"notes": [f"user{i}" for i in range(100)] + ["leak@example.com"]})
+    assert safedata.quality_score(df)["privacy_risk"] == "Low"
+    assert safedata.quality_score(df, scan_rows="all")["privacy_risk"] != "Low"
+    no_pii = lambda r: [c for c in r["checks"] if c["check"] == "no_pii"][0]["ok"]
+    assert no_pii(safedata.ai_readiness(df)) is True
+    assert no_pii(safedata.ai_readiness(df, scan_rows="all")) is False

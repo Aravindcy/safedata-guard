@@ -98,9 +98,9 @@ def _cmd_check(args) -> int:
             "file": args.file,
             "rows": int(len(df)),
             "columns": int(df.shape[1]),
-            "quality_score": quality_score(df),
+            "quality_score": quality_score(df, scan_rows=scan_rows),
             "privacy_report": priv,
-            "ai_readiness": ai_readiness(df),
+            "ai_readiness": ai_readiness(df, scan_rows=scan_rows),
             "pii_columns": pii,
             "issues": [i.to_dict() for i in issues],
             "tokens": token_stats(df),
@@ -115,7 +115,7 @@ def _cmd_check(args) -> int:
                         mask_columns=set() if args.no_redact else set(pii)))
         print()
         print(token_savings(df))
-        sc = quality_score(df)
+        sc = quality_score(df, scan_rows=scan_rows)
         print(f"\nData quality score: {sc['score']}/100 ({sc['label']}) "
               f"| privacy risk: {sc['privacy_risk']}")
         if args.report:
