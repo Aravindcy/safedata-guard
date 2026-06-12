@@ -28,7 +28,7 @@ from .tokens import token_savings, token_stats, estimate_tokens
 from .pii import redact_text
 from .analysis import (validate, Issue, suggest_fixes, explain_issue,
                        quality_score, ai_readiness, privacy_report,
-                       infer_columns, build_safe_prompt)
+                       infer_columns, build_safe_prompt, create_contract)
 
 __version__ = "1.0.8"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
@@ -39,4 +39,4 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            # structured analysis layer
            "validate", "Issue", "suggest_fixes", "explain_issue",
            "quality_score", "ai_readiness", "privacy_report",
-           "infer_columns", "build_safe_prompt"]
+           "infer_columns", "build_safe_prompt", "create_contract"]

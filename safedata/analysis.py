@@ -654,3 +654,65 @@ def build_safe_prompt(df, question: str, privacy: str = "mask") -> str:
         privacy_line = f"\nPII columns {verb}: {', '.join(pii_cols)}"
     return (f"{header}{privacy_line}\n{summary}\n\n"
             f"USER QUESTION:\n{question}")
+
+
+# --- data safety contract ----------------------------------------------------
+
+# The trap rule-ids that describe a data hazard the model must account for
+# (as opposed to privacy or structural findings).
+_TRAP_RULES = {"TEXT_NUMERIC", "DATE_AS_TEXT", "EXCEL_SERIAL_DATE",
+               "MESSY_CATEGORY", "CONSTANT_COLUMN", "NON_UNIQUE_ID",
+               "EMPTY_COLUMN", "HIGH_MISSING", "UNEXPECTED_NEGATIVE",
+               "DUPLICATE_COLUMNS", "HIGH_CARDINALITY"}
+
+# Operations the guardrail allows (in-memory analysis) vs always refuses. These
+# mirror what the bodyguard's static screen enforces, surfaced as a declarative
+# policy so a caller (or the Agent) can reason about access before running code.
+_ALLOWED_OPERATIONS = ["filter", "groupby", "aggregate", "sort",
+                       "derive_column", "join_in_memory", "describe"]
+_BLOCKED_OPERATIONS = ["file_read", "file_write", "network", "shell",
+                       "code_eval", "raw_row_return"]
+
+
+def create_contract(df) -> dict:
+    """Build a machine-readable Data Safety Contract for `df`.
+
+    A declarative policy derived from the same read-only heuristics as the rest
+    of the library: which columns are safe to expose, which hold PII and should
+    be withheld, the data traps the model must account for, the operations the
+    guardrail permits/refuses, and an overall privacy level. It runs no code and
+    mutates nothing.
+
+    This is a POLICY VIEW, not a guarantee: it is built from best-effort PII and
+    data-quality heuristics (see safedata.pii / privacy_report). Use it to gate
+    or document AI access to a dataset.
+    """
+    df = _as_pandas(df)
+    rep = privacy_report(df)
+    blocked_cols = rep["pii_columns"]
+    allowed_cols = [c for c in df.columns if c not in set(blocked_cols)]
+
+    traps = []
+    for iss in validate(df):
+        if iss.rule_id in _TRAP_RULES:
+            traps.append({"column": iss.column, "rule_id": iss.rule_id,
+                          "issue": iss.message})
+
+    if rep["high_risk"]:
+        privacy_level = "strict"
+    elif rep["medium_risk"]:
+        privacy_level = "review"
+    else:
+        privacy_level = "low"
+
+    return {
+        "allowed_columns": allowed_cols,
+        "blocked_columns": blocked_cols,
+        "allowed_operations": list(_ALLOWED_OPERATIONS),
+        "blocked_operations": list(_BLOCKED_OPERATIONS),
+        "data_traps": traps,
+        "privacy_level": privacy_level,
+        "column_types": infer_columns(df),
+        "note": ("declarative policy from best-effort heuristics; not a "
+                 "compliance guarantee. See safedata.pii / privacy_report."),
+    }

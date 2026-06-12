@@ -104,19 +104,47 @@ class Agent:
         self.redact_result_pii = redact_result_pii
         self.docker_opts = docker_opts
 
+    # Preset constructors so the SECURE configuration is the easy one to reach
+    # for. `safe` caps result size and masks PII in a separate process; `strict`
+    # adds full container isolation for untrusted model output. Any keyword
+    # overrides the preset (e.g. Agent.strict(model, timeout=30)).
+    _SAFE_DEFAULTS = dict(max_result_rows=50, max_result_bytes=1_000_000,
+                          redact_result_pii=True, allow_row_reduction=False,
+                          isolation="process")
+
+    @classmethod
+    def safe(cls, model, **overrides):
+        """Agent preset with result-size caps + PII redaction, process isolation."""
+        opts = dict(cls._SAFE_DEFAULTS)
+        opts.update(overrides)
+        return cls(model, **opts)
+
+    @classmethod
+    def strict(cls, model, **overrides):
+        """Like `safe`, but runs code in a locked-down container (isolation='docker')."""
+        opts = dict(cls._SAFE_DEFAULTS)
+        opts["isolation"] = "docker"
+        opts.update(overrides)
+        return cls(model, **opts)
+
     def ask(self, df, question: str, verbose: bool = False):
         summary = summarize(df)          # Step 1, cheap, quality-aware
         tokens = token_stats(df)        # estimate of tokens used vs raw data
+        audit = _audit_facts(df, question, summary)  # quality + PII, for the report
         error = None
         attempts = []
+        trace = []                       # per-attempt (code, blocked, reason)
+
+        def _result(**kw):
+            return AgentResult(attempts=attempts, tokens=tokens, trace=trace,
+                               **audit, **kw)
 
         for attempt in range(1, self.max_retries + 1):
             prompt = build_prompt(summary, question, previous_error=error)
             try:
                 code = self.model(prompt)    # Step 2, AI writes code
             except ModelError as e:
-                return AgentResult(answer=None, code=None, attempts=attempts,
-                                   blocked=True, reason=str(e), tokens=tokens)
+                return _result(answer=None, code=None, blocked=True, reason=str(e))
             attempts.append(code)
             if verbose:
                 print(f"--- attempt {attempt} ---\n{code}\n")
@@ -129,31 +157,71 @@ class Agent:
                     max_result_bytes=self.max_result_bytes,
                     redact_result_pii=self.redact_result_pii,
                     **self.docker_opts)
-                return AgentResult(answer=result, code=code,
-                                   attempts=attempts, blocked=False,
-                                   tokens=tokens)
+                trace.append({"code": code, "blocked": False, "reason": None})
+                return _result(answer=result, code=code, blocked=False)
             except SafetyError as e:     # Step 4, feed error back, retry
                 error = str(e)
+                trace.append({"code": code, "blocked": True, "reason": error})
                 if verbose:
                     print(f"BLOCKED: {error}\n")
 
-        return AgentResult(answer=None, code=attempts[-1],
-                           attempts=attempts, blocked=True, reason=error,
-                           tokens=tokens)
+        return _result(answer=None, code=attempts[-1], blocked=True, reason=error)
+
+
+def _audit_facts(df, question, summary):
+    """Collect the data-quality and privacy facts shown in the audit report.
+
+    Best-effort and defensive: if the analysis layer can't run on this frame we
+    still return the question/summary so ask() never fails because of auditing.
+    """
+    facts = {"question": question, "summary": summary,
+             "issues": [], "pii_columns": []}
+    try:
+        from .analysis import validate, privacy_report
+        facts["issues"] = [i.to_dict() for i in validate(df)]
+        facts["pii_columns"] = privacy_report(df)["pii_columns"]
+    except Exception:
+        pass
+    return facts
 
 
 class AgentResult:
     def __init__(self, answer, code, attempts, blocked, reason=None,
-                 tokens=None):
+                 tokens=None, question=None, summary=None, issues=None,
+                 pii_columns=None, trace=None):
         self.answer = answer
         self.code = code
         self.attempts = attempts
         self.blocked = blocked
         self.reason = reason
         self.tokens = tokens  # dict: summary_tokens, raw_tokens, saved_*, etc.
+        # audit context
+        self.question = question
+        self.summary = summary            # the exact text sent to the model
+        self.issues = issues or []        # data-quality findings (dicts)
+        self.pii_columns = pii_columns or []
+        self.trace = trace or []          # per-attempt: {code, blocked, reason}
 
     def __repr__(self):
         if self.blocked:
             return (f"<blocked after {len(self.attempts)} attempt(s): "
                     f"{self.reason}>")
         return f"<answer={self.answer!r} (after {len(self.attempts)} attempt(s))>"
+
+    def audit_report(self, path=None) -> str:
+        """Render a self-contained HTML audit of this answer.
+
+        Shows the question, the exact summary sent to the model, every attempt
+        (including blocked ones and why), the final code and answer, the
+        data-quality warnings, which PII columns were withheld, and the token
+        saving. Returns the HTML; also writes it to `path` if given.
+
+        Useful as a compliance/debugging trail: it records what left your machine
+        and what the guardrail did, for a single agent.ask() call.
+        """
+        from ._audit import build_audit_html
+        html = build_audit_html(self)
+        if path:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(html)
+        return html
