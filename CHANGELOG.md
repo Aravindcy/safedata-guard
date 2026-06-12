@@ -6,6 +6,34 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.8]
 
+### Added
+- **`Agent.safe()` / `Agent.strict()` presets.** One call gives the secure
+  configuration: result-size caps + PII redaction + process isolation (`safe`)
+  or full container isolation (`strict`). Any keyword overrides the preset.
+- **`create_contract(df)` — a Data Safety Contract.** A machine-readable policy
+  derived from the read-only heuristics: allowed/blocked columns, data traps the
+  model must account for, allowed/blocked operations, column types, and a privacy
+  level. A declarative policy layer for AI access to a dataset.
+- **`AgentResult.audit_report(path=None)`.** Renders a self-contained HTML audit
+  of one `agent.ask()`: question, exact summary sent, every attempt (and why any
+  were blocked), final code/answer, data-quality warnings, withheld PII columns,
+  and token saving.
+
+### Fixed
+- **Object-cell mutation.** `run_safely(..., isolate=False)` could mutate the
+  caller's original DataFrame when a cell held a mutable object (e.g. a list),
+  because `.copy(deep=True)` (and `copy.deepcopy`, which pandas delegates to it)
+  don't copy cell objects. The in-process copy now deep-copies object-column
+  cells. (Default `isolate=True` was already safe via pickling.)
+- **Clear errors on bad input.** `run_safely` now raises a `TypeError` naming the
+  bad type when `df` isn't a DataFrame, instead of an opaque `AttributeError`
+  (or `KeyError: 'out'` on the threaded fallback); worker-thread exceptions now
+  propagate to the caller.
+
+### Security
+- **Hardened the docker command** so values spliced into `sh -c` (result_var,
+  pip target) are `shlex.quote`-escaped, removing a shell-injection avenue.
+
 ### Security
 - **Closed a `str.format`/`str.format_map` information-disclosure bypass.** A
   format template like `'{0.__init__.__globals__}'.format(df)` performs attribute

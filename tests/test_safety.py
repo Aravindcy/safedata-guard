@@ -1350,3 +1350,54 @@ def test_safe_format_still_allowed():
         assert safedata.check_code(code).safe, code
     df = pd.DataFrame({"a": [1, 2, 3]})
     assert run_safely("result = '{:.1f}'.format(df['a'].mean())", df) == "2.0"
+
+
+# --- 1.0.8 batch: mutation, type checks, presets, contract, audit ----------
+
+def test_object_cell_mutation_does_not_touch_original():
+    df = pd.DataFrame({"x": [[1], [2]]})
+    _run_safely("df.loc[0,'x'].append(99)\nresult = df.loc[0,'x']", df,
+                isolate=False)
+    assert df["x"].tolist() == [[1], [2]]          # in-process
+    df2 = pd.DataFrame({"x": [[1], [2]]})
+    try:
+        _run_safely("df.loc[0,'x'].append(99)\nresult = df.loc[0,'x']", df2,
+                    isolate=True)
+    except Exception:
+        pass
+    assert df2["x"].tolist() == [[1], [2]]          # subprocess
+
+
+def test_non_frame_input_raises_typeerror():
+    for iso in (False, True):
+        with pytest.raises(TypeError):
+            _run_safely("result = 1", [1, 2, 3], isolate=iso)
+
+
+def test_agent_safe_and_strict_presets():
+    def m(p): return "result = df['a'].sum()"
+    a = safedata.Agent.safe(m)
+    assert a.isolation == "process" and a.redact_result_pii is True
+    assert a.max_result_rows == 50
+    s = safedata.Agent.strict(m)
+    assert s.isolation == "docker"
+    # overrides win
+    assert safedata.Agent.safe(m, max_result_rows=5).max_result_rows == 5
+
+
+def test_create_contract():
+    df = pd.DataFrame({"email": ["a@b.com"], "amount": ["$5"], "region": ["N"]})
+    c = safedata.create_contract(df)
+    assert "email" in c["blocked_columns"]
+    assert "amount" in c["allowed_columns"]
+    assert c["privacy_level"] == "strict"
+    assert "raw_row_return" in c["blocked_operations"]
+    assert any(t["column"] == "amount" for t in c["data_traps"])
+
+
+def test_audit_report_html():
+    def m(p): return "result = df['a'].sum()"
+    out = safedata.Agent.safe(m).ask(pd.DataFrame({"a": [1, 2, 3]}), "sum?")
+    html = out.audit_report()
+    assert html.startswith("<!doctype")
+    assert "audit report" in html and "sum?" in html

@@ -88,6 +88,42 @@ safedata.run_safely(code, df,
 Oversized results are blocked with a message telling the model to aggregate,
 rather than silently truncated. The same options are accepted by `Agent(...)`.
 
+### Secure presets
+
+The secure configuration is one call away, so you don't have to remember the
+flags:
+
+```python
+agent = safedata.Agent.safe(model)     # result caps + PII redaction, process isolation
+agent = safedata.Agent.strict(model)   # same, but runs code in a locked-down container
+```
+
+Any keyword overrides the preset (e.g. `Agent.safe(model, timeout=30)`).
+
+### Data Safety Contract
+
+Turn the read-only checks into a machine-readable policy you can gate AI access
+on (no code is run):
+
+```python
+contract = safedata.create_contract(df)
+# {"allowed_columns": [...], "blocked_columns": ["email", ...],
+#  "data_traps": [...], "allowed_operations": [...], "blocked_operations": [...],
+#  "column_types": {...}, "privacy_level": "strict"}
+```
+
+### Audit trail for an answer
+
+Every `agent.ask()` result can write a self-contained HTML audit — the question,
+the exact summary sent to the model, each attempt (and why any were blocked),
+the final code/answer, data-quality warnings, withheld PII columns, and token
+saving:
+
+```python
+out = agent.ask(df, "What were total sales in 2025?")
+out.audit_report("audit.html")
+```
+
 ## Install
 
 ```bash
