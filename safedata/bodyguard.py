@@ -457,11 +457,36 @@ def _screen_blocked_columns(code: str, blocked_columns):
 
 # --- the checked execution (shared by in-process and subprocess paths) ------
 
+def _mask_blocked_columns(df, blocked_columns):
+    """Replace forbidden columns' values with placeholders BEFORE the code runs.
+
+    This is the real firewall: a static AST screen can refuse df['email'] but not
+    positional/indirect access (df.iloc[:, 0], df.values, df.to_numpy(),
+    df.columns[0]). If the restricted values simply aren't present in the copy
+    the code executes against, none of those routes can leak them. Operates on
+    the already-made deep copy, so the caller's frame is untouched.
+    """
+    blocked = {str(c) for c in (blocked_columns or [])}
+    if not blocked:
+        return df
+    if isinstance(df, pd.DataFrame):
+        n = len(df)
+        for col in list(df.columns):
+            if str(col) in blocked:
+                df[col] = [f"[RESTRICTED_{j:03d}]" for j in range(n)]
+        return df
+    if _HAS_POLARS and isinstance(df, pl.DataFrame):
+        exprs = [pl.Series(c, [f"[RESTRICTED_{j:03d}]" for j in range(df.height)])
+                 for c in df.columns if str(c) in blocked]
+        return df.with_columns(exprs) if exprs else df
+    return df
+
+
 def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                      allow_row_reduction: bool = False,
                      max_result_rows=None, max_result_bytes=None,
                      redact_result_pii: bool = False, deepcopy_input: bool = True,
-                     enforce_minimal_result: bool = False):
+                     enforce_minimal_result: bool = False, blocked_columns=None):
     """
     Run already-screened `code` against a deep copy of `df` and enforce the
     runtime invariants. Returns ('ok', result) or ('blocked', message).
@@ -481,6 +506,12 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
     original_rows = df.shape[0]
 
     df_copy = _deep_copy_frame(df, deep_python=deepcopy_input)
+    # Firewall: blank out restricted columns in the copy so NO access path
+    # (subscript, attribute, .iloc, .values, .to_numpy(), itertuples) can read
+    # them. The static screen still blocks direct df['col'] access for a clear
+    # retry message; this guarantees the values are gone even when it can't see.
+    if blocked_columns:
+        df_copy = _mask_blocked_columns(df_copy, blocked_columns)
     # ONE shared namespace for globals and locals. Using separate dicts puts the
     # model's top-level assignments in `locals`, which functions/lambdas/comprehensions
     # defined in the same code cannot see (they resolve free names through the
@@ -525,15 +556,20 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
 
     result = sandbox[result_var]
 
-    if _is_frame(result):
-        if len(result) == 0 and original_rows > 0:
-            return ("blocked",
-                    "Your result is EMPTY although the input had rows. Likely a "
-                    "filter that matched nothing; check your condition.")
-        # Result-minimisation: returning the whole input frame row-for-row is
-        # almost never the answer to an aggregate question and over-exposes data.
-        if (enforce_minimal_result and original_rows > 1
-                and result.shape[0] == original_rows):
+    if _is_frame(result) and len(result) == 0 and original_rows > 0:
+        return ("blocked",
+                "Your result is EMPTY although the input had rows. Likely a "
+                "filter that matched nothing; check your condition.")
+
+    # Result-minimisation: returning every input row as a full-width, row-level
+    # structure (frame, records list, 2-D array, dict-of-columns) is almost never
+    # the answer to an aggregate question and over-exposes data. We deliberately
+    # do NOT flag a 1-D aggregate (a groupby Series) that merely happens to have
+    # original_rows entries, to avoid false-blocking legitimate aggregates.
+    if (enforce_minimal_result and original_rows > 1
+            and _looks_row_level(result)):
+        rrows = _result_rows(result)
+        if rrows is not None and rrows == original_rows:
             return ("blocked",
                     f"Your result returns all {original_rows} input rows. The "
                     f"question expects an aggregated/summary answer, not the full "
@@ -544,14 +580,48 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                          redact_result_pii)
 
 
+def _looks_row_level(result):
+    """True for a FULL-WIDTH, row-level structure (vs a 1-D aggregate).
+
+    Used by enforce_minimal_result so a groupby Series that coincidentally has N
+    entries isn't mistaken for "returned all rows". Frames, 2-D arrays, dict-of-
+    columns, and lists-of-records count; a bare 1-D Series/list of scalars does
+    not.
+    """
+    if _is_frame(result):
+        return True
+    if _HAS_NUMPY and isinstance(result, np.ndarray):
+        return result.ndim >= 2
+    if isinstance(result, dict):
+        return any(isinstance(v, (list, tuple, pd.Series))
+                   for v in result.values())
+    if isinstance(result, (list, tuple)):
+        return len(result) > 0 and all(
+            isinstance(x, (dict, list, tuple)) for x in result)
+    return False
+
+
 def _result_rows(result):
-    """Row count for a frame/Series result, or None if size isn't row-shaped."""
+    """Row count for a row-shaped result, or None if size isn't row-shaped.
+
+    Covers the ways a model can hand back rows while dodging a frame check:
+    list/tuple of rows, a dict-of-columns (df.to_dict('list')), a list-of-dicts
+    (df.to_dict('records'), counted by the outer list), and numpy arrays.
+    """
     if _is_frame(result):
         return result.shape[0]
     if isinstance(result, pd.Series):
         return len(result)
     if _HAS_POLARS and isinstance(result, pl.Series):
         return len(result)
+    if isinstance(result, (list, tuple)):
+        return len(result)
+    if isinstance(result, dict):
+        lengths = [len(v) for v in result.values()
+                   if isinstance(v, (list, tuple, pd.Series))]
+        return max(lengths) if lengths else None
+    if _HAS_NUMPY and isinstance(result, np.ndarray):
+        return result.shape[0] if result.ndim >= 1 else None
     return None
 
 
@@ -650,6 +720,18 @@ def _redact_result(result):
         if result.dtype == object:
             return result.map(
                 lambda v: _pii.redact_text(v) if isinstance(v, str) else v)
+        return result
+    if _HAS_NUMPY and isinstance(result, np.ndarray):
+        # Regex-redact string cells. NOTE: once a column has been flattened into
+        # an array its name context is gone, so this catches emails/phones but
+        # not bare names — the firewall's column masking is what stops those.
+        if result.dtype == object or result.dtype.kind in ("U", "S"):
+            out = result.astype(object).copy()
+            flat = out.reshape(-1)
+            for i, v in enumerate(flat):
+                if isinstance(v, str):
+                    flat[i] = _pii.redact_text(v)
+            return out
         return result
     return result
 
@@ -756,7 +838,8 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                   max_result_rows=max_result_rows,
                   max_result_bytes=max_result_bytes,
                   redact_result_pii=redact_result_pii,
-                  enforce_minimal_result=enforce_minimal_result)
+                  enforce_minimal_result=enforce_minimal_result,
+                  blocked_columns=list(blocked_columns) if blocked_columns else None)
 
     mode = _resolve_isolation(isolation, isolate)
 

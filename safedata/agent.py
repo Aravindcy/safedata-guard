@@ -125,8 +125,10 @@ class Agent:
         self.redact_result_pii = redact_result_pii
         self.mask_prompt_pii = mask_prompt_pii
         # column_firewall: block generated code from touching PII columns the
-        # question doesn't reference (least privilege). enforce_minimal_result:
-        # refuse a full-table answer. Both off by default; on in safe/strict.
+        # question doesn't reference (least privilege) — on in safe() and
+        # strict(). enforce_minimal_result: refuse a full-table answer — on in
+        # strict() only (it can surprise a legitimate "return all rows" request),
+        # off elsewhere. Both default off on a bare Agent(...).
         self.column_firewall = column_firewall
         self.enforce_minimal_result = enforce_minimal_result
         self.docker_opts = docker_opts
@@ -148,9 +150,10 @@ class Agent:
 
     @classmethod
     def strict(cls, model, **overrides):
-        """Like `safe`, but runs code in a locked-down container (isolation='docker')."""
+        """Like `safe`, but container isolation + refuses full-table answers."""
         opts = dict(cls._SAFE_DEFAULTS)
         opts["isolation"] = "docker"
+        opts["enforce_minimal_result"] = True
         opts.update(overrides)
         return cls(model, **opts)
 
