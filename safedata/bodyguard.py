@@ -25,6 +25,8 @@ permissions. For genuinely untrusted code, run this inside OS-level isolation
 import ast
 import os
 import sys
+import copy
+import shlex
 import shutil
 import pickle
 import tempfile
@@ -427,7 +429,7 @@ def check_code(code: str) -> CodeCheck:
 def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                      allow_row_reduction: bool = False,
                      max_result_rows=None, max_result_bytes=None,
-                     redact_result_pii: bool = False):
+                     redact_result_pii: bool = False, deepcopy_input: bool = True):
     """
     Run already-screened `code` against a deep copy of `df` and enforce the
     runtime invariants. Returns ('ok', result) or ('blocked', message).
@@ -446,7 +448,7 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
     """
     original_rows = df.shape[0]
 
-    df_copy = _deep_copy_frame(df)
+    df_copy = _deep_copy_frame(df, deep_python=deepcopy_input)
     # ONE shared namespace for globals and locals. Using separate dicts puts the
     # model's top-level assignments in `locals`, which functions/lambdas/comprehensions
     # defined in the same code cannot see (they resolve free names through the
@@ -635,6 +637,11 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
 
     Raises SafetyError (with an AI-friendly message) if anything is unsafe.
     """
+    if not _is_frame(df):
+        raise TypeError(
+            f"safedata.run_safely expects a pandas or polars DataFrame, got "
+            f"{type(df).__name__}. Pass the DataFrame you want analysed as `df`.")
+
     _static_screen(code)
 
     guards = dict(allow_row_reduction=allow_row_reduction,
@@ -706,7 +713,12 @@ def _run_inprocess_with_timeout(code, df, result_var, timeout, guards):
     box = {}
 
     def _work():
-        box["out"] = _execute_checked(code, df, result_var, **guards)
+        # Capture any exception so the caller gets a real error, not a bare
+        # KeyError('out') from a worker that died before storing its result.
+        try:
+            box["out"] = _execute_checked(code, df, result_var, **guards)
+        except BaseException as e:  # noqa: BLE001 - re-raised on the main thread
+            box["err"] = e
 
     t = threading.Thread(target=_work, daemon=True)
     t.start()
@@ -716,6 +728,8 @@ def _run_inprocess_with_timeout(code, df, result_var, timeout, guards):
             f"Your code did not finish within {timeout:g}s and was abandoned "
             f"(possible infinite loop or runaway operation). Make it terminate "
             f"quickly.")
+    if "err" in box:
+        raise box["err"]
     status, payload = box["out"]
     if status == "blocked":
         raise SafetyError(payload)
@@ -836,13 +850,18 @@ def _run_docker(code, df, result_var, timeout, guards, docker_opts):
             argv += ["--read-only", "--tmpfs", "/tmp:size=64m",
                      "--tmpfs", "/root:size=64m"]
         # Install safedata in the container, then run the same checked runner.
+        # Every value spliced into the `sh -c` string is shell-quoted, so a
+        # crafted result_var/pip_install can't break out into shell injection.
         pip_pkg = cfg.get("pip_install")
-        inner_cmd = ""
+        runner = (
+            "python -m safedata._runner "
+            + " ".join(shlex.quote(a) for a in (
+                f"{inner}/df.pkl", f"{inner}/code.py", f"{inner}/out.pkl",
+                str(result_var), f"{inner}/params.json")))
         if pip_pkg:
-            inner_cmd += f"pip install --quiet --no-input {pip_pkg} && "
-        inner_cmd += (
-            f"python -m safedata._runner {inner}/df.pkl {inner}/code.py "
-            f"{inner}/out.pkl {result_var} {inner}/params.json")
+            inner_cmd = f"pip install --quiet --no-input {shlex.quote(str(pip_pkg))} && {runner}"
+        else:
+            inner_cmd = runner
         argv += [str(cfg["image"]), "sh", "-c", inner_cmd]
 
         try:
@@ -869,10 +888,33 @@ def _run_docker(code, df, result_var, timeout, guards, docker_opts):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def _deep_copy_frame(df):
-    """Independent copy for either pandas (.copy) or polars (.clone)."""
+def _deep_copy_frame(df, deep_python: bool = True):
+    """Independent copy for either pandas (.copy) or polars (.clone).
+
+    pandas' .copy(deep=True) deep-copies the block structure but NOT the Python
+    objects stored inside object-dtype cells (e.g. a list in a cell) — and
+    copy.deepcopy(df) is no help, because pandas' __deepcopy__ just delegates to
+    .copy(deep=True). So df.loc[0, 'x'].append(99) would mutate the CALLER's
+    original list. When `deep_python` is True we additionally deep-copy each cell
+    of every object column, so nested mutables are independent of the caller's.
+
+    The subprocess runner passes deep_python=False: its `df` is already a private,
+    freshly-unpickled copy (the pickle round-trip isolated every nested object
+    from the parent process), so the per-cell copy would only waste time.
+    """
     if isinstance(df, pd.DataFrame):
-        return df.copy(deep=True)
+        out = df.copy(deep=True)
+        if deep_python:
+            try:
+                # map() applies Python's deepcopy to each cell value, so a list
+                # or dict stored in a cell becomes a fresh object. Guarded: a
+                # pathological frame (e.g. duplicate column names) or an
+                # un-deepcopyable cell object falls back to the block copy above.
+                for col in out.columns[out.dtypes == object]:
+                    out[col] = out[col].map(copy.deepcopy)
+            except Exception:
+                pass
+        return out
     if _HAS_POLARS and isinstance(df, pl.DataFrame):
         return df.clone()
     return df.copy(deep=True)  # last resort; pandas-like

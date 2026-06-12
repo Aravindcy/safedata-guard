@@ -43,6 +43,9 @@ def main(argv):
         code = f.read()
 
     from safedata.bodyguard import _execute_checked
+    # df was just unpickled, so it is already a private copy isolated from the
+    # parent process; no need to deepcopy its cell objects again.
+    params.setdefault("deepcopy_input", False)
     status, payload = _execute_checked(code, df, result_var, **params)
 
     try:
