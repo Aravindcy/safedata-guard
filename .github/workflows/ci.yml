@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15   # fail fast if a timeout/subprocess test ever wedges
     strategy:
       fail-fast: false
       matrix:

@@ -759,7 +759,10 @@ def test_cli_check_runs_and_masks(tmp_path, capsys):
     out = capsys.readouterr().out
     assert rc == 0
     assert "Dataset: 2 rows" in out
-    assert "[EMAIL]" in out and "a@x.com" not in out      # masked by default
+    # 'email' is a PII column, now fully withheld by default (not just regex-
+    # masked), so the raw value never appears.
+    assert "a@x.com" not in out
+    assert "[REDACTED]" in out
     assert "tokens" in out                                 # token line printed
 
 
@@ -1597,3 +1600,38 @@ def test_summarize_mask_pii_flag():
     # opt-in: name columns withheld
     out = summarize(df, mask_pii=True)
     assert "Alice Smith" not in out and "[REDACTED]" in out
+
+
+# --- 1.0.8: CLI privacy default, scan_rows threading, strict 1-D guard -------
+
+def test_cli_check_masks_name_columns(tmp_path, capsys):
+    import safedata.cli as _cli
+    csv = tmp_path / "p.csv"
+    pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                  "email": ["a@b.com", "c@d.com"], "v": [1, 2]}).to_csv(csv, index=False)
+    _cli.main(["check", str(csv)])
+    out = capsys.readouterr().out
+    assert "Alice Smith" not in out          # name column withheld by default
+    # --no-redact shows raw
+    _cli.main(["check", str(csv), "--no-redact"])
+    assert "Alice Smith" in capsys.readouterr().out
+
+
+def test_scan_rows_threaded_into_risk_contract_prompt():
+    vals = [f"user{i}" for i in range(100)] + ["leak@example.com"]
+    df = pd.DataFrame({"notes": vals})
+    assert safedata.ai_risk_score(df)["risk_level"] == "low"
+    assert safedata.ai_risk_score(df, scan_rows="all")["risk_level"] != "low"
+    assert "notes" in safedata.create_contract(df, scan_rows="all")["blocked_columns"]
+    assert "leak@example.com" not in safedata.build_prompt(df, "q", scan_rows="all")
+
+
+def test_strict_blocks_1d_row_results():
+    df = pd.DataFrame({"a": [1, 2, 3, 4]})
+    with pytest.raises(SafetyError):
+        run_safely("result = df['a'].tolist()", df,
+                   enforce_minimal_result=True, block_1d_row_results=True)
+    # without the strict flag, a 1-D list is allowed (avoids groupby false-block)
+    assert run_safely("result = df['a'].tolist()", df,
+                      enforce_minimal_result=True) == [1, 2, 3, 4]
+    assert safedata.Agent.strict(lambda p: "").block_1d_row_results is True
