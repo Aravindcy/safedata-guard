@@ -36,3 +36,7 @@ jobs:
           path: dist/
       - name: Publish to PyPI (Trusted Publishing)
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # Don't fail the run if this version is already on PyPI (e.g. it was
+          # uploaded manually). New versions still publish normally.
+          skip-existing: true
