@@ -112,7 +112,8 @@ class Agent:
                  timeout: float = 10.0, allow_row_reduction: bool = False,
                  isolation: str = None, max_result_rows: int = None,
                  max_result_bytes: int = None, redact_result_pii: bool = False,
-                 mask_prompt_pii: bool = True, **docker_opts):
+                 mask_prompt_pii: bool = True, column_firewall: bool = False,
+                 enforce_minimal_result: bool = False, **docker_opts):
         self.model = model
         self.max_retries = max_retries
         self.isolate = isolate
@@ -123,6 +124,11 @@ class Agent:
         self.max_result_bytes = max_result_bytes
         self.redact_result_pii = redact_result_pii
         self.mask_prompt_pii = mask_prompt_pii
+        # column_firewall: block generated code from touching PII columns the
+        # question doesn't reference (least privilege). enforce_minimal_result:
+        # refuse a full-table answer. Both off by default; on in safe/strict.
+        self.column_firewall = column_firewall
+        self.enforce_minimal_result = enforce_minimal_result
         self.docker_opts = docker_opts
 
     # Preset constructors so the SECURE configuration is the easy one to reach
@@ -131,7 +137,7 @@ class Agent:
     # overrides the preset (e.g. Agent.strict(model, timeout=30)).
     _SAFE_DEFAULTS = dict(max_result_rows=50, max_result_bytes=1_000_000,
                           redact_result_pii=True, allow_row_reduction=False,
-                          isolation="process")
+                          isolation="process", column_firewall=True)
 
     @classmethod
     def safe(cls, model, **overrides):
@@ -157,6 +163,13 @@ class Agent:
         summary = summarize(df, mask_columns=mask)
         facts["summary"] = summary           # store the EXACT text sent, for audit
         tokens = token_stats(df)        # estimate of tokens used vs raw data
+        # Least-privilege firewall: forbid generated code from touching PII
+        # columns the question doesn't reference.
+        blocked_columns = None
+        if self.column_firewall and facts["pii_columns"]:
+            from .analysis import _question_mentions_column
+            blocked_columns = [c for c in facts["pii_columns"]
+                               if not _question_mentions_column(question, c)]
         error = None
         attempts = []
         trace = []                       # per-attempt (code, blocked, reason)
@@ -182,6 +195,8 @@ class Agent:
                     max_result_rows=self.max_result_rows,
                     max_result_bytes=self.max_result_bytes,
                     redact_result_pii=self.redact_result_pii,
+                    blocked_columns=blocked_columns,
+                    enforce_minimal_result=self.enforce_minimal_result,
                     **self.docker_opts)
                 trace.append({"code": code, "blocked": False, "reason": None})
                 return _result(answer=result, code=code, blocked=False)

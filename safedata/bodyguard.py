@@ -425,12 +425,43 @@ def check_code(code: str) -> CodeCheck:
         return CodeCheck(safe=False, reason=str(e))
 
 
+def _screen_blocked_columns(code: str, blocked_columns):
+    """Refuse code that references any forbidden column (least-privilege firewall).
+
+    Catches both subscript access (df['email'], df[['email', ...]]) — seen as a
+    string Constant — and attribute access (df.email). Refusing a column whose
+    name merely appears as a string literal is acceptable here: blocked columns
+    are the sensitive ones a question doesn't need, and the model is told exactly
+    which to drop.
+    """
+    blocked = {str(c) for c in blocked_columns}
+    if not blocked:
+        return
+    try:
+        tree = ast.parse(code, mode="exec")
+    except SyntaxError:
+        return  # the main screen reports syntax errors
+    hit = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            if node.value in blocked:
+                hit.add(node.value)
+        elif isinstance(node, ast.Attribute) and node.attr in blocked:
+            hit.add(node.attr)
+    if hit:
+        names = ", ".join(sorted(hit))
+        raise SafetyError(
+            f"Blocked: the code accessed restricted column(s) the question does "
+            f"not need: {names}. Remove them and use only the allowed columns.")
+
+
 # --- the checked execution (shared by in-process and subprocess paths) ------
 
 def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                      allow_row_reduction: bool = False,
                      max_result_rows=None, max_result_bytes=None,
-                     redact_result_pii: bool = False, deepcopy_input: bool = True):
+                     redact_result_pii: bool = False, deepcopy_input: bool = True,
+                     enforce_minimal_result: bool = False):
     """
     Run already-screened `code` against a deep copy of `df` and enforce the
     runtime invariants. Returns ('ok', result) or ('blocked', message).
@@ -499,6 +530,15 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
             return ("blocked",
                     "Your result is EMPTY although the input had rows. Likely a "
                     "filter that matched nothing; check your condition.")
+        # Result-minimisation: returning the whole input frame row-for-row is
+        # almost never the answer to an aggregate question and over-exposes data.
+        if (enforce_minimal_result and original_rows > 1
+                and result.shape[0] == original_rows):
+            return ("blocked",
+                    f"Your result returns all {original_rows} input rows. The "
+                    f"question expects an aggregated/summary answer, not the full "
+                    f"table. Group or aggregate (e.g. groupby(...).mean()) and "
+                    f"return that.")
 
     return _guard_result(result, max_result_rows, max_result_bytes,
                          redact_result_pii)
@@ -652,7 +692,8 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                isolate: bool = True, timeout: float = 10.0,
                allow_row_reduction: bool = False, isolation: str = None,
                max_result_rows: int = None, max_result_bytes: int = None,
-               redact_result_pii: bool = False, **docker_opts):
+               redact_result_pii: bool = False, blocked_columns=None,
+               enforce_minimal_result: bool = False, **docker_opts):
     """
     Execute `code` against a copy of `df`, enforcing safety invariants.
 
@@ -690,6 +731,15 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
     redact_result_pii : bool
         Apply best-effort PII redaction to the returned value before it leaves
         the runner.
+    blocked_columns : iterable of str or None
+        Column names the generated code may NOT touch (a least-privilege
+        firewall). Referencing one — by subscript ``df['col']`` or attribute
+        ``df.col`` — is blocked before the code runs. Pair with
+        ``create_contract(df, question)`` to forbid the PII columns a question
+        doesn't need.
+    enforce_minimal_result : bool
+        If True, block a result that is the full, unaggregated input frame
+        (row-for-row), so an aggregate question can't quietly return every row.
 
     Raises SafetyError (with an AI-friendly message) if anything is unsafe.
     """
@@ -699,11 +749,14 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
             f"{type(df).__name__}. Pass the DataFrame you want analysed as `df`.")
 
     _static_screen(code)
+    if blocked_columns:
+        _screen_blocked_columns(code, blocked_columns)
 
     guards = dict(allow_row_reduction=allow_row_reduction,
                   max_result_rows=max_result_rows,
                   max_result_bytes=max_result_bytes,
-                  redact_result_pii=redact_result_pii)
+                  redact_result_pii=redact_result_pii,
+                  enforce_minimal_result=enforce_minimal_result)
 
     mode = _resolve_isolation(isolation, isolate)
 
