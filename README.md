@@ -198,6 +198,13 @@ safedata.summarize(df, redact_pii=False)  # raw samples, if you are sure
 Regex masking cannot catch names or addresses; `build_safe_prompt(..., privacy=
 "mask")` (below) goes further and **fully withholds** every detected PII column.
 
+`Agent.ask()` does this withholding **by default** (`mask_prompt_pii=True`): name
+and address columns are masked in the summary the model sees and in the audit
+report, not just regex-matchable emails. Column names/types are still shown, so
+the model can still operate on those columns. With `redact_result_pii=True`, the
+returned value is also scrubbed — PII columns of a result frame are replaced with
+`[REDACTED]`, and dict/list results are walked recursively.
+
 ## Data quality & AI-readiness API
 
 The same findings are also available as **structured objects** you can act on,

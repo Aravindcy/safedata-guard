@@ -6,6 +6,19 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.8]
 
+### Security / Privacy
+- **`Agent.ask()` now withholds PII columns from the prompt by default.** It
+  previously sent `summarize(df)` with raw samples, so name/address columns
+  (which regex masking can't catch) leaked to the model and into the audit
+  report. It now masks detected PII columns' values (new `mask_prompt_pii=True`
+  default; set False to opt out). Column names/types are still shown, so the
+  model can still operate on them.
+- **`redact_result_pii` is now deep and name-aware.** It fully redacts PII
+  columns of a returned DataFrame/Series (catching `customer_name`, not just
+  regex-matchable emails) and recurses into dict/list/tuple/set results,
+  redacting values under PII-looking keys. `product_name` and other non-personal
+  fields are left untouched.
+
 ### Added
 - **`Agent.safe()` / `Agent.strict()` presets.** One call gives the secure
   configuration: result-size caps + PII redaction + process isolation (`safe`)

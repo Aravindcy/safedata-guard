@@ -83,6 +83,12 @@ class Agent:
         whole table. Off by default.
     redact_result_pii : bool
         Apply best-effort PII redaction to the answer before returning it.
+    mask_prompt_pii : bool
+        If True (default), fully withhold detected PII columns' sample values
+        from the summary sent to the model (and stored in the audit), including
+        name/address columns that regex masking alone can't catch. The column
+        names and types are still shown, so the model can still operate on them;
+        only the example values are hidden. Set False to send raw samples.
     docker_opts : extra keyword args
         Forwarded to run_safely for isolation="docker" (docker_image=, memory=,
         cpus=, network=).
@@ -92,7 +98,7 @@ class Agent:
                  timeout: float = 10.0, allow_row_reduction: bool = False,
                  isolation: str = None, max_result_rows: int = None,
                  max_result_bytes: int = None, redact_result_pii: bool = False,
-                 **docker_opts):
+                 mask_prompt_pii: bool = True, **docker_opts):
         self.model = model
         self.max_retries = max_retries
         self.isolate = isolate
@@ -102,6 +108,7 @@ class Agent:
         self.max_result_rows = max_result_rows
         self.max_result_bytes = max_result_bytes
         self.redact_result_pii = redact_result_pii
+        self.mask_prompt_pii = mask_prompt_pii
         self.docker_opts = docker_opts
 
     # Preset constructors so the SECURE configuration is the easy one to reach
@@ -128,16 +135,21 @@ class Agent:
         return cls(model, **opts)
 
     def ask(self, df, question: str, verbose: bool = False):
-        summary = summarize(df)          # Step 1, cheap, quality-aware
+        facts = _audit_facts(df, question)   # quality issues + detected PII columns
+        # Step 1: cheap, quality-aware summary. Withhold detected PII columns'
+        # sample values (names/addresses regex can't catch) so they never reach
+        # the model — this is what makes the agent privacy-aware by default.
+        mask = set(facts["pii_columns"]) if self.mask_prompt_pii else set()
+        summary = summarize(df, mask_columns=mask)
+        facts["summary"] = summary           # store the EXACT text sent, for audit
         tokens = token_stats(df)        # estimate of tokens used vs raw data
-        audit = _audit_facts(df, question, summary)  # quality + PII, for the report
         error = None
         attempts = []
         trace = []                       # per-attempt (code, blocked, reason)
 
         def _result(**kw):
             return AgentResult(attempts=attempts, tokens=tokens, trace=trace,
-                               **audit, **kw)
+                               **facts, **kw)
 
         for attempt in range(1, self.max_retries + 1):
             prompt = build_prompt(summary, question, previous_error=error)
@@ -168,13 +180,14 @@ class Agent:
         return _result(answer=None, code=attempts[-1], blocked=True, reason=error)
 
 
-def _audit_facts(df, question, summary):
+def _audit_facts(df, question):
     """Collect the data-quality and privacy facts shown in the audit report.
 
-    Best-effort and defensive: if the analysis layer can't run on this frame we
-    still return the question/summary so ask() never fails because of auditing.
+    Returns a dict with question/summary/issues/pii_columns; the caller fills in
+    `summary` once it has built the (masked) text. Best-effort and defensive: if
+    the analysis layer can't run on this frame, ask() still proceeds.
     """
-    facts = {"question": question, "summary": summary,
+    facts = {"question": question, "summary": None,
              "issues": [], "pii_columns": []}
     try:
         from .analysis import validate, privacy_report

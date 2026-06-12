@@ -24,6 +24,7 @@ permissions. For genuinely untrusted code, run this inside OS-level isolation
 
 import ast
 import os
+import re
 import sys
 import copy
 import shlex
@@ -546,26 +547,81 @@ def _guard_result(result, max_result_rows, max_result_bytes, redact_result_pii):
     return ("ok", result)
 
 
+# Tokens in a key/column name that mark it as PII. The strong set is PII on its
+# own; "name" is ambiguous ("product name"), so we only treat it as PII when a
+# person-context token is also present, or the key is literally name/names.
+# Mirrors safedata.analysis._pii_name_hints so the two agree.
+_PII_KEY_STRONG = {"email", "phone", "mobile", "telephone", "msisdn", "ssn",
+                   "nino", "sin", "address", "postcode", "zipcode", "zip",
+                   "dob", "birth", "surname"}
+_PII_KEY_PERSON = {"first", "last", "sur", "full", "fore", "middle", "maiden",
+                   "given", "family", "contact", "person", "customer", "client",
+                   "employee", "user", "holder", "patient", "member",
+                   "applicant", "policyholder", "driver"}
+
+
+def _key_suggests_pii(key) -> bool:
+    """True if a dict key / name string looks like personal data."""
+    toks = set(re.findall(r"[a-z0-9]+", str(key).lower()))
+    if toks & _PII_KEY_STRONG:
+        return True
+    if "name" in toks and (toks & _PII_KEY_PERSON or toks <= {"name", "names"}):
+        return True
+    return False
+
+
 def _redact_result(result):
     """Best-effort PII redaction of a returned value before it leaves the runner.
 
-    Strings are redacted directly; pandas object/string columns are redacted
-    cell-wise. Numeric data and other types pass through unchanged. Mirrors the
-    summary's masking; see safedata.pii for the (important) limits.
+    Recursive and name-aware: strings get regex redaction; DataFrame/Series PII
+    columns (detected by value AND by name, so 'customer_name' is caught) are
+    fully replaced with [REDACTED], other object cells get regex redaction;
+    dict/list/tuple/set are walked, redacting values under PII-looking keys.
+    Numeric and other types pass through. Best-effort only (it cannot catch a
+    name buried in a free-text scalar); see safedata.pii for the limits.
     """
     from . import pii as _pii
+
     if isinstance(result, str):
         return _pii.redact_text(result)
+    if isinstance(result, dict):
+        return {k: ("[REDACTED]" if _key_suggests_pii(k) else _redact_result(v))
+                for k, v in result.items()}
+    if isinstance(result, list):
+        return [_redact_result(v) for v in result]
+    if isinstance(result, tuple):
+        return tuple(_redact_result(v) for v in result)
+    if isinstance(result, set):
+        return {_redact_result(v) for v in result}
+
     if isinstance(result, pd.DataFrame):
         out = result.copy()
-        for col in out.select_dtypes(include=["object", "string"]).columns:
-            out[col] = out[col].map(
-                lambda v: _pii.redact_text(v) if isinstance(v, str) else v)
+        pii_cols = _detected_pii_columns(out)
+        for col in out.columns:
+            if col in pii_cols:
+                out[col] = "[REDACTED]"
+            elif out[col].dtype == object:
+                out[col] = out[col].map(
+                    lambda v: _pii.redact_text(v) if isinstance(v, str) else v)
         return out
-    if isinstance(result, pd.Series) and result.dtype == object:
-        return result.map(
-            lambda v: _pii.redact_text(v) if isinstance(v, str) else v)
+    if isinstance(result, pd.Series):
+        if _key_suggests_pii(result.name):
+            return result.map(lambda v: "[REDACTED]")
+        if result.dtype == object:
+            return result.map(
+                lambda v: _pii.redact_text(v) if isinstance(v, str) else v)
+        return result
     return result
+
+
+def _detected_pii_columns(df):
+    """PII column names for a result frame: name-hinted (catches 'customer_name')
+    plus value-detected, via the analysis layer; falls back to name hints only."""
+    try:
+        from .analysis import privacy_report
+        return set(privacy_report(df)["pii_columns"])
+    except Exception:
+        return {c for c in df.columns if _key_suggests_pii(c)}
 
 
 # Default resource limits for the container ("docker"/"container") isolation

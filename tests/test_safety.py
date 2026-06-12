@@ -1303,7 +1303,9 @@ def test_max_result_bytes_blocks_large_result():
 def test_redact_result_pii_scrubs_emails():
     df = pd.DataFrame({"email": ["a@b.com", "c@d.com"]})
     out = run_safely("result = df", df, redact_result_pii=True)
-    assert out["email"].tolist() == ["[EMAIL]", "[EMAIL]"]
+    # 'email' is a PII column, so it is fully withheld (name-aware redaction),
+    # not merely regex-masked to [EMAIL].
+    assert out["email"].tolist() == ["[REDACTED]", "[REDACTED]"]
 
 
 def test_docker_missing_raises_clear_error(monkeypatch):
@@ -1401,3 +1403,51 @@ def test_audit_report_html():
     html = out.audit_report()
     assert html.startswith("<!doctype")
     assert "audit report" in html and "sum?" in html
+
+
+# --- 1.0.8 privacy hardening: prompt masking + deep result redaction --------
+
+def _pii_df():
+    return pd.DataFrame({
+        "customer_name": ["Alice Smith", "Bob Jones"],
+        "email": ["alice@example.com", "bob@example.com"],
+        "amount": [1, 2],
+    })
+
+
+def test_agent_masks_name_pii_in_prompt_by_default():
+    def m(p):
+        return "result = df['amount'].sum()"
+    out = safedata.Agent.safe(m).ask(_pii_df(), "q")
+    assert "Alice Smith" not in (out.summary or "")
+    assert "Alice Smith" not in out.audit_report()      # audit stores the summary
+
+
+def test_agent_mask_prompt_pii_opt_out():
+    def m(p):
+        return "result = df['amount'].sum()"
+    out = safedata.Agent(m, mask_prompt_pii=False).ask(_pii_df(), "q")
+    assert "Alice Smith" in (out.summary or "")
+
+
+def test_result_redaction_redacts_name_columns():
+    out = _run_safely("result = df[['customer_name','email']]", _pii_df(),
+                      redact_result_pii=True)
+    assert out["customer_name"].tolist() == ["[REDACTED]", "[REDACTED]"]
+
+
+def test_result_redaction_is_recursive():
+    df = _pii_df()
+    d = _run_safely("result = {'name':'Alice Smith','email':'a@b.com','n':5}", df,
+                    redact_result_pii=True)
+    assert d == {"name": "[REDACTED]", "email": "[REDACTED]", "n": 5}
+    lst = _run_safely("result = [{'customer_name':'Bob Jones'}, {'amount':3}]", df,
+                      redact_result_pii=True)
+    assert lst == [{"customer_name": "[REDACTED]"}, {"amount": 3}]
+
+
+def test_redaction_does_not_overmask_product_name():
+    # 'product_name' is not personal data and must not be redacted.
+    df = pd.DataFrame({"product_name": ["Widget", "Gadget"], "qty": [1, 2]})
+    out = _run_safely("result = df[['product_name']]", df, redact_result_pii=True)
+    assert out["product_name"].tolist() == ["Widget", "Gadget"]
