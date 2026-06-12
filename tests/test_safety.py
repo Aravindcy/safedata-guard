@@ -1527,3 +1527,63 @@ def test_shadow_has_no_real_values():
     assert "Alice Smith" not in sh["customer_name"].tolist()
     assert "a@b.com" not in sh["email"].tolist()
     assert str(sh["revenue"].dtype).startswith(("int", "float"))
+
+
+# --- 1.0.8: firewall bypass + row-cap bypass + deep PII scan ----------------
+
+def test_firewall_masks_indirect_access():
+    df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                       "email": ["a@b.com", "c@d.com"], "revenue": [10, 20]})
+    for code in ["result = df.iloc[:,0].tolist()",
+                 "result = df.values[:,0].tolist()",
+                 "result = df.to_numpy().tolist()",
+                 "c = df.columns[0]\nresult = df[c].tolist()"]:
+        out = run_safely(code, df, blocked_columns=["customer_name", "email"])
+        flat = str(out)
+        assert "Alice Smith" not in flat and "a@b.com" not in flat
+        assert "RESTRICTED" in flat
+
+
+def test_numpy_result_redaction():
+    df = pd.DataFrame({"email": ["a@b.com", "c@d.com"]})
+    out = run_safely("result = df[['email']].to_numpy()", df,
+                     redact_result_pii=True)
+    assert "a@b.com" not in str(out.tolist())
+
+
+def test_row_cap_applies_to_dict_and_array():
+    df = pd.DataFrame({"a": range(10)})
+    for code in ["result = df.to_dict('records')",
+                 "result = df.to_dict('list')",
+                 "result = df.to_numpy()",
+                 "result = df['a'].tolist()"]:
+        with pytest.raises(SafetyError):
+            run_safely(code, df, max_result_rows=3)
+
+
+def test_minimal_result_blocks_records_not_aggregate():
+    df = pd.DataFrame({"region": ["N", "S", "N", "S"], "v": [1, 2, 3, 4]})
+    with pytest.raises(SafetyError):
+        run_safely("result = df.to_dict('records')", df,
+                   enforce_minimal_result=True)
+    # a real aggregate is allowed even if it has several groups
+    out = run_safely("result = df.groupby('region')['v'].sum()", df,
+                     enforce_minimal_result=True)
+    assert out.to_dict() == {"N": 4, "S": 6}
+
+
+def test_deep_pii_scan_catches_rare_value():
+    vals = [f"user{i}" for i in range(100)] + ["leak@example.com"]
+    df = pd.DataFrame({"notes": vals})
+    assert safedata.privacy_report(df)["pii_columns"] == []          # shallow
+    assert "notes" in safedata.privacy_report(df, scan_rows="all")["pii_columns"]
+
+
+def test_agent_safe_firewall_masks_indirect():
+    df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                       "email": ["a@b.com", "c@d.com"],
+                       "revenue": [10, 20], "region": ["N", "S"]})
+    out = safedata.Agent.safe(
+        lambda p: "result = df.iloc[:, 0].tolist()", isolate=False
+    ).ask(df, "total revenue by region")
+    assert "Alice Smith" not in str(out.answer)

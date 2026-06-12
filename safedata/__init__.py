@@ -2,9 +2,9 @@
 safedata, a safety layer and translator between an AI and your data.
 
 It does two things existing AI-data tools don't combine:
-  â€¢ TRANSLATOR: sends the AI a tiny, quality-aware summary (not 100k rows),
+  - TRANSLATOR: sends the AI a tiny, quality-aware summary (not 100k rows),
     making analysis far cheaper and warning the AI about data traps upfront.
-  â€¢ BODYGUARD: runs the AI's code on a copy, blocks destructive operations,
+  - BODYGUARD: runs the AI's code on a copy, blocks destructive operations,
     checks invariants, and feeds errors back so the AI fixes itself,
     before anything touches your real data.
 

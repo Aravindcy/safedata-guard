@@ -7,6 +7,23 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.8]
 
 ### Security / Privacy
+- **Column firewall is now enforced at runtime, not just statically.** The AST
+  screen couldn't see positional/indirect access (`df.iloc[:, 0]`, `df.values`,
+  `df.to_numpy()`, `df.columns[0]`), so blocked columns could leak. Blocked
+  columns are now **blanked to `[RESTRICTED_*]` in the execution copy** before the
+  code runs, so no access path can read them. (The static screen still blocks
+  direct `df['col']` for a clear retry message.)
+- **Result size caps and minimisation now see past `to_dict`/`to_numpy`.**
+  `max_result_rows` and `enforce_minimal_result` count rows for list/tuple/
+  dict-of-columns/records/ndarray results too, so converting a frame to a list
+  of dicts no longer dodges the cap. (Minimisation only flags full-width row-
+  level shapes, never a 1-D aggregate that coincidentally has N entries.)
+- **`redact_result_pii` now also scrubs numpy string arrays** (regex PII).
+- **`Agent.strict()` enables `enforce_minimal_result`** (lockdown); `safe()`
+  leaves it off so legitimate full-table requests aren't surprised.
+- **Deeper PII scanning on demand.** `privacy_report(df, scan_rows=N | "all")`
+  (and `safedata check --pii-scan-rows N` / `--pii-scan-all`) inspect more unique
+  values per column to catch PII that hides past the fast default window.
 - **`Agent.ask()` now withholds PII columns from the prompt by default.** It
   previously sent `summarize(df)` with raw samples, so name/address columns
   (which regex masking can't catch) leaked to the model and into the audit
