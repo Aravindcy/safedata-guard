@@ -19,9 +19,10 @@ SAFE BY DESIGN - the default never drops analytical columns:
     relevance is a heuristic, so it CAN drop a column the analysis needed and
     produce a wrong/failed answer. Use only when you know your data.
 
-Deliberately NOT included yet (they need careful design + tests before they can
-be trusted): private surrogate filters (customer_name -> match flag) and
-k-anonymity / minimum-group-size suppression.
+Minimum-group-size suppression (k-anonymity) is available through the
+min_group_size argument on run_safely / Agent / safe_answer. Private surrogate
+filters (e.g. customer_name -> match flag) are deliberately not included yet;
+they need careful design and tests before they can be trusted.
 """
 
 from dataclasses import dataclass, field, asdict

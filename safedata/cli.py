@@ -181,9 +181,12 @@ def build_parser() -> argparse.ArgumentParser:
         "plan", help="show the privacy plan (safe view) for a question")
     plan.add_argument("file", help="path to a data file")
     plan.add_argument("question", help="the question to plan for")
+    plan.add_argument("--safe-mode", dest="safe_mode",
+                      choices=["drop_unneeded_pii", "minimal"], default=None,
+                      help="drop_unneeded_pii (default, safe) or minimal "
+                           "(advanced: also drops unreferenced non-PII columns)")
     plan.add_argument("--minimal", action="store_true",
-                      help="advanced: also drop non-PII columns the question "
-                           "doesn't reference (heuristic; may affect correctness)")
+                      help="shortcut for --safe-mode minimal")
     plan.add_argument("--json", action="store_true",
                       help="emit the full plan as JSON")
     plan.set_defaults(func=_cmd_plan)
@@ -203,7 +206,7 @@ def _cmd_plan(args) -> int:
             print(f"error: {e}", file=sys.stderr)
         return 1
 
-    mode = "minimal" if args.minimal else "drop_unneeded_pii"
+    mode = args.safe_mode or ("minimal" if args.minimal else "drop_unneeded_pii")
     plan = create_privacy_plan(df, args.question, safe_mode=mode)
     if args.json:
         import json
