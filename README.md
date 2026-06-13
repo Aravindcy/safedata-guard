@@ -451,6 +451,20 @@ reads and summarises; it never executes model code. Supported formats: `.csv`,
 
 **Tokens**: `token_savings(df)`, `token_stats(df)`, `estimate_tokens(text)`.
 
+## Development
+
+Run the test suite with the dev extras installed (they include `pytest-timeout`,
+`polars`, and `openpyxl` so the full suite and its config apply):
+
+```bash
+pip install -e ".[dev]"
+pytest -q
+```
+
+Running a bare `pytest` without the dev extras still works, but prints a harmless
+`Unknown config option: timeout` warning because the optional `pytest-timeout`
+plugin isn't present.
+
 ## License
 
 MIT
