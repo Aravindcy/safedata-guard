@@ -140,6 +140,18 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
 
 # --- execution (boring and controlled - no eval/exec/generated code) --------
 
+def _enforce_min_rows(df, policy, operation):
+    """k-anonymity for whole-frame results (aggregate/describe). The groupby and
+    value_counts paths enforce min_group_size per group via a count column, but a
+    plain aggregate or describe runs over the filtered subset as a single group,
+    so a narrow filter could otherwise expose one individual's exact value."""
+    k = getattr(policy, "min_group_size", 0) or 0
+    if k and len(df) < k:
+        raise SafetyError(
+            f"Blocked: '{operation}' covers only {len(df)} record(s), below the "
+            f"min_group_size of {k}. Broaden the filters or group the result.")
+
+
 def _apply_filters(df, filters):
     out = df
     ops = {"==": lambda s, v: s == v, "!=": lambda s, v: s != v,
@@ -171,6 +183,7 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
     if plan.operation == "aggregate":
         if not plan.metrics:
             raise SafetyError("Blocked: aggregate requires at least one metric.")
+        _enforce_min_rows(df, policy, plan.operation)
         result = {}
         for m in plan.metrics:
             name = m.as_name or f"{m.agg}_{m.column}"
@@ -188,6 +201,7 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
         return _post(result.head(limit), policy)
 
     if plan.operation == "describe":
+        _enforce_min_rows(df, policy, plan.operation)
         numeric = df.select_dtypes(include="number")
         return _post(numeric.describe().T.head(limit).reset_index(), policy)
 

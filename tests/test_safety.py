@@ -2089,3 +2089,36 @@ def test_receipt_shape():
     r = res.receipt
     assert r["mode"] == "safeplan" and r["audit_id"].startswith("SDG-")
     assert isinstance(safedata.format_receipt(r), str)
+
+
+def test_safeplan_aggregate_enforces_min_group_size():
+    # A narrow filter that isolates one record must not leak its value via an
+    # aggregate under a k-anonymity policy, but is allowed when k is 0.
+    df = _sp_df()
+    plan = SafePlan(operation="aggregate",
+                    filters=[{"column": "region", "op": "==", "value": "Z"}],
+                    metrics=[MetricSpec("revenue", "sum", "total")])
+    with pytest.raises(SafetyError):                       # Z has 1 row, k=5
+        execute_safeplan(plan, df, safedata.Policy.regulated())
+    res = execute_safeplan(plan, df, safedata.Policy.basic())  # k=0, allowed
+    assert res["total"] == 11                              # the single Z revenue
+
+
+def test_safeplan_describe_enforces_min_group_size():
+    df = _sp_df()
+    plan = SafePlan(operation="describe",
+                    filters=[{"column": "region", "op": "==", "value": "Z"}])
+    with pytest.raises(SafetyError):
+        execute_safeplan(plan, df, safedata.Policy.regulated())
+    assert len(execute_safeplan(plan, df, safedata.Policy.basic())) >= 1
+
+
+def test_safe_query_blocks_single_record_aggregate():
+    df = _sp_df()
+    def narrow(prompt):
+        return ('{"operation":"aggregate",'
+                '"filters":[{"column":"region","op":"==","value":"Z"}],'
+                '"metrics":[{"column":"revenue","agg":"sum","as_name":"total"}]}')
+    res = safedata.safe_query(df, "revenue for region Z", model=narrow,
+                              policy=safedata.Policy.regulated(), max_retries=2)
+    assert res.blocked is True and res.answer is None
