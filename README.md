@@ -358,7 +358,7 @@ safety guarantees do not depend on it.
 ## Token saving
 
 Sending a whole table costs tokens per row; the summary is far smaller. As a
-rough illustration, a 1,000-row table estimates at **~18,180 → ~229 tokens
+rough illustration, a 1,000-row table estimates at **~18,180 -> ~229 tokens
 (~98.7%)** for one question; on millions of rows the saving approaches 99.99%.
 
 ```python
@@ -486,7 +486,7 @@ reads and summarises; it never executes model code. Supported formats: `.csv`,
 **Agent loop**
 - `Agent(model, max_retries=3, isolate=True, timeout=10.0, allow_row_reduction=False)`
   (`isolate`/`timeout`/`allow_row_reduction` pass through to `run_safely`).
-- `agent.ask(df, question, verbose=False)` → result with `.answer`, `.blocked`,
+- `agent.ask(df, question, verbose=False)` -> result with `.answer`, `.blocked`,
   `.reason`, `.attempts`, `.tokens`.
 
 **Connecting a model**: `wrap(call, clean=...)`, `extract_code(text)`, `ModelError`.
@@ -499,7 +499,7 @@ reads and summarises; it never executes model code. Supported formats: `.csv`,
   result. Raises `SafetyError`. `isolation="docker"` runs in a locked-down
   container; if the subprocess runner is unavailable, the in-process fallback
   still enforces `timeout` via a thread.
-- `check_code(code)` → `CodeCheck(.safe, .reason)`; screens without running.
+- `check_code(code)` -> `CodeCheck(.safe, .reason)`; screens without running.
 
 **Looking at the data**: `summarize(df, redact_pii=True, mask_columns=None)`,
 `report(df, path=None)`.
