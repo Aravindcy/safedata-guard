@@ -1913,3 +1913,29 @@ def test_presidio_detects_intl_pii_when_enabled():
         assert {"city", "full_name"} <= set(c["blocked_columns"])
     finally:
         safedata.enable_presidio(False)
+
+
+def test_plan_reports_original_and_safe_view_risk():
+    df = pd.DataFrame({"customer_name": ["A", "B"], "email": ["a@b.com", "c@d.com"],
+                       "region": ["N", "S"], "revenue": [10, 20]})
+    plan = safedata.create_privacy_plan(df, "total revenue by region")
+    assert plan.original_risk_level in ("low", "medium", "high")
+    # the safe view (PII dropped) is no riskier than the raw frame
+    order = {"low": 0, "medium": 1, "high": 2}
+    assert order[plan.safe_view_risk_level] <= order[plan.original_risk_level]
+    assert plan.risk_level == plan.original_risk_level   # kept for clarity
+
+
+def test_cli_plan_command(tmp_path, capsys):
+    import safedata.cli as _cli
+    csv = tmp_path / "p.csv"
+    pd.DataFrame({"customer_name": ["A"], "email": ["a@b.com"],
+                  "region": ["N"], "revenue": [10]}).to_csv(csv, index=False)
+    assert _cli.main(["plan", str(csv), "total revenue by region"]) == 0
+    out = capsys.readouterr().out
+    assert "Dropped PII" in out and "customer_name" in out
+    rc = _cli.main(["plan", str(csv), "total revenue by region", "--json"])
+    import json
+    data = json.loads(capsys.readouterr().out)
+    assert "safe_view_risk_level" in data and "dropped_pii_columns" in data
+    assert rc == 0

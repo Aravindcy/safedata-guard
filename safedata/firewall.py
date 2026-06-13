@@ -69,7 +69,9 @@ class PrivacyPlan:
     pii_columns: list
     dropped_pii_columns: list      # the subset of dropped that were PII
     retained_pii_columns: list     # PII the question needs (kept, but redacted)
-    risk_level: str
+    original_risk_level: str       # risk of the RAW dataframe
+    safe_view_risk_level: str      # risk of the privacy-filtered view (what's exposed)
+    risk_level: str                # == original_risk_level (kept for clarity)
     result_policy: dict
     audit: str
     reason: str
@@ -130,7 +132,16 @@ def create_privacy_plan(df, question: str,
 
     dropped = [c for c in cols if c not in set(allowed)]
 
-    risk = ai_risk_score(pdf, question, scan_rows=scan_rows)
+    # Risk of the RAW frame vs the privacy-filtered view actually exposed. The
+    # raw risk can read "high" while the safe view is "low" because the PII was
+    # dropped before anything reaches the model; surface both so that isn't
+    # mistaken for the firewall not working.
+    original_risk = ai_risk_score(pdf, question, scan_rows=scan_rows)["risk_level"]
+    try:
+        safe_view_risk = ai_risk_score(
+            pdf[allowed], question, scan_rows=scan_rows)["risk_level"]
+    except Exception:
+        safe_view_risk = original_risk
     result_policy = {
         "max_result_rows": max_result_rows,
         "max_result_bytes": 1_000_000,
@@ -146,7 +157,8 @@ def create_privacy_plan(df, question: str,
         question=question, safe_mode=safe_mode, operation=operation,
         allowed_columns=allowed, dropped_columns=dropped, pii_columns=pii_cols,
         dropped_pii_columns=dropped_pii, retained_pii_columns=retained_pii,
-        risk_level=risk["risk_level"], result_policy=result_policy,
+        original_risk_level=original_risk, safe_view_risk_level=safe_view_risk,
+        risk_level=original_risk, result_policy=result_policy,
         audit=audit, reason=reason, warnings=warnings)
 
 
@@ -189,9 +201,9 @@ def _build_firewall_prompt(safe_df, question, plan, previous_error=None,
                            min_group_size=None):
     summary = summarize(safe_df, mask_pii=True)
     parts = [
-        "You are analysing a privacy-filtered DataFrame named df. It contains "
-        "ONLY the columns needed to answer the question; other columns were "
-        "removed.",
+        "You are analysing a privacy-filtered DataFrame named df. It is a safe "
+        "view of the original: unneeded PII columns were removed; non-PII "
+        "analytical columns may be retained to keep the answer correct.",
         "Rules:",
         "- Use only the columns shown in the summary.",
         "- Prefer an aggregated answer; don't return raw rows unless required.",

@@ -177,7 +177,50 @@ def build_parser() -> argparse.ArgumentParser:
                       help="scan every value for PII (most thorough, slowest)")
     risk.set_defaults(func=_cmd_risk)
 
+    plan = sub.add_parser(
+        "plan", help="show the privacy plan (safe view) for a question")
+    plan.add_argument("file", help="path to a data file")
+    plan.add_argument("question", help="the question to plan for")
+    plan.add_argument("--minimal", action="store_true",
+                      help="advanced: also drop non-PII columns the question "
+                           "doesn't reference (heuristic; may affect correctness)")
+    plan.add_argument("--json", action="store_true",
+                      help="emit the full plan as JSON")
+    plan.set_defaults(func=_cmd_plan)
+
     return parser
+
+
+def _cmd_plan(args) -> int:
+    from .firewall import create_privacy_plan
+    try:
+        df = _load_dataframe(args.file)
+    except (FileNotFoundError, ValueError) as e:
+        if args.json:
+            import json
+            print(json.dumps({"error": str(e)}))
+        else:
+            print(f"error: {e}", file=sys.stderr)
+        return 1
+
+    mode = "minimal" if args.minimal else "drop_unneeded_pii"
+    plan = create_privacy_plan(df, args.question, safe_mode=mode)
+    if args.json:
+        import json
+        print(json.dumps(plan.to_dict(), indent=2, default=str))
+    else:
+        print(f"Question : {args.question}")
+        print(f"Mode     : {plan.safe_mode}  (operation: {plan.operation})")
+        print(f"Allowed  : {', '.join(plan.allowed_columns) or '(none)'}")
+        print(f"Dropped PII: {', '.join(plan.dropped_pii_columns) or '(none)'}")
+        if plan.retained_pii_columns:
+            print(f"Kept PII (masked): {', '.join(plan.retained_pii_columns)}")
+        print(f"Risk     : original={plan.original_risk_level} -> "
+              f"safe view={plan.safe_view_risk_level}")
+        print(f"Audit    : {plan.audit}")
+        for w in plan.warnings:
+            print(f"warning  : {w}")
+    return 0
 
 
 def _cmd_risk(args) -> int:

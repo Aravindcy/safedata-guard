@@ -143,7 +143,7 @@ view, runs the analysis only on it, and returns an audit of what was dropped.
 
 ```python
 plan = safedata.create_privacy_plan(df, "total revenue by region")
-safe_df = safedata.make_safe_view(df, plan)        # only the needed columns
+safe_df = safedata.make_safe_view(df, plan)        # privacy-filtered safe view
 answer  = safedata.safe_answer(df, "total revenue by region", model=my_llm)
 print(answer["answer"], answer["audit"])
 ```
@@ -179,6 +179,16 @@ safedata.k_anonymize(grouped_df, min_group_size=5)
 If a grouped result has no count column, it's refused with guidance (the model
 adds counts and retries). *(Private surrogate filters - masking an individual
 lookup behind a match flag - remain deferred until they can be done properly.)*
+
+From the CLI, preview the safe view for a question without running anything:
+
+```bash
+safedata plan customers.csv "total revenue by region" --json
+```
+
+The plan reports `dropped_pii_columns`, `allowed_columns`, the audit, and both
+`original_risk_level` and `safe_view_risk_level` (the raw frame can read "high"
+while the exposed view is "low" because PII was dropped first).
 
 ### Is it safe to send this to an AI?
 

@@ -28,6 +28,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `safe_answer` is self-correcting: a guardrail block (e.g. too many rows) is
     fed back to the model and retried (like `Agent.ask`); it returns
     `blocked=True` with a reason instead of raising.
+  - The plan reports both `original_risk_level` (raw frame) and
+    `safe_view_risk_level` (what's actually exposed after dropping PII), so a
+    "high" raw risk isn't mistaken for the firewall not working.
+  - New CLI command: `safedata plan data.csv "question" [--minimal] [--json]`
+    prints the safe view, dropped PII, risk, and audit for a question.
 - **Optional Presidio international PII detection** (`enable_presidio()`). With
   the optional install (`pip install "safedata-guard[presidio]"` + a spaCy model)
   and `safedata.enable_presidio()`, value-based PII detection also runs Microsoft
