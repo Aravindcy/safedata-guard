@@ -28,6 +28,14 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `safe_answer` is self-correcting: a guardrail block (e.g. too many rows) is
     fed back to the model and retried (like `Agent.ask`); it returns
     `blocked=True` with a reason instead of raising.
+- **Optional Presidio international PII detection** (`enable_presidio()`). With
+  the optional install (`pip install "safedata-guard[presidio]"` + a spaCy model)
+  and `safedata.enable_presidio()`, value-based PII detection also runs Microsoft
+  Presidio, catching names in free text, locations/addresses, IBANs and non-US
+  phone/ID formats the built-in regex set misses. It augments (never replaces)
+  the default detector and flows through the whole pipeline (privacy_report,
+  firewall, contract, risk score, Agent). Off by default; no new dependency
+  unless you opt in.
 - **k-anonymity / minimum group size suppression** (`min_group_size=`). On
   `run_safely`, `Agent`, and `safe_answer`: a grouped result must carry a
   per-group `count` column; groups smaller than the threshold are **suppressed**

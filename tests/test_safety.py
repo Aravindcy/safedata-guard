@@ -1892,3 +1892,24 @@ def test_safe_answer_min_group_size_with_stub_model():
                                isolation="thread", min_group_size=5)
     assert out["blocked"] is False
     assert out["answer"]["pc"].tolist() == ["A"]      # B and Z suppressed
+
+
+# --- optional Presidio international PII (skipped if not installed) ----------
+
+def test_presidio_detects_intl_pii_when_enabled():
+    from safedata import pii_presidio
+    if not pii_presidio.available():
+        pytest.skip("presidio/spacy model not installed")
+    df = pd.DataFrame({"full_name": ["Alice Johnson", "Mateo Garcia"],
+                       "city": ["Berlin", "Madrid"], "amount": [1, 2]})
+    try:
+        # regex alone misses free-text city/location
+        assert "city" not in safedata.privacy_report(df)["pii_columns"]
+        assert safedata.enable_presidio(True) is True
+        pii = set(safedata.privacy_report(df)["pii_columns"])
+        assert "city" in pii and "full_name" in pii
+        # flows through the firewall pipeline
+        c = safedata.create_contract(df, "total amount")
+        assert {"city", "full_name"} <= set(c["blocked_columns"])
+    finally:
+        safedata.enable_presidio(False)

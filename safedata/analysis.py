@@ -403,13 +403,36 @@ def _pii_name_hints(df) -> dict:
 # privacy_report(scan_rows=...) / "all" let callers scan deeper.
 _DEFAULT_PII_SCAN = 20
 
+# When True, value-based PII detection also runs Microsoft Presidio (if it is
+# installed) for international coverage. Off by default; toggle with
+# enable_presidio(). A per-call use_presidio= argument overrides this.
+_PRESIDIO_DEFAULT = False
 
-def _all_pii(df, scan_rows=_DEFAULT_PII_SCAN):
+
+def enable_presidio(on: bool = True) -> bool:
+    """Turn on (or off) Presidio-backed PII detection for the whole library.
+
+    Returns True if Presidio is actually available after the call. Requires the
+    optional install: pip install "safedata-guard[presidio]" and a spaCy model
+    (e.g. python -m spacy download en_core_web_sm). When on, privacy_report and
+    everything built on it (the firewall, contract, risk score, Agent) also catch
+    names/locations/IBANs and non-US formats, not just the built-in regex set.
+    """
+    global _PRESIDIO_DEFAULT
+    _PRESIDIO_DEFAULT = bool(on)
+    if not on:
+        return False
+    from . import pii_presidio
+    return pii_presidio.available()
+
+
+def _all_pii(df, scan_rows=_DEFAULT_PII_SCAN, use_presidio=None):
     """Merge value-detected PII (high confidence) with name-hinted PII.
 
     Returns {column: {"kinds": [...], "by": "value"|"name"}}. Value evidence wins
     when a column is detected both ways. `scan_rows` controls how many unique
-    values the value scan inspects ("all" or None = every value).
+    values the value scan inspects ("all" or None = every value). `use_presidio`
+    augments value detection with Presidio (None = the enable_presidio() default).
     """
     df = _as_pandas(df)
     merged = {}
@@ -417,6 +440,17 @@ def _all_pii(df, scan_rows=_DEFAULT_PII_SCAN):
         merged[col] = {"kinds": [kind], "by": "name"}
     for col, kinds in _detect_pii_columns(df, scan_rows=scan_rows).items():
         merged[col] = {"kinds": kinds, "by": "value"}
+
+    if use_presidio is None:
+        use_presidio = _PRESIDIO_DEFAULT
+    if use_presidio:
+        from . import pii_presidio
+        for col, kinds in pii_presidio.detect_pii_columns(
+                df, scan_rows=scan_rows).items():
+            if col in merged and merged[col]["by"] == "value":
+                merged[col]["kinds"] = sorted(set(merged[col]["kinds"]) | set(kinds))
+            else:
+                merged[col] = {"kinds": kinds, "by": "value"}
     return merged
 
 
@@ -462,16 +496,19 @@ def _detect_pii_columns(df, scan_rows=_DEFAULT_PII_SCAN):
     return hits
 
 
-def privacy_report(df, scan_rows=_DEFAULT_PII_SCAN) -> dict:
+def privacy_report(df, scan_rows=_DEFAULT_PII_SCAN, use_presidio=None) -> dict:
     """A privacy view: which columns hold PII (by value or by name) and what to do.
 
     `scan_rows` controls how many unique values per column the value scan checks
     ("all"/None for an exhaustive but slower scan that catches rare PII).
+    `use_presidio` augments detection with Presidio for international coverage
+    (None = the enable_presidio() default).
     """
     df = _as_pandas(df)
     high, medium, actions = [], [], []
 
-    for col, info in _all_pii(df, scan_rows=scan_rows).items():
+    for col, info in _all_pii(df, scan_rows=scan_rows,
+                              use_presidio=use_presidio).items():
         kinds = info["kinds"]
         if info["by"] == "value":
             high.append({"column": col, "kinds": kinds, "by": "value"})

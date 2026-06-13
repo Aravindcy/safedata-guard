@@ -268,6 +268,26 @@ small row sample (it never serialises the whole table, so it stays cheap on huge
 frames). Exact numbers vary by model/tokenizer - treat the figures as orders of
 magnitude, not guarantees.
 
+## International PII (optional, Presidio)
+
+The built-in detector (regex + name hints + Luhn) is strong for US/UK-style data
+but misses names in free text, locations/addresses, IBANs and non-US formats. For
+international coverage, install the optional extra and turn it on:
+
+```bash
+pip install "safedata-guard[presidio]"
+python -m spacy download en_core_web_sm
+```
+
+```python
+safedata.enable_presidio()        # call once; whole pipeline now uses it
+safedata.privacy_report(df)       # also flags names/locations/IBANs, etc.
+```
+
+It augments (never replaces) the built-in detector and feeds the firewall,
+contract, risk score, and Agent. Off by default, so there's no heavy dependency
+unless you opt in.
+
 ## PII masking
 
 The summary includes a few real sample values, which can contain personal data.
