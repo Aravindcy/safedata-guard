@@ -35,8 +35,11 @@ from .firewall import (create_privacy_plan, make_safe_view, safe_answer,
                        PrivacyPlan, detect_operation)
 from .policy import Policy
 from .integrations import to_pandera_schema, to_great_expectations_suite
+from .safeplan import (safe_query, SafePlan, SafePlanResult, MetricSpec,
+                       validate_safeplan, execute_safeplan)
+from .receipt import create_receipt, format_receipt
 
-__version__ = "1.0.9"
+__version__ = "1.1.0"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "SafetyError", "check_code", "CodeCheck", "k_anonymize",
            "build_prompt", "report",
@@ -51,4 +54,8 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            # query-aware privacy firewall
            "create_privacy_plan", "make_safe_view", "safe_answer",
            "PrivacyPlan", "detect_operation", "Policy",
-           "to_pandera_schema", "to_great_expectations_suite"]
+           "to_pandera_schema", "to_great_expectations_suite",
+           # SafePlan engine (JSON plan, executed locally - no generated Python)
+           "safe_query", "SafePlan", "SafePlanResult", "MetricSpec",
+           "validate_safeplan", "execute_safeplan",
+           "create_receipt", "format_receipt"]

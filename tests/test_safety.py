@@ -1896,6 +1896,7 @@ def test_safe_answer_min_group_size_with_stub_model():
 
 # --- optional Presidio international PII (skipped if not installed) ----------
 
+@pytest.mark.timeout(300)   # loading the spaCy model can be slow on a cold start
 def test_presidio_detects_intl_pii_when_enabled():
     from safedata import pii_presidio
     if not pii_presidio.available():
@@ -2002,3 +2003,89 @@ def test_pandera_schema_export():
     assert set(schema.columns.keys()) == {"id", "qty", "city"}
     # the schema actually validates conforming data
     assert len(schema.validate(df)) == 3
+
+
+# --- 1.1.0: SafePlan engine (JSON plan executed locally, no Python) ---------
+
+from safedata.safeplan import (SafePlan, MetricSpec, validate_safeplan,
+                               execute_safeplan, extract_json_plan, parse_safeplan)
+
+
+def _sp_df():
+    return pd.DataFrame({"region": ["N"] * 6 + ["S"] * 5 + ["Z"] * 1,
+                         "revenue": range(12),
+                         "customer_name": [f"c{i}" for i in range(12)]})
+
+
+def test_safeplan_blocks_raw_and_unknown_ops():
+    df = _sp_df()
+    for op in ("raw_lookup", "show_rows", "export", "to_csv", "frobnicate"):
+        with pytest.raises(SafetyError):
+            validate_safeplan(SafePlan(operation=op), df, safedata.Policy.regulated())
+
+
+def test_safeplan_groupby_enforces_k_anonymity():
+    df = _sp_df()
+    plan = SafePlan(operation="groupby_aggregate", group_by=["region"],
+                    metrics=[MetricSpec("revenue", "sum", "total")])
+    res = execute_safeplan(plan, df, safedata.Policy.regulated())  # min_group_size=5
+    assert (res["count"] >= 5).all()           # Z (count 1) suppressed
+    assert set(res["region"]) == {"N", "S"}
+
+
+def test_safeplan_validation_rejects_bad_columns_and_aggs():
+    df = _sp_df()
+    pol = safedata.Policy.basic()
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="aggregate",
+                                   metrics=[MetricSpec("nope", "sum")]), df, pol)
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="aggregate",
+                                   metrics=[MetricSpec("revenue", "evil")]), df, pol)
+    with pytest.raises(SafetyError):       # limit over the policy cap
+        validate_safeplan(SafePlan(operation="count_rows", limit=10_000), df, pol)
+
+
+def test_safeplan_filters_are_restricted():
+    df = _sp_df()
+    pol = safedata.Policy.basic()
+    # a free-form key in a filter is refused
+    bad = SafePlan(operation="count_rows",
+                   filters=[{"column": "region", "op": "==", "value": "N",
+                             "expr": "os.system('x')"}])
+    with pytest.raises(SafetyError):
+        validate_safeplan(bad, df, pol)
+    # a normal filter works
+    ok = SafePlan(operation="count_rows",
+                  filters=[{"column": "region", "op": "==", "value": "N"}])
+    assert execute_safeplan(ok, df, pol) == {"count": 6}
+
+
+def test_safe_query_executes_json_not_python():
+    df = _sp_df()
+    def stub(prompt):
+        return ('```json\n{"operation":"groupby_aggregate","group_by":["region"],'
+                '"metrics":[{"column":"revenue","agg":"sum","as_name":"total"}]}\n```')
+    res = safedata.safe_query(df, "total revenue by region", model=stub,
+                              policy=safedata.Policy.basic())
+    assert res.blocked is False
+    assert res.receipt["generated_python_executed"] is False
+    assert res.receipt["raw_rows_exposed_to_llm"] == 0
+    assert "total" in res.answer.columns
+
+
+def test_safe_query_blocks_malicious_json_plan():
+    df = _sp_df()
+    def evil(prompt):
+        return '{"operation":"export"}'
+    res = safedata.safe_query(df, "dump everything", model=evil,
+                              policy=safedata.Policy.regulated(), max_retries=2)
+    assert res.blocked is True and res.answer is None
+
+
+def test_receipt_shape():
+    df = _sp_df()
+    res = safedata.safe_query(df, "how many rows", model=lambda p: '{"operation":"count_rows"}')
+    r = res.receipt
+    assert r["mode"] == "safeplan" and r["audit_id"].startswith("SDG-")
+    assert isinstance(safedata.format_receipt(r), str)

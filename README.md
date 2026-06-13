@@ -50,6 +50,33 @@ field can be overridden: `Policy.regulated(min_group_size=10)`.
 (`Agent`, `run_safely`, `create_contract`, `privacy_report`, ...) are the
 lower-level building blocks it is composed from, for when you need finer control.
 
+## Two execution modes
+
+safedata-guard can run AI analysis two ways:
+
+1. **SafePlan mode (`safe_query`, safest).** The model never writes Python. It
+   returns a restricted **JSON analysis plan** (operation + group-by + metrics +
+   filters), which safedata validates and **executes itself** with a fixed
+   interpreter. There is no generated code to escape, so the whole class of
+   code-injection/exfiltration risk does not apply. Covers aggregate, group-by,
+   counts, value_counts, and describe. k-anonymity is built in (we control the
+   execution, so the group count always exists).
+
+   ```python
+   res = safedata.safe_query(df, "total revenue by region",
+                             model=my_llm, policy=safedata.Policy.regulated())
+   print(res.answer)
+   print(res.receipt)        # Data Safety Receipt: PII dropped, no Python run, ...
+   ```
+
+2. **Guarded Python mode (`safe_answer` / `Agent`).** For richer/custom analysis
+   the model *does* write Python, and safedata screens it (AST checks, isolation,
+   result guards). Use this when SafePlan's operations aren't enough.
+
+Every answer can carry a **Data Safety Receipt** (`res.receipt`,
+`safedata.format_receipt`): an audit id, the mode, whether any Python ran, which
+PII was detected/dropped, the policy in force, and the answer's shape.
+
 ## What it does
 
 **1. Summarises before the data reaches the model.** Instead of 100,000 rows, it

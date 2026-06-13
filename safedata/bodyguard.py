@@ -824,12 +824,12 @@ def _detected_pii_columns(df):
 # The locked-down defaults (no network, read-only root fs) deliberately make a
 # run-time `pip install` impossible - there is nothing to download from and
 # nowhere to write it. Build the bundled image once (see the repo Dockerfile):
-#     docker build -t safedata-guard-runner:1.0.9 .
+#     docker build -t safedata-guard-runner:1.1.0 .
 # then this mode runs offline and read-only. `pip_install` stays None by default
 # for exactly that reason; set it (and relax network/read_only) only if you
 # really want run-time installation in a throwaway, trusted-network container.
 DOCKER_DEFAULTS = {
-    "image": "safedata-guard-runner:1.0.9",
+    "image": "safedata-guard-runner:1.1.0",
     "memory": "512m",
     "cpus": "1.0",
     "network": "none",       # no network at all

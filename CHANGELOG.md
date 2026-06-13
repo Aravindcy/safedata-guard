@@ -4,6 +4,23 @@ All notable changes to **safedata-guard** are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0]
+
+### Added
+- **SafePlan engine (`safe_query`) - a second, safest execution mode.** Instead
+  of the model writing Python that safedata then screens, the model returns a
+  **restricted JSON analysis plan** (operation + group_by + metrics + filters +
+  limit) that safedata validates and **executes itself** with a fixed interpreter
+  - no `eval`/`exec`, no generated code at all. This removes the whole
+  code-injection/exfiltration class for the operations it covers (aggregate,
+  groupby_aggregate, count_rows, value_counts, describe). k-anonymity is enforced
+  natively (the engine always computes the group count). New `SafePlan`,
+  `MetricSpec`, `SafePlanResult`, `validate_safeplan`, `execute_safeplan`.
+  Guarded Python mode (`safe_answer`/`Agent`) remains for richer/custom analysis.
+- **Data Safety Receipt** (`create_receipt`/`format_receipt`, and `res.receipt`
+  on `safe_query`): a per-answer audit record - audit id, mode, whether any
+  Python ran, PII detected/dropped, columns used, policy, and answer shape.
+
 ## [1.0.9]
 
 ### Fixed
