@@ -18,6 +18,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `safe_mode="minimal"` (opt-in, advanced): also drop non-PII columns the
     question doesn't reference. Stronger, but relevance is heuristic, so it
     carries a warning and is never the default.
+  - `safe_answer` is self-correcting: a guardrail block (e.g. too many rows) is
+    fed back to the model and retried (like `Agent.ask`); it returns
+    `blocked=True` with a reason instead of raising.
   - Private surrogate filters and k-anonymity/min-group-size suppression are
     deliberately deferred until they can be implemented and tested properly.
 

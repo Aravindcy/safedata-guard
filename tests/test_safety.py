@@ -1769,3 +1769,29 @@ def test_detect_operation():
     assert safedata.detect_operation("top 5 customers") == "ranking"
     assert safedata.detect_operation("monthly revenue trend") == "trend"
     assert safedata.detect_operation("show all customers") == "raw_lookup"
+
+
+def test_safe_answer_does_not_raise_on_guardrail_block():
+    # Code path: an oversized result returns a structured block, not an exception.
+    df = pd.DataFrame({"region": list("ABCDEFGHIJ") * 6, "rev": range(60)})
+    out = safedata.safe_answer(df, "x", code="result = df", isolation="thread")
+    assert out["blocked"] is True and out["reason"]
+    assert out["answer"] is None
+
+
+def test_safe_answer_model_self_corrects():
+    # Model path: first attempt trips a guard, second fixes it -> recovers.
+    df = pd.DataFrame({"region": ["N", "S", "N", "S"], "rev": [1, 2, 3, 4]})
+    calls = {"n": 0}
+
+    def flaky(prompt):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return "result = df"                       # full table -> blocked
+        return "result = df.groupby('region')['rev'].sum()"
+
+    out = safedata.safe_answer(df, "total rev by region", model=flaky,
+                               isolation="thread")
+    assert out["blocked"] is False
+    assert out["answer"].to_dict() == {"N": 4, "S": 6}
+    assert len(out["attempts"]) == 2

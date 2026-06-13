@@ -28,7 +28,7 @@ from dataclasses import dataclass, field, asdict
 
 from .analysis import (privacy_report, infer_columns, ai_risk_score,
                        _question_mentions_column, _as_pandas)
-from .bodyguard import run_safely
+from .bodyguard import run_safely, SafetyError
 from .translator import summarize
 from .wrap import extract_code, ModelError
 
@@ -185,25 +185,34 @@ def make_safe_view(df, plan: PrivacyPlan):
     return pdf[keep].copy()
 
 
-def _build_firewall_prompt(safe_df, question, plan):
+def _build_firewall_prompt(safe_df, question, plan, previous_error=None):
     summary = summarize(safe_df, mask_pii=True)
-    return (
+    parts = [
         "You are analysing a privacy-filtered DataFrame named df. It contains "
         "ONLY the columns needed to answer the question; other columns were "
-        "removed.\n"
-        "Rules:\n"
-        "- Use only the columns shown in the summary.\n"
-        "- Prefer an aggregated answer; don't return raw rows unless required.\n"
+        "removed.",
+        "Rules:",
+        "- Use only the columns shown in the summary.",
+        "- Prefer an aggregated answer; don't return raw rows unless required.",
+        f"- Keep the result small (at most {plan.result_policy['max_result_rows']} "
+        "rows); return an aggregate or top-N, not every row.",
         "- Assign the final answer to a variable named `result`. Return ONLY "
-        "Python code.\n\n"
-        f"QUESTION: {question}\n\n"
-        f"DATA SUMMARY:\n{summary}\n"
-    )
+        "Python code.",
+        "",
+        f"QUESTION: {question}",
+        "",
+        f"DATA SUMMARY:\n{summary}",
+    ]
+    if previous_error:
+        parts += ["", "YOUR LAST ATTEMPT WAS BLOCKED:", previous_error,
+                  "Rewrite the code to fix this."]
+    return "\n".join(parts)
 
 
 def safe_answer(df, question, model=None, code=None,
                 safe_mode: str = "drop_unneeded_pii", scan_rows=20,
-                isolation: str = "process", timeout: float = 10.0):
+                isolation: str = "process", timeout: float = 10.0,
+                max_retries: int = 3):
     """Answer `question` over `df` using the minimum safe data.
 
     Builds a privacy plan, creates the safe view, has `model` write code against
@@ -211,12 +220,19 @@ def safe_answer(df, question, model=None, code=None,
     and returns the answer plus the plan/audit. If neither `model` nor `code` is
     given, returns the plan only (a dry run).
 
+    Self-correcting: if generated code is blocked by a guardrail (e.g. too many
+    rows), the error is fed back to the model and it retries up to `max_retries`
+    times — like Agent.ask. A guardrail block NEVER raises out of this function;
+    instead the result has ``blocked=True`` and a ``reason``. (A model failure
+    still raises ModelError.)
+
     model : callable (prompt:str) -> code/text. Output is run through
         extract_code, so a raw LLM reply with ```fences``` is fine.
     """
     plan = create_privacy_plan(df, question, safe_mode=safe_mode,
                                scan_rows=scan_rows)
     safe_df = make_safe_view(df, plan)
+    pol = plan.result_policy
 
     out = {
         "question": question,
@@ -224,7 +240,10 @@ def safe_answer(df, question, model=None, code=None,
         "audit": plan.audit,
         "safe_dataframe_columns": list(safe_df.columns),
         "answer": None,
-        "code": None,
+        "code": code,
+        "blocked": False,
+        "reason": None,
+        "attempts": [],
     }
 
     if code is None and model is None:
@@ -232,23 +251,40 @@ def safe_answer(df, question, model=None, code=None,
                           "to execute on the safe view.")
         return out
 
-    if code is None:
-        prompt = _build_firewall_prompt(safe_df, question, plan)
+    def _run(c):
+        return run_safely(
+            c, safe_df, isolation=isolation, timeout=timeout,
+            max_result_rows=pol["max_result_rows"],
+            max_result_bytes=pol["max_result_bytes"],
+            redact_result_pii=pol["redact_result_pii"],
+            enforce_minimal_result=pol["enforce_minimal_result"])
+
+    # Code supplied directly: run once, but return a structured block (don't raise).
+    if model is None:
+        out["attempts"].append(code)
+        try:
+            out["answer"] = _run(code)
+        except SafetyError as e:
+            out["blocked"], out["reason"] = True, str(e)
+        return out
+
+    # Model present: generate, run, and self-correct on a guardrail block.
+    error = None
+    for _ in range(max(1, max_retries)):
+        prompt = _build_firewall_prompt(safe_df, question, plan,
+                                        previous_error=error)
         try:
             code = extract_code(model(prompt))
         except ModelError:
             raise
         except Exception as e:
             raise ModelError(f"The model call failed: {type(e).__name__}: {e}.")
-
-    pol = plan.result_policy
-    result = run_safely(
-        code, safe_df, isolation=isolation, timeout=timeout,
-        max_result_rows=pol["max_result_rows"],
-        max_result_bytes=pol["max_result_bytes"],
-        redact_result_pii=pol["redact_result_pii"],
-        enforce_minimal_result=pol["enforce_minimal_result"])
-
-    out["answer"] = result
-    out["code"] = code
+        out["attempts"].append(code)
+        out["code"] = code
+        try:
+            out["answer"] = _run(code)
+            return out
+        except SafetyError as e:
+            error = str(e)
+    out["blocked"], out["reason"] = True, error
     return out
