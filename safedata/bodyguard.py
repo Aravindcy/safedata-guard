@@ -428,8 +428,8 @@ def check_code(code: str) -> CodeCheck:
 def _screen_blocked_columns(code: str, blocked_columns):
     """Refuse code that references any forbidden column (least-privilege firewall).
 
-    Catches both subscript access (df['email'], df[['email', ...]]) — seen as a
-    string Constant — and attribute access (df.email). Refusing a column whose
+    Catches both subscript access (df['email'], df[['email', ...]]) - seen as a
+    string Constant - and attribute access (df.email). Refusing a column whose
     name merely appears as a string literal is acceptable here: blocked columns
     are the sensitive ones a question doesn't need, and the model is told exactly
     which to drop.
@@ -572,7 +572,7 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
         # block_1d_row_results widens this to 1-D per-row results (a Series or
         # list of scalars with one value per input row), which leak row-level
         # data even though they aren't full-width. Stricter, with a small chance
-        # of flagging a groupby that happens to have original_rows groups — which
+        # of flagging a groupby that happens to have original_rows groups - which
         # is why it's opt-in (on in Agent.strict).
         row_level = _looks_row_level(result) or (
             block_1d_row_results and rrows is not None)
@@ -743,8 +743,8 @@ def _enforce_min_group_size(result, n):
                 f"min_group_size={n} is set but the grouped result has no "
                 f"group-size column, so small groups (which can re-identify an "
                 f"individual) can't be suppressed. Recompute so each group "
-                f"includes its row count — e.g. df.groupby(k).agg(value=('v','mean'), "
-                f"count=('v','size')) — and keep the 'count' column.")
+                f"includes its row count - e.g. df.groupby(k).agg(value=('v','mean'), "
+                f"count=('v','size')) - and keep the 'count' column.")
     return ("ok", result[result[col] >= n].reset_index(drop=True))
 
 
@@ -792,7 +792,7 @@ def _redact_result(result):
     if _HAS_NUMPY and isinstance(result, np.ndarray):
         # Regex-redact string cells. NOTE: once a column has been flattened into
         # an array its name context is gone, so this catches emails/phones but
-        # not bare names — the firewall's column masking is what stops those.
+        # not bare names - the firewall's column masking is what stops those.
         if result.dtype == object or result.dtype.kind in ("U", "S"):
             out = result.astype(object).copy()
             flat = out.reshape(-1)
@@ -822,7 +822,7 @@ def _detected_pii_columns(df):
 #
 # IMPORTANT: the image must ALREADY have safedata + pandas/numpy installed.
 # The locked-down defaults (no network, read-only root fs) deliberately make a
-# run-time `pip install` impossible — there is nothing to download from and
+# run-time `pip install` impossible - there is nothing to download from and
 # nowhere to write it. Build the bundled image once (see the repo Dockerfile):
 #     docker build -t safedata-guard-runner:1.0.9 .
 # then this mode runs offline and read-only. `pip_install` stays None by default
@@ -884,14 +884,14 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
         Apply best-effort PII redaction to the returned value before it leaves
         the runner. LIMITATION: once values are flattened into a plain list/array
         (e.g. ``df['customer_name'].tolist()``) their column context is gone, and
-        regex cannot reliably tell that "Alice Smith" is a name — so names CAN
+        regex cannot reliably tell that "Alice Smith" is a name - so names CAN
         still leak this way. To stop that, pass ``blocked_columns`` (or use
         ``Agent.safe()``, whose column firewall masks unneeded PII columns BEFORE
         the code runs, so the values aren't present to leak).
     blocked_columns : iterable of str or None
         Column names the generated code may NOT touch (a least-privilege
-        firewall). Referencing one — by subscript ``df['col']`` or attribute
-        ``df.col`` — is blocked before the code runs. Pair with
+        firewall). Referencing one - by subscript ``df['col']`` or attribute
+        ``df.col`` - is blocked before the code runs. Pair with
         ``create_contract(df, question)`` to forbid the PII columns a question
         doesn't need.
     enforce_minimal_result : bool
@@ -1161,7 +1161,7 @@ def _deep_copy_frame(df, deep_python: bool = True):
     """Independent copy for either pandas (.copy) or polars (.clone).
 
     pandas' .copy(deep=True) deep-copies the block structure but NOT the Python
-    objects stored inside object-dtype cells (e.g. a list in a cell) — and
+    objects stored inside object-dtype cells (e.g. a list in a cell) - and
     copy.deepcopy(df) is no help, because pandas' __deepcopy__ just delegates to
     .copy(deep=True). So df.loc[0, 'x'].append(99) would mutate the CALLER's
     original list. When `deep_python` is True we additionally deep-copy each cell

@@ -449,7 +449,7 @@ def _detect_pii_columns(df, scan_rows=_DEFAULT_PII_SCAN):
 
     # Numeric columns can hold card numbers a CSV/Excel import stored as ints,
     # which the text patterns above never see. Flag an integer column as a card
-    # only when its sampled values pass the Luhn checksum — a random long int
+    # only when its sampled values pass the Luhn checksum - a random long int
     # essentially never does, so this avoids false-flagging IDs/counts.
     for col in df.select_dtypes(include=["int64", "int32", "uint64", "Int64"]).columns:
         nn = df[col].dropna()
@@ -765,7 +765,7 @@ def create_contract(df, question: str = None,
         columns the question doesn't reference are added to `blocked_columns`, so
         `run_safely(..., blocked_columns=contract["blocked_columns"])` refuses
         code that touches sensitive columns the question never needed. Only PII
-        columns are firewalled this way — non-PII columns stay allowed, so the
+        columns are firewalled this way - non-PII columns stay allowed, so the
         firewall never blocks a legitimate aggregate just because the question
         didn't name every column.
 

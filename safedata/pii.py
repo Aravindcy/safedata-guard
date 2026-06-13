@@ -78,7 +78,7 @@ def luhn_ok(digits) -> bool:
     """True if a 13-19 digit string/number passes the Luhn checksum (cards).
 
     Used to spot card numbers a CSV/Excel import stored as INTEGERS (so the text
-    regex never sees them) without false-flagging every long number — a random
+    regex never sees them) without false-flagging every long number - a random
     long int almost never passes Luhn.
     """
     s = "".join(ch for ch in str(digits) if ch.isdigit())

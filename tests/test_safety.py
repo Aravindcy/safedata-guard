@@ -23,7 +23,7 @@ def run_safely(code, df, **kwargs):
 def _subprocess_available():
     """True if we can actually spawn a Python subprocess. When False (locked-down
     sandboxes), isolate=True falls back to an in-process daemon thread that can't
-    be killed — so an infinite-loop timeout test would leave a thread spinning
+    be killed - so an infinite-loop timeout test would leave a thread spinning
     `while True` and could wedge interpreter shutdown. We skip those tests then."""
     import subprocess as _sp
     try:

@@ -49,7 +49,7 @@ def build_prompt(summary_or_df, question: str, previous_error: str = None,
     mask_pii : when a DataFrame is passed, withhold detected PII columns' values
         from the summary by default (names/addresses regex can't catch). Set
         False for raw samples. Ignored when a summary string is passed (that text
-        is used verbatim — make it safe before passing it in).
+        is used verbatim - make it safe before passing it in).
     """
     if not isinstance(summary_or_df, str):
         # treat anything non-str as a frame and summarize it, masking PII columns
@@ -128,8 +128,8 @@ class Agent:
         self.redact_result_pii = redact_result_pii
         self.mask_prompt_pii = mask_prompt_pii
         # column_firewall: block generated code from touching PII columns the
-        # question doesn't reference (least privilege) — on in safe() and
-        # strict(). enforce_minimal_result: refuse a full-table answer — on in
+        # question doesn't reference (least privilege) - on in safe() and
+        # strict(). enforce_minimal_result: refuse a full-table answer - on in
         # strict() only (it can surprise a legitimate "return all rows" request),
         # off elsewhere. Both default off on a bare Agent(...).
         self.column_firewall = column_firewall
@@ -182,7 +182,7 @@ class Agent:
         facts = _audit_facts(df, question, scan_rows=self.pii_scan_rows)
         # Step 1: cheap, quality-aware summary. Withhold detected PII columns'
         # sample values (names/addresses regex can't catch) so they never reach
-        # the model — this is what makes the agent privacy-aware by default.
+        # the model - this is what makes the agent privacy-aware by default.
         mask = set(facts["pii_columns"]) if self.mask_prompt_pii else set()
         summary = summarize(df, mask_columns=mask)
         facts["summary"] = summary           # store the EXACT text sent, for audit

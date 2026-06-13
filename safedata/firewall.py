@@ -233,7 +233,7 @@ def safe_answer(df, question, model=None, code=None,
 
     Self-correcting: if generated code is blocked by a guardrail (e.g. too many
     rows), the error is fed back to the model and it retries up to `max_retries`
-    times — like Agent.ask. A guardrail block NEVER raises out of this function;
+    times - like Agent.ask. A guardrail block NEVER raises out of this function;
     instead the result has ``blocked=True`` and a ``reason``. (A model failure
     still raises ModelError.)
 

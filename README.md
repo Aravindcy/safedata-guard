@@ -15,7 +15,7 @@ behind **guardrails on a copy** of your data.
 
 > **Status: beta.** Useful and tested, but treat it as a defense-in-depth safety
 > *layer*, not a hardened sandbox. It is **not** a "fully secure sandbox",
-> "compliance-grade PII protection", or "guaranteed safe execution" — PII
+> "compliance-grade PII protection", or "guaranteed safe execution" - PII
 > detection and code screening are best-effort heuristics (see *Scope* below).
 > For untrusted code, run it inside OS-level isolation (`isolation="docker"` or
 > your own container/VM).
@@ -98,7 +98,7 @@ rather than silently truncated. The same options are accepted by `Agent(...)`.
 > **Limitation:** `redact_result_pii` works on DataFrames/Series (it knows the
 > column) and on emails/phones in strings, but once names are flattened into a
 > plain list (`df['customer_name'].tolist()`) the column context is lost and
-> regex can't tell a name from any other text — so names can still leak that way.
+> regex can't tell a name from any other text - so names can still leak that way.
 > The robust defence is the **column firewall** (`blocked_columns=` /
 > `Agent.safe()`), which masks unneeded PII columns *before* the code runs, so
 > the values aren't there to leak in the first place.
@@ -118,7 +118,7 @@ Any keyword overrides the preset (e.g. `Agent.safe(model, timeout=30)`).
 ### Data Safety Contract & question-aware firewall
 
 Turn the read-only checks into a machine-readable policy you can gate AI access
-on (no code is run). Pass the question to get a **least-privilege firewall** — the
+on (no code is run). Pass the question to get a **least-privilege firewall** - the
 PII columns the question doesn't need are blocked:
 
 ```python
@@ -149,23 +149,23 @@ print(answer["answer"], answer["audit"])
 ```
 
 **Safe by default.** `safe_mode="drop_unneeded_pii"` (the default) removes the PII
-columns the question doesn't need and **keeps every non-PII column** — so the
+columns the question doesn't need and **keeps every non-PII column** - so the
 model never sees unneeded names/emails, but the columns your analysis needs are
 always present (no wrong answers). The audit explains exactly what was dropped:
 
-> *Dropped 2 unneeded PII column(s) (customer_name, email) — never sent to the
-> model. Retained 4 column(s) for analysis: …*
+> *Dropped 2 unneeded PII column(s) (customer_name, email) - never sent to the
+> model. Retained 4 column(s) for analysis: ...*
 
 `safe_mode="minimal"` is an **opt-in advanced mode** that also drops non-PII
 columns the question doesn't appear to reference. It's stronger, but column
-relevance is a heuristic — if it misses a column your analysis needed, the answer
+relevance is a heuristic - if it misses a column your analysis needed, the answer
 can be wrong, so it carries a warning and is never the default.
 
 ### k-anonymity (stop singling-out)
 
 A group of one re-identifies a person ("average salary by postcode" where a
 postcode has one resident). Set `min_group_size` and grouped results must carry a
-per-group `count`; groups below the threshold are **suppressed** — rows removed,
+per-group `count`; groups below the threshold are **suppressed** - rows removed,
 the figures that remain are exact (no number is fudged):
 
 ```python
@@ -177,8 +177,8 @@ safedata.k_anonymize(grouped_df, min_group_size=5)
 ```
 
 If a grouped result has no count column, it's refused with guidance (the model
-adds counts and retries). *(Private surrogate filters — masking an individual
-lookup behind a match flag — remain deferred until they can be done properly.)*
+adds counts and retries). *(Private surrogate filters - masking an individual
+lookup behind a match flag - remain deferred until they can be done properly.)*
 
 ### Is it safe to send this to an AI?
 
@@ -196,7 +196,7 @@ On the CLI: `safedata risk customers.csv "What is total revenue by region?"`
 
 ### Audit trail for an answer
 
-Every `agent.ask()` result can write a self-contained HTML audit — the question,
+Every `agent.ask()` result can write a self-contained HTML audit - the question,
 the exact summary sent to the model, each attempt (and why any were blocked),
 the final code/answer, data-quality warnings, withheld PII columns, and token
 saving:
@@ -265,7 +265,7 @@ safedata.token_stats(df)             # {summary_tokens, raw_tokens, saved_*}
 **These are estimates**, not tokenizer-exact counts: the library uses a
 provider-agnostic ~4-characters-per-token heuristic and sizes the raw data from a
 small row sample (it never serialises the whole table, so it stays cheap on huge
-frames). Exact numbers vary by model/tokenizer — treat the figures as orders of
+frames). Exact numbers vary by model/tokenizer - treat the figures as orders of
 magnitude, not guarantees.
 
 ## PII masking
@@ -275,13 +275,13 @@ By default safedata masks obvious PII (emails, cards, phones, SSNs, IPs) before
 the summary leaves your machine and notes which columns were masked.
 
 ```python
-safedata.summarize(df)                    # regex PII (emails/cards/…) masked
+safedata.summarize(df)                    # regex PII (emails/cards/...) masked
 safedata.summarize(df, mask_pii=True)     # ALSO withhold name/address columns
 safedata.summarize(df, redact_pii=False)  # raw samples, if you are sure
 ```
 
 Note: plain `summarize(df)` masks only **regex-detectable** PII (emails, cards,
-phones, SSNs, IPs) — it does **not** hide names/addresses, so its raw output can
+phones, SSNs, IPs) - it does **not** hide names/addresses, so its raw output can
 still contain `"Alice Smith"`. Pass `mask_pii=True` (or use `build_safe_prompt()`
 / `Agent.ask()`, which do this for you) before sending a summary to a model.
 
@@ -292,7 +292,7 @@ Regex masking cannot catch names or addresses; `build_safe_prompt(..., privacy=
 and address columns are masked in the summary the model sees and in the audit
 report, not just regex-matchable emails. Column names/types are still shown, so
 the model can still operate on those columns. With `redact_result_pii=True`, the
-returned value is also scrubbed — PII columns of a result frame are replaced with
+returned value is also scrubbed - PII columns of a result frame are replaced with
 `[REDACTED]`, and dict/list results are walked recursively.
 
 ## Data quality & AI-readiness API

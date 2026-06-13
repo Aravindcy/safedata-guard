@@ -26,6 +26,6 @@ public issue. Include a minimal reproduction and the affected version. We aim to
 acknowledge within 5 business days.
 
 Especially valuable: a code snippet that passes `check_code()` / the static
-screen yet reaches the filesystem, network, or host process — that is exactly the
+screen yet reaches the filesystem, network, or host process - that is exactly the
 boundary this project documents as best-effort, and concrete bypasses help us
 tighten it.

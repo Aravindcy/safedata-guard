@@ -51,7 +51,7 @@ def summarize(df, max_samples: int = 3, redact_pii: bool = True,
 
     PRIVACY NOTE: by default this masks only REGEX-detectable PII in the sample
     values (emails, cards, phones, SSNs, IPs). It does NOT hide names or
-    addresses, which regex cannot reliably detect — so the raw summary can still
+    addresses, which regex cannot reliably detect - so the raw summary can still
     contain values like "Alice Smith". If you will send the summary to a model,
     use `mask_pii=True` (below), or the higher-level `build_safe_prompt()` /
     `Agent.ask()`, which withhold detected PII columns automatically.
@@ -69,7 +69,7 @@ def summarize(df, max_samples: int = 3, redact_pii: bool = True,
         them.
     mask_pii : bool
         If True, auto-detect PII columns (by value AND by name, so name/address
-        columns are caught) and fully withhold them — i.e. populate
+        columns are caught) and fully withhold them - i.e. populate
         `mask_columns` for you. Off by default to keep `summarize` a low-level,
         no-surprises view and avoid the detection cost; turn it on for a
         privacy-safe summary in one flag.

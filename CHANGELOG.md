@@ -19,7 +19,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   For a given question it builds the *minimum safe view* of the data, runs the
   analysis only on that view, and returns an audit of what was dropped.
   - `safe_mode="drop_unneeded_pii"` (**default**): drop the PII columns the
-    question doesn't need, **keep every non-PII column** — strong privacy with no
+    question doesn't need, **keep every non-PII column** - strong privacy with no
     risk of dropping a column the analysis needed (so no wrong answers). The
     unneeded PII values are simply not present in the view the model/code sees.
   - `safe_mode="minimal"` (opt-in, advanced): also drop non-PII columns the
@@ -31,7 +31,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **k-anonymity / minimum group size suppression** (`min_group_size=`). On
   `run_safely`, `Agent`, and `safe_answer`: a grouped result must carry a
   per-group `count` column; groups smaller than the threshold are **suppressed**
-  (rows removed — reported figures stay exact) so a group of one can't
+  (rows removed - reported figures stay exact) so a group of one can't
   re-identify an individual. If the result has no count column, it's refused with
   guidance (the model adds counts on retry). New `safedata.k_anonymize()` utility
   exposes the same suppression. (Private surrogate filters remain deferred.)
@@ -64,7 +64,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **`scan_rows` threads through the privacy-aware APIs.** `ai_risk_score`,
   `create_contract`, `build_prompt`, `quality_score`, and `ai_readiness` take
   `scan_rows=N|"all"`, `Agent(...)` takes `pii_scan_rows`, and `safedata
-  check`/`risk` gain `--pii-scan-rows/--pii-scan-all` — so rare PII past the fast
+  check`/`risk` gain `--pii-scan-rows/--pii-scan-all` - so rare PII past the fast
   default window is caught consistently everywhere, not just in `privacy_report`.
 - **`Agent.strict()` now blocks 1-D per-row results** (`block_1d_row_results`):
   a Series/list with one value per input row (e.g. `df['name'].tolist()`) is
@@ -108,24 +108,24 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   returns `blocked_columns` = the PII columns the question doesn't reference, and
   `run_safely(..., blocked_columns=[...])` refuses generated code that touches
   them (by subscript or attribute). `Agent.safe()`/`strict()` enable it by
-  default — least-privilege access, not just redaction. Only PII columns are
+  default - least-privilege access, not just redaction. Only PII columns are
   firewalled, so a legitimate aggregate is never blocked for not naming a column.
 - **Result-minimisation guard.** `run_safely(..., enforce_minimal_result=True)`
   (and `Agent(enforce_minimal_result=True)`) blocks a result that returns the
   full, unaggregated input frame.
-- **`ai_risk_score(df, question=None)`** — a 0..100 risk score with reasons and a
+- **`ai_risk_score(df, question=None)`** - a 0..100 risk score with reasons and a
   recommended mode, composed from the PII/quality signals. Also `safedata risk
   <file> [question]` on the CLI (exit 2 on high risk, to gate pipelines).
-- **`detect_ai_traps(df)`** — the data traps that make an AI answer *wrong*
-  (text-numeric, dates-as-text, Excel serials, messy categories, …), each with a
+- **`detect_ai_traps(df)`** - the data traps that make an AI answer *wrong*
+  (text-numeric, dates-as-text, Excel serials, messy categories, ...), each with a
   short instruction for the model.
-- **`shadow(df)`** — a synthetic DataFrame with the same columns/types but no real
+- **`shadow(df)`** - a synthetic DataFrame with the same columns/types but no real
   values (typed fakes for PII, cardinality-preserving labels otherwise), for
   testing generated code or sharing a dataset's shape safely.
 - **`Agent.safe()` / `Agent.strict()` presets.** One call gives the secure
   configuration: result-size caps + PII redaction + process isolation (`safe`)
   or full container isolation (`strict`). Any keyword overrides the preset.
-- **`create_contract(df)` — a Data Safety Contract.** A machine-readable policy
+- **`create_contract(df)` - a Data Safety Contract.** A machine-readable policy
   derived from the read-only heuristics: allowed/blocked columns, data traps the
   model must account for, allowed/blocked operations, column types, and a privacy
   level. A declarative policy layer for AI access to a dataset.
@@ -137,7 +137,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - **Test suite exits cleanly in subprocess-restricted sandboxes.** The two
   infinite-loop timeout tests now `skip` when a Python subprocess can't be
-  spawned — otherwise `isolate=True` falls back to an unkillable in-process
+  spawned - otherwise `isolate=True` falls back to an unkillable in-process
   thread spinning `while True`, which could wedge interpreter shutdown. CI also
   has a per-step `timeout-minutes` guard. (CI itself runs the full suite green.)
 - **Object-cell mutation.** `run_safely(..., isolate=False)` could mutate the
@@ -157,7 +157,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Security
 - **Closed a `str.format`/`str.format_map` information-disclosure bypass.** A
   format template like `'{0.__init__.__globals__}'.format(df)` performs attribute
-  traversal inside the string literal — invisible to the AST screen — and could
+  traversal inside the string literal - invisible to the AST screen - and could
   read a reachable module's globals (config, secrets) into the result. The static
   screen now inspects `.format`/`.format_map` calls: it refuses fields that reach
   into the argument (`{0.attr}` / `{0[key]}`) and refuses non-literal templates it
@@ -171,7 +171,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `safedata.__file__` None and the API unimportable).
 
 ### Changed
-- Added per-version Python classifiers (3.8–3.13) so PyPI shows the supported
+- Added per-version Python classifiers (3.8-3.13) so PyPI shows the supported
   versions. Docker runner image tag bumped to `1.0.8`.
 
 ## [1.0.7]
@@ -180,7 +180,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Container isolation mode.** `run_safely(..., isolation="docker")` and
   `Agent(..., isolation="docker")` run generated code inside a throwaway
   container with no network, a read-only root filesystem, and memory/CPU limits
-  — a real boundary for genuinely untrusted model output. Tune with
+  - a real boundary for genuinely untrusted model output. Tune with
   `docker_image=`, `memory=`, `cpus=`, `network=`.
 - **Result guards.** `max_result_rows`, `max_result_bytes`, and
   `redact_result_pii` on `run_safely`/`Agent` cap the size of the returned value
