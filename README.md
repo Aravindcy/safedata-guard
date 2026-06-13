@@ -40,6 +40,12 @@ Profiles: `Policy.basic()`, `Policy.regulated()` (customer/PII data),
 `Policy.strict()` (container isolation + Presidio), `Policy.audit_only()`. Any
 field can be overridden: `Policy.regulated(min_group_size=10)`.
 
+> **`Policy.strict()` needs Docker** (`isolation="docker"`, a prebuilt runner
+> image) **and the optional Presidio install** (`use_presidio=True`). Both
+> degrade gracefully if absent - Presidio is skipped, and Docker raises a clear
+> error - but if you want strong defaults **without** Docker, use
+> `Policy.regulated()` (process isolation, k-anonymity, deep PII scan).
+
 `safe_answer` + `Policy` is the recommended entry point. The pieces below
 (`Agent`, `run_safely`, `create_contract`, `privacy_report`, ...) are the
 lower-level building blocks it is composed from, for when you need finer control.
@@ -306,6 +312,25 @@ provider-agnostic ~4-characters-per-token heuristic and sizes the raw data from 
 small row sample (it never serialises the whole table, so it stays cheap on huge
 frames). Exact numbers vary by model/tokenizer - treat the figures as orders of
 magnitude, not guarantees.
+
+## Plug into Pandera / Great Expectations
+
+safedata is the AI-safety layer; it connects to the schema and quality tools your
+team already uses instead of replacing them. Export the inferred schema and
+checks:
+
+```python
+schema = safedata.to_pandera_schema(df)            # a pandera DataFrameSchema
+schema.validate(df)
+
+suite = safedata.to_great_expectations_suite(df)   # a portable GX suite dict
+# {"expectation_suite_name": ..., "expectations": [...],
+#  "meta": {"pii_columns": ["customer_name", ...]}}
+```
+
+`to_pandera_schema` needs `pip install "safedata-guard[pandera]"`.
+`to_great_expectations_suite` returns a plain dict that Great Expectations can
+import, so safedata doesn't pin you to a specific (fast-moving) GX version.
 
 ## International PII (optional, Presidio)
 

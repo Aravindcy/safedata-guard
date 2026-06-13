@@ -1974,3 +1974,31 @@ def test_safe_answer_applies_policy_and_overrides():
 def test_policy_agent_bridge():
     ag = safedata.Policy.regulated().agent(lambda p: "")
     assert ag.min_group_size == 5 and ag.enforce_minimal_result is True
+
+
+# --- 1.0.9: interop exports (Pandera / Great Expectations) ------------------
+
+def test_great_expectations_suite_export():
+    df = pd.DataFrame({"id": [1, 2, 3], "customer_name": ["A", "B", "C"],
+                       "qty": [5, 6, 7]})
+    suite = safedata.to_great_expectations_suite(df, suite_name="s1")
+    assert suite["expectation_suite_name"] == "s1"
+    types = {e["expectation_type"] for e in suite["expectations"]}
+    assert "expect_column_to_exist" in types
+    assert "expect_table_columns_to_match_set" in types
+    # id is unique -> uniqueness expectation; qty is non-negative-named -> range
+    assert "expect_column_values_to_be_unique" in types
+    assert "expect_column_values_to_be_between" in types
+    assert "customer_name" in suite["meta"]["pii_columns"]
+
+
+def test_pandera_schema_export():
+    try:
+        import pandera  # noqa: F401
+    except ImportError:
+        pytest.skip("pandera not installed")
+    df = pd.DataFrame({"id": [1, 2, 3], "qty": [5, 6, 7], "city": ["N", "S", "N"]})
+    schema = safedata.to_pandera_schema(df)
+    assert set(schema.columns.keys()) == {"id", "qty", "city"}
+    # the schema actually validates conforming data
+    assert len(schema.validate(df)) == 3

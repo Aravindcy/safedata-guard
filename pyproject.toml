@@ -30,6 +30,7 @@ polars = ["polars>=0.20"]
 # International PII detection. Also needs a spaCy model, e.g.
 # python -m spacy download en_core_web_sm
 presidio = ["presidio-analyzer>=2.2", "spacy>=3.4"]
+pandera = ["pandera>=0.17"]
 # openpyxl reads/writes .xlsx; xlrd is needed for legacy .xls files.
 excel = ["openpyxl>=3.0", "xlrd>=2.0"]
 

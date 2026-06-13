@@ -42,6 +42,15 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     "high" raw risk isn't mistaken for the firewall not working.
   - New CLI command: `safedata plan data.csv "question" [--minimal] [--json]`
     prints the safe view, dropped PII, risk, and audit for a question.
+- **Interop exports.** `to_pandera_schema(df)` returns a pandera DataFrameSchema
+  (optional `[pandera]` extra) and `to_great_expectations_suite(df)` returns a
+  portable GX expectation-suite dict (no GX dependency, since GX is heavy and its
+  API moves fast). Detected PII columns are listed in the suite meta. This makes
+  safedata the AI-safety layer that connects to the schema/quality tools teams
+  already use rather than competing with them.
+- **`Policy.strict()` requirements documented** - it needs Docker and the
+  optional Presidio install; `Policy.regulated()` is the strong-defaults profile
+  that works without Docker.
 - **Optional Presidio international PII detection** (`enable_presidio()`). With
   the optional install (`pip install "safedata-guard[presidio]"` + a spaCy model)
   and `safedata.enable_presidio()`, value-based PII detection also runs Microsoft
