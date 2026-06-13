@@ -41,6 +41,7 @@ from .receipt import create_receipt, format_receipt
 from .shadowframe import create_shadowframe, profile_dataframe, ShadowFrameResult
 from .leaktest import (leak_test, LeakTestResult, LeakAttempt, detect_leak,
                        collect_sensitive_values)
+from .session import SafeSession, SessionEvent, estimate_question_cost
 
 __version__ = "1.1.0"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
@@ -66,4 +67,6 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "create_shadowframe", "profile_dataframe", "ShadowFrameResult",
            # LeakScore (heuristic privacy red-team harness)
            "leak_test", "LeakTestResult", "LeakAttempt", "detect_leak",
-           "collect_sensitive_values"]
+           "collect_sensitive_values",
+           # SafeSession (per-conversation privacy budget + differencing guard)
+           "SafeSession", "SessionEvent", "estimate_question_cost"]
