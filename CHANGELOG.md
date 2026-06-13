@@ -7,7 +7,26 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.8]
 
 ### Security / Privacy
-- **CLI `check` output is now privacy-aware by default.** It previously regex-
+- **PII name detection now splits camelCase/PascalCase.** `FullName`,
+  `CustomerName`, `EmailAddress` are now recognised like their snake_case forms.
+- **Card numbers stored as integers are detected via the Luhn checksum.** A
+  CSV/Excel import that inferred a card column as numeric is now flagged, without
+  false-flagging ordinary long integers (random long ints don't pass Luhn). Added
+  `safedata.pii.luhn_ok()` and card/account name hints.
+- **`quality_score` no longer looks "Good" when PII is present.** It now returns
+  `safe_to_send_raw` and an `ai_readiness` verdict that folds in `privacy_risk`
+  (e.g. "Needs Review" when privacy risk is High), so a clean-but-sensitive table
+  isn't mistaken for safe-to-send.
+- **CLI `check` output is now privacy-aware by default.**
+
+### Fixed
+- **`Agent.safe(model, isolate=False)` is honored.** The presets set
+  `isolation="process"`, which used to silently override an explicit
+  `isolate=False`; now passing `isolate=False` (without an explicit `isolation=`)
+  drops the preset isolation so in-process execution actually takes effect.
+- **Test timeouts.** Added `pytest-timeout` (`timeout = 60` in config) and a
+  `slow` marker on subprocess/docker tests, so a wedged isolation test fails
+  loudly instead of stalling a full run. It previously regex-
   masked emails but still printed name/address samples; it now fully withholds
   detected PII columns (`--no-redact` opts out).
 - **`scan_rows` threads through the privacy-aware APIs.** `ai_risk_score`,

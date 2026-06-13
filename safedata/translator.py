@@ -474,10 +474,18 @@ NONNEGATIVE_NAME_HINTS = {"count", "qty", "quantity", "amount", "total",
                           "volume", "price", "age", "num"}
 
 _WORD = re.compile(r"[a-z0-9]+")
+# Split camelCase / PascalCase so "FullName"/"customerName" tokenise like the
+# snake_case "full_name": insert a boundary between a lower/digit and an upper,
+# and between an acronym and a following word ("EmailAddress", "HTTPServer").
+_CAMEL1 = re.compile(r"(?<=[a-z0-9])(?=[A-Z])")
+_CAMEL2 = re.compile(r"(?<=[A-Z])(?=[A-Z][a-z])")
 
 
 def _name_tokens(col: str):
-    return set(_WORD.findall(str(col).lower()))
+    s = str(col)
+    s = _CAMEL1.sub(" ", s)
+    s = _CAMEL2.sub(" ", s)
+    return set(_WORD.findall(s.lower()))
 
 
 def _name_hints_date(col: str) -> bool:

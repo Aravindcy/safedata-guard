@@ -41,6 +41,7 @@ needs_subprocess = pytest.mark.skipif(
            "unkillable in-process thread")
 
 
+@pytest.mark.slow
 def test_subprocess_isolation_smoke():
     # One explicit exercise of the real subprocess path (isolate=True).
     assert _run_safely("result = df['amount'].sum()", sample_df(),
@@ -451,6 +452,7 @@ def test_allows_any_all_builtins():
                       isolate=False) is False
 
 
+@pytest.mark.slow
 @needs_subprocess
 def test_isolation_works_from_source_checkout():
     # The subprocess child must be able to import safedata even when the package
@@ -524,6 +526,7 @@ def test_blocks_from_import_of_reexported_os():
             run_safely(code, df, isolate=False)
 
 
+@pytest.mark.slow
 @needs_subprocess
 def test_timeout_stops_infinite_loop():
     # Real boundary win: a hang is stopped instead of freezing the host.
@@ -1334,6 +1337,7 @@ def test_redact_result_pii_scrubs_emails():
     assert out["email"].tolist() == ["[REDACTED]", "[REDACTED]"]
 
 
+@pytest.mark.slow
 def test_docker_missing_raises_clear_error(monkeypatch):
     import shutil as _sh
     monkeypatch.setattr(_sh, "which", lambda name: None)
@@ -1667,3 +1671,36 @@ def test_quality_and_readiness_accept_scan_rows():
     no_pii = lambda r: [c for c in r["checks"] if c["check"] == "no_pii"][0]["ok"]
     assert no_pii(safedata.ai_readiness(df)) is True
     assert no_pii(safedata.ai_readiness(df, scan_rows="all")) is False
+
+
+# --- 1.0.8: camelCase PII, card detection, isolate honoring, quality verdict -
+
+def test_camelcase_pii_detection():
+    df = pd.DataFrame({"FullName": ["Alice Smith"], "CustomerName": ["Bob"],
+                       "EmailAddress": ["a@b.com"], "amount": [1]})
+    pii = set(safedata.privacy_report(df)["pii_columns"])
+    assert {"FullName", "CustomerName", "EmailAddress"} <= pii
+
+
+def test_numeric_card_detection_with_luhn():
+    df = pd.DataFrame({"card_number": [4111111111111111, 4012888888881881],
+                       "big_id": [12345678901234, 99999999999999]})
+    pii = set(safedata.privacy_report(df)["pii_columns"])
+    assert "card_number" in pii          # valid Luhn cards flagged
+    assert "big_id" not in pii           # non-Luhn long ints are not
+
+
+def test_agent_safe_honors_isolate_false():
+    assert safedata.Agent.safe(lambda p: "", isolate=False).isolation is None
+    assert safedata.Agent.safe(lambda p: "").isolation == "process"
+    # explicit isolation= still wins
+    assert safedata.Agent.safe(lambda p: "", isolate=False,
+                               isolation="docker").isolation == "docker"
+
+
+def test_quality_score_reflects_privacy():
+    q = safedata.quality_score(pd.DataFrame({"email": ["a@b.com", "c@d.com"],
+                                             "v": [1, 2]}))
+    assert q["privacy_risk"] == "High"
+    assert q["ai_readiness"] == "Needs Review"
+    assert q["safe_to_send_raw"] is False

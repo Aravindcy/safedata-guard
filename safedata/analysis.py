@@ -355,7 +355,8 @@ _PERSON_CONTEXT = {
     "policyholder", "driver",
 }
 # "high sensitivity" kinds escalate to high risk even when only the NAME hints it
-_HIGH_RISK_KINDS = {"email", "phone", "national_id", "date_of_birth", "address"}
+_HIGH_RISK_KINDS = {"email", "phone", "national_id", "date_of_birth", "address",
+                    "card"}
 
 
 def _pii_name_hints(df) -> dict:
@@ -380,6 +381,9 @@ def _pii_name_hints(df) -> dict:
             kind = "date_of_birth"
         elif toks & {"postcode", "zipcode", "zip"}:
             kind = "postcode"
+        elif toks & {"card", "creditcard", "ccnum", "ccnumber", "pan", "iban",
+                     "cvv", "account", "acct"}:
+            kind = "card"
         elif "address" in toks:
             kind = "address"
         elif "surname" in toks:
@@ -442,6 +446,19 @@ def _detect_pii_columns(df, scan_rows=_DEFAULT_PII_SCAN):
                 break
         if kinds:
             hits[col] = sorted(kinds)
+
+    # Numeric columns can hold card numbers a CSV/Excel import stored as ints,
+    # which the text patterns above never see. Flag an integer column as a card
+    # only when its sampled values pass the Luhn checksum — a random long int
+    # essentially never does, so this avoids false-flagging IDs/counts.
+    for col in df.select_dtypes(include=["int64", "int32", "uint64", "Int64"]).columns:
+        nn = df[col].dropna()
+        vals = nn.unique()
+        vals = vals if unlimited else vals[:int(scan_rows)]
+        if len(vals) and all(_pii.luhn_ok(v) for v in vals):
+            hits.setdefault(col, [])
+            if "card" not in hits[col]:
+                hits[col] = sorted(set(hits[col]) | {"card"})
     return hits
 
 
@@ -545,12 +562,24 @@ def quality_score(df, scan_rows=_DEFAULT_PII_SCAN) -> dict:
     else:
         privacy_risk = "Low"
 
+    # The data-quality label alone is misleading when PII is present (a clean,
+    # high-scoring table can still be unsafe to send raw). Fold privacy into the
+    # AI-readiness verdict so "Good quality" never implies "safe to send".
+    safe_to_send_raw = privacy_risk == "Low"
+    if privacy_risk == "High":
+        ai_readiness_label = "Needs Review"
+    elif privacy_risk == "Medium":
+        ai_readiness_label = "Review" if overall >= 60 else "Poor"
+    else:
+        ai_readiness_label = _label(overall)
+
     return {
-        "score": overall,
+        "score": overall,                 # data-quality only, 0..100
         "label": _label(overall),
         "breakdown": breakdown,
         "privacy_risk": privacy_risk,
-        "ai_readiness": _label(overall),
+        "safe_to_send_raw": safe_to_send_raw,
+        "ai_readiness": ai_readiness_label,   # factors in privacy, not just quality
         "issue_count": len(issues),
     }
 

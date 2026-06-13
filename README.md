@@ -13,6 +13,13 @@ whatever code it writes, unchecked. safedata-guard fixes both halves: it sends a
 compact, **quality-aware summary** instead of raw rows, and runs the model's code
 behind **guardrails on a copy** of your data.
 
+> **Status: beta.** Useful and tested, but treat it as a defense-in-depth safety
+> *layer*, not a hardened sandbox. It is **not** a "fully secure sandbox",
+> "compliance-grade PII protection", or "guaranteed safe execution" — PII
+> detection and code screening are best-effort heuristics (see *Scope* below).
+> For untrusted code, run it inside OS-level isolation (`isolation="docker"` or
+> your own container/VM).
+
 ## What it does
 
 **1. Summarises before the data reaches the model.** Instead of 100,000 rows, it
@@ -201,18 +208,20 @@ safety guarantees do not depend on it.
 
 ## Token saving
 
-Sending a whole table costs tokens per row; the summary is far smaller. Measured
-against OpenAI's own counter, a 1,000-row table was **18,180 → 229 input tokens
-(98.7%)** for one question; on millions of rows the saving approaches 99.99%.
+Sending a whole table costs tokens per row; the summary is far smaller. As a
+rough illustration, a 1,000-row table estimates at **~18,180 → ~229 tokens
+(~98.7%)** for one question; on millions of rows the saving approaches 99.99%.
 
 ```python
 print(safedata.token_savings(df))    # readable sentence
 safedata.token_stats(df)             # {summary_tokens, raw_tokens, saved_*}
 ```
 
-The raw-data figure is estimated from a small row sample (never by serialising
-the whole table), so it stays cheap even on huge frames; exact counts vary by
-provider.
+**These are estimates**, not tokenizer-exact counts: the library uses a
+provider-agnostic ~4-characters-per-token heuristic and sizes the raw data from a
+small row sample (it never serialises the whole table, so it stays cheap on huge
+frames). Exact numbers vary by model/tokenizer — treat the figures as orders of
+magnitude, not guarantees.
 
 ## PII masking
 

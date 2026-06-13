@@ -147,10 +147,19 @@ class Agent:
                           redact_result_pii=True, allow_row_reduction=False,
                           isolation="process", column_firewall=True)
 
+    @staticmethod
+    def _honor_isolate(opts, overrides):
+        """If the caller passes isolate=False without an explicit isolation=,
+        drop the preset's isolation so isolate=False actually takes effect
+        (isolation= otherwise wins over isolate=, which would be surprising)."""
+        if overrides.get("isolate") is False and "isolation" not in overrides:
+            opts.pop("isolation", None)
+
     @classmethod
     def safe(cls, model, **overrides):
         """Agent preset with result-size caps + PII redaction, process isolation."""
         opts = dict(cls._SAFE_DEFAULTS)
+        cls._honor_isolate(opts, overrides)
         opts.update(overrides)
         return cls(model, **opts)
 
@@ -161,6 +170,7 @@ class Agent:
         opts["isolation"] = "docker"
         opts["enforce_minimal_result"] = True
         opts["block_1d_row_results"] = True
+        cls._honor_isolate(opts, overrides)
         opts.update(overrides)
         return cls(model, **opts)
 

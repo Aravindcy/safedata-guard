@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "openpyxl>=3.0", "xlrd>=2.0", "polars>=0.20"]
+dev = ["pytest>=7.0", "pytest-timeout>=2.1", "openpyxl>=3.0", "xlrd>=2.0", "polars>=0.20"]
 polars = ["polars>=0.20"]
 # openpyxl reads/writes .xlsx; xlrd is needed for legacy .xls files.
 excel = ["openpyxl>=3.0", "xlrd>=2.0"]
@@ -48,3 +48,11 @@ packages = ["safedata"]
 
 [tool.setuptools.package-data]
 safedata = ["py.typed"]
+
+[tool.pytest.ini_options]
+# A wedged subprocess/docker/timeout test should fail loudly, not stall the run.
+# Requires pytest-timeout (in the dev extra).
+timeout = 60
+markers = [
+    "slow: tests that spawn subprocesses or containers (slower, may need isolation)",
+]
