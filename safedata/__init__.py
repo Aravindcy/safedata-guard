@@ -39,6 +39,8 @@ from .safeplan import (safe_query, SafePlan, SafePlanResult, MetricSpec,
                        validate_safeplan, execute_safeplan)
 from .receipt import create_receipt, format_receipt
 from .shadowframe import create_shadowframe, profile_dataframe, ShadowFrameResult
+from .leaktest import (leak_test, LeakTestResult, LeakAttempt, detect_leak,
+                       collect_sensitive_values)
 
 __version__ = "1.1.0"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
@@ -61,4 +63,7 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "validate_safeplan", "execute_safeplan",
            "create_receipt", "format_receipt",
            # ShadowFrame (synthetic same-shape stand-in; no real values)
-           "create_shadowframe", "profile_dataframe", "ShadowFrameResult"]
+           "create_shadowframe", "profile_dataframe", "ShadowFrameResult",
+           # LeakScore (heuristic privacy red-team harness)
+           "leak_test", "LeakTestResult", "LeakAttempt", "detect_leak",
+           "collect_sensitive_values"]
