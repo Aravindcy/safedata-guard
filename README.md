@@ -66,7 +66,7 @@ Build the runner image once (it bundles safedata + pandas/numpy so the container
 needs no network at run time; see the repo `Dockerfile`):
 
 ```bash
-docker build -t safedata-guard-runner:1.0.8 .
+docker build -t safedata-guard-runner:1.0.9 .
 ```
 
 ```python
@@ -134,6 +134,36 @@ safedata.run_safely(code, df, blocked_columns=contract["blocked_columns"])
 `Agent.safe()` / `Agent.strict()` enable this firewall automatically. Add
 `enforce_minimal_result=True` to also refuse a full-table answer to an aggregate
 question.
+
+### Query-aware privacy firewall (minimum safe data)
+
+Instead of asking *"is this DataFrame safe?"*, ask *"what is the minimum safe
+data needed to answer **this** question?"* The firewall builds a privacy-filtered
+view, runs the analysis only on it, and returns an audit of what was dropped.
+
+```python
+plan = safedata.create_privacy_plan(df, "total revenue by region")
+safe_df = safedata.make_safe_view(df, plan)        # only the needed columns
+answer  = safedata.safe_answer(df, "total revenue by region", model=my_llm)
+print(answer["answer"], answer["audit"])
+```
+
+**Safe by default.** `safe_mode="drop_unneeded_pii"` (the default) removes the PII
+columns the question doesn't need and **keeps every non-PII column** — so the
+model never sees unneeded names/emails, but the columns your analysis needs are
+always present (no wrong answers). The audit explains exactly what was dropped:
+
+> *Dropped 2 unneeded PII column(s) (customer_name, email) — never sent to the
+> model. Retained 4 column(s) for analysis: …*
+
+`safe_mode="minimal"` is an **opt-in advanced mode** that also drops non-PII
+columns the question doesn't appear to reference. It's stronger, but column
+relevance is a heuristic — if it misses a column your analysis needed, the answer
+can be wrong, so it carries a warning and is never the default.
+
+*(Private surrogate filters and k-anonymity / minimum-group-size suppression are
+intentionally not included yet — they'll come once they can be implemented and
+tested properly, rather than claimed before they work.)*
 
 ### Is it safe to send this to an AI?
 

@@ -1704,3 +1704,68 @@ def test_quality_score_reflects_privacy():
     assert q["privacy_risk"] == "High"
     assert q["ai_readiness"] == "Needs Review"
     assert q["safe_to_send_raw"] is False
+
+
+# --- 1.0.9: query-aware privacy firewall ------------------------------------
+
+def _firewall_plan_df():
+    return pd.DataFrame({
+        "customer_name": ["Alice Smith", "Bob Jones"],
+        "email": ["a@b.com", "c@d.com"],
+        "region": ["North", "South"],
+        "revenue": [100, 200],
+        "contract_start_date": ["2024-01-01", "2024-02-01"],
+    })
+
+
+def test_plan_default_drops_only_unneeded_pii():
+    df = _firewall_plan_df()
+    plan = safedata.create_privacy_plan(df, "total revenue by region")
+    # all non-PII columns retained (no wrong answers)
+    for c in ["region", "revenue", "contract_start_date"]:
+        assert c in plan.allowed_columns
+    # unneeded PII dropped
+    assert set(plan.dropped_pii_columns) == {"customer_name", "email"}
+    assert "customer_name" not in plan.allowed_columns
+
+
+def test_plan_keeps_needed_pii():
+    df = _firewall_plan_df()
+    plan = safedata.create_privacy_plan(df, "list customer emails")
+    assert "email" in plan.retained_pii_columns
+    assert "email" in plan.allowed_columns
+
+
+def test_minimal_mode_is_opt_in_and_warns():
+    df = _firewall_plan_df()
+    plan = safedata.create_privacy_plan(df, "total revenue by region",
+                                        safe_mode="minimal")
+    assert "contract_start_date" not in plan.allowed_columns   # aggressive
+    assert plan.warnings                                       # carries a caveat
+
+
+def test_make_safe_view_has_no_dropped_values():
+    df = _firewall_plan_df()
+    plan = safedata.create_privacy_plan(df, "total revenue by region")
+    sv = safedata.make_safe_view(df, plan)
+    assert "customer_name" not in sv.columns
+    assert "Alice Smith" not in sv.to_string()
+
+
+def test_safe_answer_dry_run_and_execution():
+    df = _firewall_plan_df()
+    dry = safedata.safe_answer(df, "total revenue by region")
+    assert dry["answer"] is None and "plan" in dry and dry["audit"]
+    out = safedata.safe_answer(
+        df, "total revenue by region",
+        code="result = df.groupby('region')['revenue'].sum()",
+        isolation="thread")
+    assert out["answer"].to_dict() == {"North": 100, "South": 200}
+    assert "customer_name" not in out["safe_dataframe_columns"]
+
+
+def test_detect_operation():
+    assert safedata.detect_operation("total revenue by region") == "aggregate"
+    assert safedata.detect_operation("top 5 customers") == "ranking"
+    assert safedata.detect_operation("monthly revenue trend") == "trend"
+    assert safedata.detect_operation("show all customers") == "raw_lookup"

@@ -30,8 +30,10 @@ from .analysis import (validate, Issue, suggest_fixes, explain_issue,
                        quality_score, ai_readiness, privacy_report,
                        infer_columns, build_safe_prompt, create_contract,
                        ai_risk_score, detect_ai_traps, shadow)
+from .firewall import (create_privacy_plan, make_safe_view, safe_answer,
+                       PrivacyPlan, detect_operation)
 
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "SafetyError", "check_code", "CodeCheck", "build_prompt", "report",
            "wrap", "extract_code", "ModelError",
@@ -41,4 +43,7 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "validate", "Issue", "suggest_fixes", "explain_issue",
            "quality_score", "ai_readiness", "privacy_report",
            "infer_columns", "build_safe_prompt", "create_contract",
-           "ai_risk_score", "detect_ai_traps", "shadow"]
+           "ai_risk_score", "detect_ai_traps", "shadow",
+           # query-aware privacy firewall
+           "create_privacy_plan", "make_safe_view", "safe_answer",
+           "PrivacyPlan", "detect_operation"]

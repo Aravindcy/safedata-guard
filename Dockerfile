@@ -2,7 +2,7 @@
 # (run_safely(..., isolation="docker")).
 #
 # Build once:
-#     docker build -t safedata-guard-runner:1.0.8 .
+#     docker build -t safedata-guard-runner:1.0.9 .
 #
 # The image bundles safedata + its analysis deps so the container can run with
 # NO network and a READ-ONLY root filesystem at run time (the secure defaults in
@@ -10,7 +10,7 @@
 FROM python:3.11-slim
 
 # Pinned to match DOCKER_DEFAULTS["image"]; bump both together on release.
-RUN pip install --no-cache-dir "safedata-guard==1.0.8" pandas numpy
+RUN pip install --no-cache-dir "safedata-guard==1.0.9" pandas numpy
 
 # Optional: add polars if you analyse Polars frames inside the container.
 # RUN pip install --no-cache-dir polars

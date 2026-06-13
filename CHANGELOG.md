@@ -4,6 +4,23 @@ All notable changes to **safedata-guard** are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9]
+
+### Added
+- **Query-aware privacy firewall** (`safedata.firewall`): `create_privacy_plan`,
+  `make_safe_view`, `safe_answer`, plus `PrivacyPlan` and `detect_operation`.
+  For a given question it builds the *minimum safe view* of the data, runs the
+  analysis only on that view, and returns an audit of what was dropped.
+  - `safe_mode="drop_unneeded_pii"` (**default**): drop the PII columns the
+    question doesn't need, **keep every non-PII column** — strong privacy with no
+    risk of dropping a column the analysis needed (so no wrong answers). The
+    unneeded PII values are simply not present in the view the model/code sees.
+  - `safe_mode="minimal"` (opt-in, advanced): also drop non-PII columns the
+    question doesn't reference. Stronger, but relevance is heuristic, so it
+    carries a warning and is never the default.
+  - Private surrogate filters and k-anonymity/min-group-size suppression are
+    deliberately deferred until they can be implemented and tested properly.
+
 ## [1.0.8]
 
 ### Security / Privacy
