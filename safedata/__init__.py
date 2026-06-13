@@ -38,6 +38,7 @@ from .integrations import to_pandera_schema, to_great_expectations_suite
 from .safeplan import (safe_query, SafePlan, SafePlanResult, MetricSpec,
                        validate_safeplan, execute_safeplan)
 from .receipt import create_receipt, format_receipt
+from .shadowframe import create_shadowframe, profile_dataframe, ShadowFrameResult
 
 __version__ = "1.1.0"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
@@ -58,4 +59,6 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            # SafePlan engine (JSON plan, executed locally - no generated Python)
            "safe_query", "SafePlan", "SafePlanResult", "MetricSpec",
            "validate_safeplan", "execute_safeplan",
-           "create_receipt", "format_receipt"]
+           "create_receipt", "format_receipt",
+           # ShadowFrame (synthetic same-shape stand-in; no real values)
+           "create_shadowframe", "profile_dataframe", "ShadowFrameResult"]

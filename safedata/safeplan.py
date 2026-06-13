@@ -237,8 +237,24 @@ def _post(result, policy):
 
 # --- prompt + public entry point --------------------------------------------
 
-def build_safeplan_prompt(safe_df, question, policy, previous_error=None):
-    summary = summarize(safe_df, mask_pii=True)
+def _shadow_summary(safe_df, rows=8):
+    """Schema + a synthetic sample (no real cell values) for the prompt."""
+    from .shadowframe import create_shadowframe
+    shadow = create_shadowframe(safe_df, rows=rows)
+    cols = ", ".join(f"{c} ({t['dtype']}, {t['kind']})"
+                     for c, t in shadow.profile["columns"].items())
+    sample = shadow.shadow_df.to_string(index=False, max_rows=rows)
+    return (f"COLUMNS: {cols}\n"
+            f"ROWS (real): {shadow.profile['rows']}\n"
+            f"SYNTHETIC SAMPLE (fake values, real values withheld):\n{sample}")
+
+
+def build_safeplan_prompt(safe_df, question, policy, previous_error=None,
+                          use_shadow=True):
+    if use_shadow:
+        summary = _shadow_summary(safe_df)
+    else:
+        summary = summarize(safe_df, mask_pii=True)
     parts = [
         "You convert a question into a STRICT JSON analysis plan. You do NOT "
         "write Python. Return ONLY a single JSON object, no prose, no code "
@@ -269,7 +285,8 @@ def build_safeplan_prompt(safe_df, question, policy, previous_error=None):
     return "\n".join(parts)
 
 
-def safe_query(df, question, model=None, policy=None, max_retries: int = 3):
+def safe_query(df, question, model=None, policy=None, max_retries: int = 3,
+               use_shadow: bool = True):
     """Answer `question` by having the model emit a JSON SafePlan that safedata
     executes locally (no generated Python). Returns a SafePlanResult with the
     answer, the plan, and a Data Safety Receipt.
@@ -297,7 +314,7 @@ def safe_query(df, question, model=None, policy=None, max_retries: int = 3):
     error, attempts = None, []
     for _ in range(max(1, max_retries)):
         prompt = build_safeplan_prompt(safe_df, question, policy,
-                                       previous_error=error)
+                                       previous_error=error, use_shadow=use_shadow)
         raw = model(prompt)
         attempts.append(str(raw)[:500])
         try:
