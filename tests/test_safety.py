@@ -1939,3 +1939,38 @@ def test_cli_plan_command(tmp_path, capsys):
     data = json.loads(capsys.readouterr().out)
     assert "safe_view_risk_level" in data and "dropped_pii_columns" in data
     assert rc == 0
+
+
+# --- 1.0.9: Policy profiles -------------------------------------------------
+
+def test_policy_profiles():
+    assert safedata.Policy.basic().min_group_size is None
+    reg = safedata.Policy.regulated()
+    assert reg.min_group_size == 5 and reg.pii_scan_rows == "all"
+    assert reg.enforce_minimal_result is True
+    strict = safedata.Policy.strict()
+    assert strict.isolation == "docker" and strict.use_presidio is True
+    # overrides on a profile
+    assert safedata.Policy.regulated(min_group_size=10).min_group_size == 10
+
+
+def test_safe_answer_applies_policy_and_overrides():
+    df = pd.DataFrame({"region": ["N"] * 4 + ["S"] * 5, "v": range(9)})
+    def stub(prompt):
+        return ("result = df.groupby('region').agg(v=('v','mean'), "
+                "count=('v','size')).reset_index()")
+    # regulated -> k=5 suppresses the 4-row group
+    out = safedata.safe_answer(df, "average v by region", model=stub,
+                               policy=safedata.Policy.regulated(),
+                               isolation="thread")
+    assert out["blocked"] is False and len(out["answer"]) == 1
+    # explicit override beats the policy
+    out2 = safedata.safe_answer(df, "average v by region", model=stub,
+                                policy=safedata.Policy.regulated(),
+                                min_group_size=2, isolation="thread")
+    assert len(out2["answer"]) == 2
+
+
+def test_policy_agent_bridge():
+    ag = safedata.Policy.regulated().agent(lambda p: "")
+    assert ag.min_group_size == 5 and ag.enforce_minimal_result is True

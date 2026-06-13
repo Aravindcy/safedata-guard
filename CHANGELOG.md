@@ -14,6 +14,15 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   through cleanly), matching `safe_answer`'s behaviour. Found in live testing.
 
 ### Added
+- **`Policy` profiles** (`safedata.Policy`). One object bundles the safety
+  settings so callers choose an intent instead of remembering flags:
+  `Policy.basic()`, `Policy.regulated()` (PII firewall + redaction + k-anonymity
+  + deep scan), `Policy.strict()` (container isolation + Presidio), and
+  `Policy.audit_only()`. Pass it to `safe_answer(df, q, model=..., policy=...)`;
+  any explicit keyword overrides the policy, and `policy=None` keeps the previous
+  defaults. `Policy(...).agent(model)` builds a configured `Agent`. `safe_answer`
+  + `Policy` is now the recommended entry point; `Agent`/`run_safely`/
+  `create_contract` are documented as the lower-level building blocks.
 - **Query-aware privacy firewall** (`safedata.firewall`): `create_privacy_plan`,
   `make_safe_view`, `safe_answer`, plus `PrivacyPlan` and `detect_operation`.
   For a given question it builds the *minimum safe view* of the data, runs the

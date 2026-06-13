@@ -857,7 +857,7 @@ def create_contract(df, question: str = None,
 
 
 def ai_risk_score(df, question: str = None,
-                 scan_rows=_DEFAULT_PII_SCAN) -> dict:
+                 scan_rows=_DEFAULT_PII_SCAN, use_presidio=None) -> dict:
     """Score how risky it is to hand `df` (and `question`) to an AI: 0..100.
 
     Composes the existing privacy and data-quality signals into a single risk
@@ -865,7 +865,7 @@ def ai_risk_score(df, question: str = None,
     Higher score = higher risk.
     """
     df = _as_pandas(df)
-    rep = privacy_report(df, scan_rows=scan_rows)
+    rep = privacy_report(df, scan_rows=scan_rows, use_presidio=use_presidio)
     issues = validate(df)
     rules = {i.rule_id for i in issues}
     pii_cols = rep["pii_columns"]

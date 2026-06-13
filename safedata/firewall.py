@@ -84,7 +84,8 @@ class PrivacyPlan:
 
 def create_privacy_plan(df, question: str,
                         safe_mode: str = "drop_unneeded_pii",
-                        scan_rows=20, max_result_rows: int = 50) -> PrivacyPlan:
+                        scan_rows=20, max_result_rows: int = 50,
+                        use_presidio=None) -> PrivacyPlan:
     """Decide the minimum safe set of columns to answer `question`.
 
     safe_mode:
@@ -100,7 +101,8 @@ def create_privacy_plan(df, question: str,
 
     pdf = _as_pandas(df)
     cols = list(pdf.columns)
-    pii_cols = list(privacy_report(pdf, scan_rows=scan_rows)["pii_columns"])
+    pii_cols = list(privacy_report(
+        pdf, scan_rows=scan_rows, use_presidio=use_presidio)["pii_columns"])
     operation = detect_operation(question)
     warnings = []
 
@@ -137,10 +139,12 @@ def create_privacy_plan(df, question: str,
     # raw risk can read "high" while the safe view is "low" because the PII was
     # dropped before anything reaches the model; surface both so that isn't
     # mistaken for the firewall not working.
-    original_risk = ai_risk_score(pdf, question, scan_rows=scan_rows)["risk_level"]
+    original_risk = ai_risk_score(
+        pdf, question, scan_rows=scan_rows, use_presidio=use_presidio)["risk_level"]
     try:
         safe_view_risk = ai_risk_score(
-            pdf[allowed], question, scan_rows=scan_rows)["risk_level"]
+            pdf[allowed], question, scan_rows=scan_rows,
+            use_presidio=use_presidio)["risk_level"]
     except Exception:
         safe_view_risk = original_risk
     result_policy = {
@@ -233,16 +237,26 @@ def _build_firewall_prompt(safe_df, question, plan, previous_error=None,
     return "\n".join(parts)
 
 
-def safe_answer(df, question, model=None, code=None,
-                safe_mode: str = "drop_unneeded_pii", scan_rows=20,
-                isolation: str = "process", timeout: float = 10.0,
-                max_retries: int = 3, min_group_size=None):
+_UNSET = object()
+
+
+def safe_answer(df, question, model=None, code=None, policy=None,
+                safe_mode=None, scan_rows=None, isolation=None, timeout=10.0,
+                max_retries=3, min_group_size=_UNSET, use_presidio=None,
+                max_result_rows=None, max_result_bytes=None,
+                redact_result_pii=None, enforce_minimal_result=None,
+                block_1d_row_results=None):
     """Answer `question` over `df` using the minimum safe data.
 
     Builds a privacy plan, creates the safe view, has `model` write code against
     that view (or runs the `code` you pass), executes it under the guardrails,
     and returns the answer plus the plan/audit. If neither `model` nor `code` is
     given, returns the plan only (a dry run).
+
+    policy : a safedata.Policy (e.g. Policy.regulated()) supplying the safety
+        settings. Any explicit keyword overrides the policy. With policy=None the
+        historical defaults apply (drop_unneeded_pii, process isolation, 50-row
+        cap, redaction on, operation-based minimal-result, no k-anonymity).
 
     Self-correcting: if generated code is blocked by a guardrail (e.g. too many
     rows), the error is fed back to the model and it retries up to `max_retries`
@@ -253,10 +267,34 @@ def safe_answer(df, question, model=None, code=None,
     model : callable (prompt:str) -> code/text. Output is run through
         extract_code, so a raw LLM reply with ```fences``` is fine.
     """
+    def pick(val, attr, default):
+        if val is not None:
+            return val
+        if policy is not None:
+            return getattr(policy, attr)
+        return default
+
+    safe_mode = pick(safe_mode, "safe_mode", "drop_unneeded_pii")
+    scan_rows = pick(scan_rows, "pii_scan_rows", 20)
+    isolation = pick(isolation, "isolation", "process")
+    use_presidio = pick(use_presidio, "use_presidio", None)
+    eff_max_rows = pick(max_result_rows, "max_result_rows", 50)
+    if min_group_size is _UNSET:
+        min_group_size = policy.min_group_size if policy is not None else None
+
     plan = create_privacy_plan(df, question, safe_mode=safe_mode,
-                               scan_rows=scan_rows)
+                               scan_rows=scan_rows, max_result_rows=eff_max_rows,
+                               use_presidio=use_presidio)
     safe_df = make_safe_view(df, plan)
-    pol = plan.result_policy
+    base = plan.result_policy
+
+    eff_max_bytes = pick(max_result_bytes, "max_result_bytes",
+                         base["max_result_bytes"])
+    eff_redact = pick(redact_result_pii, "redact_result_pii",
+                      base["redact_result_pii"])
+    eff_enf_min = pick(enforce_minimal_result, "enforce_minimal_result",
+                       base["enforce_minimal_result"])
+    eff_block1d = pick(block_1d_row_results, "block_1d_row_results", False)
 
     out = {
         "question": question,
@@ -278,11 +316,9 @@ def safe_answer(df, question, model=None, code=None,
     def _run(c):
         return run_safely(
             c, safe_df, isolation=isolation, timeout=timeout,
-            max_result_rows=pol["max_result_rows"],
-            max_result_bytes=pol["max_result_bytes"],
-            redact_result_pii=pol["redact_result_pii"],
-            enforce_minimal_result=pol["enforce_minimal_result"],
-            min_group_size=min_group_size)
+            max_result_rows=eff_max_rows, max_result_bytes=eff_max_bytes,
+            redact_result_pii=eff_redact, enforce_minimal_result=eff_enf_min,
+            block_1d_row_results=eff_block1d, min_group_size=min_group_size)
 
     # Code supplied directly: run once, but return a structured block (don't raise).
     if model is None:

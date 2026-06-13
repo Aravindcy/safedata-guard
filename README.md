@@ -20,6 +20,30 @@ behind **guardrails on a copy** of your data.
 > For untrusted code, run it inside OS-level isolation (`isolation="docker"` or
 > your own container/VM).
 
+## The recommended path
+
+Pick a **policy** for your data and let `safe_answer` do the rest. It builds the
+minimum safe view for the question, runs the model's code behind the guardrails,
+and returns the answer plus an audit:
+
+```python
+import safedata as sd
+
+policy = sd.Policy.regulated()   # PII firewall + redaction + k-anonymity + caps
+
+out = sd.safe_answer(df, "What is total revenue by region?",
+                     model=my_llm, policy=policy)
+print(out["answer"], out["audit"])
+```
+
+Profiles: `Policy.basic()`, `Policy.regulated()` (customer/PII data),
+`Policy.strict()` (container isolation + Presidio), `Policy.audit_only()`. Any
+field can be overridden: `Policy.regulated(min_group_size=10)`.
+
+`safe_answer` + `Policy` is the recommended entry point. The pieces below
+(`Agent`, `run_safely`, `create_contract`, `privacy_report`, ...) are the
+lower-level building blocks it is composed from, for when you need finer control.
+
 ## What it does
 
 **1. Summarises before the data reaches the model.** Instead of 100,000 rows, it
@@ -115,7 +139,12 @@ agent = safedata.Agent.strict(model)   # same, but runs code in a locked-down co
 
 Any keyword overrides the preset (e.g. `Agent.safe(model, timeout=30)`).
 
-### Data Safety Contract & question-aware firewall
+### Data Safety Contract (lower-level)
+
+> Most users want `safe_answer` + `Policy` (above), or `create_privacy_plan()`
+> (the modern firewall plan). `create_contract()` is the lower-level building
+> block it composes; reach for it when you want the raw allowed/blocked policy
+> without building a safe view.
 
 Turn the read-only checks into a machine-readable policy you can gate AI access
 on (no code is run). Pass the question to get a **least-privilege firewall** - the
