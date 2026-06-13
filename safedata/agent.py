@@ -14,7 +14,7 @@ in a real model (local or API) later without changing anything else.
 
 from .translator import summarize
 from .bodyguard import run_safely, SafetyError
-from .wrap import ModelError
+from .wrap import ModelError, extract_code
 from .tokens import token_stats
 
 
@@ -201,7 +201,10 @@ class Agent:
         for attempt in range(1, self.max_retries + 1):
             prompt = build_prompt(summary, question, previous_error=error)
             try:
-                code = self.model(prompt)    # Step 2, AI writes code
+                # extract_code makes a raw text-in/text-out LLM work directly
+                # (strips ```python fences/chatter), so callers don't HAVE to
+                # wrap() first; an already-wrapped model passes through cleanly.
+                code = extract_code(self.model(prompt))    # Step 2, AI writes code
             except ModelError as e:
                 return _result(answer=None, code=None, blocked=True, reason=str(e))
             attempts.append(code)

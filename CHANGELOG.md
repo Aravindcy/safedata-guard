@@ -6,6 +6,13 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.9]
 
+### Fixed
+- **`Agent.ask` now accepts a raw text-in/text-out LLM directly.** It previously
+  required the model to return bare code, so a real LLM's ```python-fenced reply
+  caused a "syntax error" block until you wrapped it with `safedata.wrap()`. Agent
+  now runs the model output through `extract_code` (a wrapped model still passes
+  through cleanly), matching `safe_answer`'s behaviour. Found in live testing.
+
 ### Added
 - **Query-aware privacy firewall** (`safedata.firewall`): `create_privacy_plan`,
   `make_safe_view`, `safe_answer`, plus `PrivacyPlan` and `detect_operation`.

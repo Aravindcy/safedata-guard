@@ -1795,3 +1795,16 @@ def test_safe_answer_model_self_corrects():
     assert out["blocked"] is False
     assert out["answer"].to_dict() == {"N": 4, "S": 6}
     assert len(out["attempts"]) == 2
+
+
+def test_agent_handles_raw_fenced_model_output():
+    # A raw LLM returns ```python fenced code; Agent should extract it (so users
+    # don't have to wrap() first), not fail with a syntax error.
+    df = pd.DataFrame({"region": ["N", "S"], "rev": [10, 20]})
+
+    def raw_model(prompt):
+        return "Here is the code:\n```python\nresult = df['rev'].sum()\n```"
+
+    out = safedata.Agent(model=raw_model, isolate=False).ask(df, "total rev")
+    assert out.blocked is False
+    assert out.answer == 30
