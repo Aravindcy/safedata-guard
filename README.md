@@ -77,6 +77,38 @@ Every answer can carry a **Data Safety Receipt** (`res.receipt`,
 `safedata.format_receipt`): an audit id, the mode, whether any Python ran, which
 PII was detected/dropped, the policy in force, and the answer's shape.
 
+## Privacy tooling around the query
+
+Three optional helpers harden the SafePlan flow. Each is honestly a best-effort
+heuristic, not a guarantee:
+
+- **ShadowFrame** (`safedata.create_shadowframe`) builds a fully synthetic,
+  same-shape stand-in (matching dtypes, ranges, cardinality, missingness, and PII
+  flags). `safe_query` uses it by default (`use_shadow=True`) so the model sees a
+  synthetic sample, not real cell values. The schema and aggregate stats are still
+  real, so this de-identifies the prompt rather than hiding the data's structure.
+
+- **LeakScore** (`safedata.leak_test`) runs a battery of attack prompts and scores
+  0-100 by checking whether real PII values appear in the answers. A cooperative
+  LLM through SafePlan usually scores ~100 (the defences hold by construction), so
+  its discriminating value is with a simulated malicious model or the Python path.
+
+  ```python
+  report = safedata.leak_test(df, model=my_llm, policy=safedata.Policy.strict())
+  print(report.score, report.risk_level)
+  ```
+
+- **SafeSession** (`safedata.SafeSession`) guards a whole conversation: it blocks
+  reusing the same aggregate with a tightened filter (a differencing attack) and
+  enforces a configurable per-question privacy budget. It is a practical heuristic,
+  **not** differential privacy - for formal guarantees use a DP library.
+
+  ```python
+  s = safedata.SafeSession(df, model=my_llm, policy=safedata.Policy.regulated())
+  s.ask("average order value in London")          # allowed
+  s.ask("average order value in London below 500")  # blocked: differencing
+  ```
+
 ## What it does
 
 **1. Summarises before the data reaches the model.** Instead of 100,000 rows, it

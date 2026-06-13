@@ -20,6 +20,27 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Data Safety Receipt** (`create_receipt`/`format_receipt`, and `res.receipt`
   on `safe_query`): a per-answer audit record - audit id, mode, whether any
   Python ran, PII detected/dropped, columns used, policy, and answer shape.
+- **ShadowFrame** (`create_shadowframe`, `profile_dataframe`): a fully synthetic,
+  same-shape stand-in (matching dtype, range, cardinality, missingness, PII flag)
+  plus a schema profile. `safe_query` now defaults to `use_shadow=True`, sending
+  the model the schema and a synthetic sample instead of real masked samples, so
+  no real cell value reaches the model. Best-effort prompt de-identification, not
+  a guarantee (the schema and aggregate stats are still real).
+- **LeakScore** (`leak_test`): a heuristic privacy red-team harness that runs a
+  battery of attack prompts through SafePlan (`mode="safeplan"`) or guarded-Python
+  (`mode="python"`) and scores 0-100 by checking whether real PII values from the
+  frame appear in the answers. A heuristic, not a guarantee.
+- **SafeSession** (`SafeSession`): a per-conversation guard adding a structural
+  differencing check (blocks reusing the same aggregate with a tightened filter
+  set) and a configurable keyword privacy budget. A practical heuristic, not
+  differential privacy.
+
+### Fixed
+- **SafePlan `aggregate`/`describe` now enforce `min_group_size`.** k-anonymity
+  previously only covered the groupby/value_counts paths; a narrow filter feeding
+  a plain aggregate or describe could expose one individual's value. Those ops
+  now block (raise `SafetyError`, surfaced as `blocked`) when the filtered subset
+  is below `min_group_size`. `basic()` (k unset) is unaffected.
 
 ## [1.0.9]
 
