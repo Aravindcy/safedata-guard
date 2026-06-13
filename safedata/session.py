@@ -28,7 +28,7 @@ from typing import List, Optional, Any
 
 from .analysis import _as_pandas, privacy_report
 from .policy import Policy
-from .safeplan import safe_query
+from .safeplan import prepare_safeplan, execute_prepared
 
 
 DEFAULT_COSTS = {
@@ -158,24 +158,26 @@ class SafeSession:
                     "used_budget": self.used,
                     "remaining_budget": max(self.budget - self.used, 0)}
 
-        # 2. Run the query (local execution; nothing extra reaches the model).
-        result = safe_query(self.df, question, model=self.model,
-                            policy=self.policy)
+        # 2. Get a validated plan WITHOUT executing it, so the differencing
+        #    check can block before any data is read/filtered.
+        prepared = prepare_safeplan(self.df, question, model=self.model,
+                                    policy=self.policy)
 
-        # 3. Structural differencing check on the produced plan.
-        if result.plan is not None and _is_differencing(result.plan, self.events):
+        # 3. Structural differencing check on the (not-yet-executed) plan.
+        if prepared.plan is not None and _is_differencing(prepared.plan, self.events):
             ev = SessionEvent(
-                question, cost, result.plan.operation, [], True,
+                question, cost, prepared.plan.operation, [], True,
                 "Blocked: repeated narrowing of the same aggregate may reveal "
                 "individual-level information (differencing attack).")
-            ev.plan_signature = _plan_signature(result.plan)
-            ev.plan_signature_filters = {
-                (f.get("column"), f.get("op"), repr(f.get("value")))
-                for f in result.plan.filters}
+            ev.plan_signature = _plan_signature(prepared.plan)
+            ev.plan_signature_filters = _filter_set(prepared.plan.filters)
             self._record(ev)
             return {"blocked": True, "reason": ev.reason, "answer": None,
                     "used_budget": self.used,
                     "remaining_budget": max(self.budget - self.used, 0)}
+
+        # 4. Only now execute the validated plan.
+        result = execute_prepared(prepared)
 
         self.used += cost
         cols = []
@@ -187,9 +189,8 @@ class SafeSession:
                           result.plan.operation if result.plan else None,
                           cols, result.blocked, result.reason)
         ev.plan_signature = sig
-        ev.plan_signature_filters = {
-            (f.get("column"), f.get("op"), repr(f.get("value")))
-            for f in (result.plan.filters if result.plan else [])}
+        ev.plan_signature_filters = _filter_set(
+            result.plan.filters if result.plan else [])
         self._record(ev)
         return {"answer": result.answer, "receipt": result.receipt,
                 "blocked": result.blocked, "reason": result.reason,

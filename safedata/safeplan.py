@@ -85,27 +85,66 @@ def extract_json_plan(model_output) -> dict:
 def parse_safeplan(obj: dict) -> SafePlan:
     if "operation" not in obj:
         raise SafetyError("Plan is missing the required 'operation' field.")
+    if not isinstance(obj["operation"], str):
+        raise SafetyError("Plan field 'operation' must be a string.")
+    for key in ("group_by", "metrics", "filters"):
+        if key in obj and obj[key] is not None and not isinstance(obj[key], list):
+            raise SafetyError(f"Plan field '{key}' must be a list.")
+    try:
+        limit = int(obj.get("limit", 50))
+    except (TypeError, ValueError):
+        raise SafetyError("Plan field 'limit' must be an integer.")
+
     metrics = []
     for m in obj.get("metrics", []) or []:
         if not isinstance(m, dict) or "column" not in m or "agg" not in m:
             raise SafetyError("Each metric needs 'column' and 'agg'.")
         metrics.append(MetricSpec(column=m["column"], agg=m["agg"],
                                   as_name=m.get("as_name")))
+
+    sort_by = obj.get("sort_by")
+    if sort_by is not None and not isinstance(sort_by, str):
+        raise SafetyError("Plan field 'sort_by' must be a string.")
     return SafePlan(
         operation=obj["operation"],
         group_by=list(obj.get("group_by", []) or []),
         metrics=metrics,
         filters=list(obj.get("filters", []) or []),
         include_count=bool(obj.get("include_count", True)),
-        limit=int(obj.get("limit", 50)),
-        sort_by=obj.get("sort_by"),
+        limit=limit,
+        sort_by=sort_by,
         ascending=bool(obj.get("ascending", False)),
     )
 
 
 # --- validation (before any execution) --------------------------------------
 
+_NUMERIC_AGGS = {"sum", "mean", "median", "std"}
+_SAFE_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
+_RESERVED_NAMES = {"count"}   # the engine adds its own 'count' column for k-anon
+
+
+def _validate_alias(name):
+    if name is None:
+        return
+    if not isinstance(name, str) or not _SAFE_NAME.match(name):
+        raise SafetyError("Blocked: metric alias must be a simple name "
+                          "(letters/digits/underscore, starting with a letter).")
+    if name in _RESERVED_NAMES:
+        raise SafetyError("Blocked: metric alias cannot be 'count' (reserved).")
+
+
+def _output_columns(plan):
+    """Column names the result will have, for pre-execution sort_by checks."""
+    names = list(plan.group_by)
+    for m in plan.metrics:
+        names.append(m.as_name or f"{m.agg}_{m.column}")
+    names.append("count")          # always available for groupby/value_counts
+    return set(names)
+
+
 def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
+    import pandas as pd
     df = _as_pandas(df)
     cols = set(df.columns)
 
@@ -117,10 +156,16 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
         raise SafetyError(
             f"Blocked: operation '{plan.operation}' is not allowed. Use one of "
             f"{sorted(ALLOWED_OPERATIONS)}.")
+
+    if not isinstance(plan.limit, int) or isinstance(plan.limit, bool):
+        raise SafetyError("Blocked: limit must be an integer.")
+    if plan.limit < 1:
+        raise SafetyError("Blocked: limit must be at least 1.")
     if plan.limit > policy.max_result_rows:
         raise SafetyError(
             f"Blocked: limit {plan.limit} exceeds max_result_rows "
             f"{policy.max_result_rows}.")
+
     for col in plan.group_by:
         if col not in cols:
             raise SafetyError(f"Blocked: group_by column '{col}' does not exist.")
@@ -129,6 +174,11 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
             raise SafetyError(f"Blocked: metric column '{m.column}' does not exist.")
         if m.agg not in ALLOWED_AGGS:
             raise SafetyError(f"Blocked: aggregation '{m.agg}' is not allowed.")
+        if m.agg in _NUMERIC_AGGS and not pd.api.types.is_numeric_dtype(df[m.column]):
+            raise SafetyError(
+                f"Blocked: aggregation '{m.agg}' requires a numeric column, but "
+                f"'{m.column}' is not numeric.")
+        _validate_alias(m.as_name)
     for f in plan.filters:
         if not isinstance(f, dict) or set(f.keys()) - {"column", "op", "value"}:
             raise SafetyError("Blocked: each filter must have only column/op/value.")
@@ -136,6 +186,22 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
             raise SafetyError(f"Blocked: filter column '{f.get('column')}' does not exist.")
         if f.get("op") not in ALLOWED_FILTER_OPS:
             raise SafetyError(f"Blocked: filter operator '{f.get('op')}' is not allowed.")
+
+    # Operation-specific shape checks (pre-execution, so SafeSession can inspect
+    # a fully-validated plan before any data is touched).
+    if plan.operation == "aggregate" and not plan.metrics:
+        raise SafetyError("Blocked: aggregate requires at least one metric.")
+    if plan.operation == "groupby_aggregate":
+        if not plan.group_by:
+            raise SafetyError("Blocked: groupby_aggregate requires group_by.")
+        if not plan.metrics:
+            raise SafetyError("Blocked: groupby_aggregate requires at least one metric.")
+    if plan.operation == "value_counts" and len(plan.group_by) != 1:
+        raise SafetyError("Blocked: value_counts requires exactly one group_by column.")
+
+    if plan.sort_by is not None and plan.sort_by not in _output_columns(plan):
+        raise SafetyError(
+            f"Blocked: sort_by column '{plan.sort_by}' is not in the result.")
 
 
 # --- execution (boring and controlled - no eval/exec/generated code) --------
@@ -177,12 +243,17 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
     limit = min(plan.limit, policy.max_result_rows)
 
     if plan.operation == "count_rows":
-        result = {"count": int(len(df))}
-        return _post(result, policy)
+        count = int(len(df))
+        # A filtered count that isolates a few records can reveal individual
+        # presence (e.g. "how many customers in postcode X" -> 1). Suppress it.
+        k = getattr(policy, "min_group_size", 0) or 0
+        if plan.filters and k and count < k:
+            raise SafetyError(
+                f"Blocked: filtered count {count} is below min_group_size {k}; "
+                f"a count this small can reveal whether an individual is present.")
+        return _post({"count": count}, policy)
 
     if plan.operation == "aggregate":
-        if not plan.metrics:
-            raise SafetyError("Blocked: aggregate requires at least one metric.")
         _enforce_min_rows(df, policy, plan.operation)
         result = {}
         for m in plan.metrics:
@@ -191,8 +262,6 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
         return _post(result, policy)
 
     if plan.operation == "value_counts":
-        if len(plan.group_by) != 1:
-            raise SafetyError("value_counts requires exactly one group_by column.")
         col = plan.group_by[0]
         result = df[col].value_counts(dropna=False).reset_index()
         result.columns = [col, "count"]
@@ -206,10 +275,6 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
         return _post(numeric.describe().T.head(limit).reset_index(), policy)
 
     if plan.operation == "groupby_aggregate":
-        if not plan.group_by:
-            raise SafetyError("Blocked: groupby_aggregate requires group_by.")
-        if not plan.metrics:
-            raise SafetyError("Blocked: groupby_aggregate requires at least one metric.")
         agg_spec = {}
         for m in plan.metrics:
             out_name = m.as_name or f"{m.agg}_{m.column}"
@@ -296,20 +361,46 @@ def safe_query(df, question, model=None, policy=None, max_retries: int = 3,
     raises a SafetyError out of this function (the result carries blocked/reason).
     """
     policy = policy or Policy.regulated()
+    prepared = prepare_safeplan(df, question, model=model, policy=policy,
+                                max_retries=max_retries, use_shadow=use_shadow)
+    return execute_prepared(prepared)
+
+
+@dataclass
+class PreparedQuery:
+    """A validated-but-not-yet-executed SafePlan plus the context to run it. The
+    plan has passed parse + validate (no data has been read/filtered yet), so a
+    caller such as SafeSession can inspect it and block BEFORE execution."""
+    question: str
+    policy: Policy
+    privacy_plan: Any
+    safe_df: Any
+    plan: Optional[SafePlan]
+    blocked: bool
+    reason: Optional[str]
+    attempts: List[dict] = field(default_factory=list)
+
+
+def _safeplan_receipt(question, privacy_plan, policy, answer, plan):
+    return create_receipt(question, "safeplan", privacy_plan, policy,
+                          answer=answer, safeplan=plan,
+                          generated_python_executed=False)
+
+
+def prepare_safeplan(df, question, model=None, policy=None, max_retries: int = 3,
+                     use_shadow: bool = True) -> PreparedQuery:
+    """Build the privacy plan and safe view, ask the model for a JSON plan, and
+    parse+validate it - WITHOUT executing. Returns a PreparedQuery. No raw data
+    is touched here beyond the privacy summary; execution happens separately."""
+    policy = policy or Policy.regulated()
     privacy_plan = create_privacy_plan(
         df, question, safe_mode=policy.safe_mode, scan_rows=policy.pii_scan_rows,
         max_result_rows=policy.max_result_rows, use_presidio=policy.use_presidio)
     safe_df = make_safe_view(df, privacy_plan)
 
-    def _receipt(answer, plan):
-        return create_receipt(question, "safeplan", privacy_plan, policy,
-                              answer=answer, safeplan=plan,
-                              generated_python_executed=False)
-
     if model is None:
-        return SafePlanResult(
-            answer=None, plan=None, blocked=False, reason=None,
-            receipt=_receipt(None, None))
+        return PreparedQuery(question, policy, privacy_plan, safe_df, None,
+                             False, None)
 
     error, attempts = None, []
     for _ in range(max(1, max_retries)):
@@ -319,11 +410,33 @@ def safe_query(df, question, model=None, policy=None, max_retries: int = 3,
         attempts.append(str(raw)[:500])
         try:
             plan = parse_safeplan(extract_json_plan(raw))
-            answer = execute_safeplan(plan, safe_df, policy)
-            return SafePlanResult(answer=answer, plan=plan, blocked=False,
-                                  reason=None, receipt=_receipt(answer, plan),
-                                  attempts=attempts)
+            validate_safeplan(plan, safe_df, policy)
+            return PreparedQuery(question, policy, privacy_plan, safe_df, plan,
+                                 False, None, attempts)
         except SafetyError as e:
             error = str(e)
-    return SafePlanResult(answer=None, plan=None, blocked=True, reason=error,
-                          receipt=_receipt(None, None), attempts=attempts)
+    return PreparedQuery(question, policy, privacy_plan, safe_df, None, True,
+                         error, attempts)
+
+
+def execute_prepared(prepared: PreparedQuery) -> SafePlanResult:
+    """Execute a PreparedQuery's validated plan and build the receipt. A data-
+    dependent block (e.g. k-anonymity suppression) surfaces as blocked, not raised."""
+    p, policy = prepared, prepared.policy
+
+    def receipt(answer, plan):
+        return _safeplan_receipt(p.question, p.privacy_plan, policy, answer, plan)
+
+    if p.blocked or p.plan is None:
+        return SafePlanResult(answer=None, plan=None, blocked=p.blocked,
+                              reason=p.reason, receipt=receipt(None, None),
+                              attempts=p.attempts)
+    try:
+        answer = execute_safeplan(p.plan, p.safe_df, policy)
+        return SafePlanResult(answer=answer, plan=p.plan, blocked=False,
+                              reason=None, receipt=receipt(answer, p.plan),
+                              attempts=p.attempts)
+    except SafetyError as e:
+        return SafePlanResult(answer=None, plan=p.plan, blocked=True,
+                              reason=str(e), receipt=receipt(None, p.plan),
+                              attempts=p.attempts)

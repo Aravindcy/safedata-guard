@@ -22,15 +22,26 @@ behind **guardrails on a copy** of your data.
 
 ## The recommended path
 
-Pick a **policy** for your data and let `safe_answer` do the rest. It builds the
-minimum safe view for the question, runs the model's code behind the guardrails,
-and returns the answer plus an audit:
+Pick a **policy** for your data and use `safe_query` (SafePlan mode) for normal
+analysis: the model returns a restricted JSON plan that safedata validates and
+executes itself, so no generated Python runs.
 
 ```python
 import safedata as sd
 
 policy = sd.Policy.regulated()   # PII firewall + redaction + k-anonymity + caps
 
+res = sd.safe_query(df, "What is total revenue by region?",
+                    model=my_llm, policy=policy)
+print(res.answer)
+print(res.receipt)               # Data Safety Receipt: no Python run, PII dropped
+```
+
+Use `safe_answer` (guarded-Python mode) only when the analysis cannot be
+expressed as a SafePlan operation. It builds the minimum safe view, runs the
+model's code behind the guardrails, and returns the answer plus an audit:
+
+```python
 out = sd.safe_answer(df, "What is total revenue by region?",
                      model=my_llm, policy=policy)
 print(out["answer"], out["audit"])
@@ -46,9 +57,10 @@ field can be overridden: `Policy.regulated(min_group_size=10)`.
 > error - but if you want strong defaults **without** Docker, use
 > `Policy.regulated()` (process isolation, k-anonymity, deep PII scan).
 
-`safe_answer` + `Policy` is the recommended entry point. The pieces below
-(`Agent`, `run_safely`, `create_contract`, `privacy_report`, ...) are the
-lower-level building blocks it is composed from, for when you need finer control.
+`safe_query` + `Policy` is the recommended entry point for normal analysis, with
+`safe_answer` as the guarded-Python fallback. The pieces below (`Agent`,
+`run_safely`, `create_contract`, `privacy_report`, ...) are the lower-level
+building blocks they are composed from, for when you need finer control.
 
 ## Two execution modes
 
@@ -155,7 +167,7 @@ Build the runner image once (it bundles safedata + pandas/numpy so the container
 needs no network at run time; see the repo `Dockerfile`):
 
 ```bash
-docker build -t safedata-guard-runner:1.0.9 .
+docker build -t safedata-guard-runner:1.1.0 .
 ```
 
 ```python

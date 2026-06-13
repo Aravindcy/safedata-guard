@@ -36,6 +36,22 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   differential privacy.
 
 ### Fixed
+- **SafePlan limit hardening.** `limit` must now be an integer `>= 1`; a negative
+  limit (which made `df.head(-1)` return almost everything and bypass
+  `max_result_rows`) and a non-integer limit are blocked. Bad model JSON (e.g.
+  `"limit": "abc"`) now raises a `SafetyError` instead of a raw `ValueError`,
+  and `operation`/`group_by`/`metrics`/`filters`/`sort_by` are type-checked.
+- **SafePlan now rejects unsafe plan details before running:** a metric alias that
+  is not a simple name or collides with the reserved `count`; a `sort_by` column
+  not present in the result; and `sum`/`mean`/`median`/`std` on a non-numeric
+  column (which would otherwise silently concatenate strings).
+- **`count_rows` suppresses small filtered counts.** A filtered count below
+  `min_group_size` (e.g. "how many customers in postcode X" -> 1) is blocked, so a
+  count cannot reveal whether an individual is present.
+- **SafeSession blocks before execution.** `safe_query` is split into
+  `prepare_safeplan` (model call + parse + validate, no data touched) and
+  `execute_prepared`; SafeSession runs the differencing check on the validated
+  plan and only executes if it passes, so a risky answer is never computed.
 - **SafePlan `aggregate`/`describe` now enforce `min_group_size`.** k-anonymity
   previously only covered the groupby/value_counts paths; a narrow filter feeding
   a plain aggregate or describe could expose one individual's value. Those ops
