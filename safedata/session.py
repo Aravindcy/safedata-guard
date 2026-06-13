@@ -81,20 +81,49 @@ def _plan_signature(plan):
     return (plan.operation, group_by, metrics, filter_cols, len(plan.filters))
 
 
+_RANGE_OPS = {">", ">=", "<", "<=", "!="}
+
+
+def _filter_set(filters):
+    return {(f.get("column"), f.get("op"), repr(f.get("value"))) for f in filters}
+
+
+def _differencing_pair(new_set, old_set):
+    """Decide whether two filter sets over the SAME aggregate form a differencing
+    pair. We flag genuine narrowing/threshold-shifts, NOT disjoint siblings.
+
+      - identical sets        -> not a differencing pair (same question twice)
+      - one a strict subset   -> a constraint was added/removed (narrow/widen)
+      - same equality context
+        but a range/exclusion
+        constraint differs    -> threshold shift / added exclusion on same base
+      - otherwise (e.g. city==London vs city==Dublin, disjoint equality) -> no
+    """
+    if new_set == old_set:
+        return False
+    if new_set < old_set or old_set < new_set:
+        return True
+    new_eq = {(c, v) for (c, op, v) in new_set if op == "=="}
+    old_eq = {(c, v) for (c, op, v) in old_set if op == "=="}
+    new_range = {(c, op, v) for (c, op, v) in new_set if op in _RANGE_OPS}
+    old_range = {(c, op, v) for (c, op, v) in old_set if op in _RANGE_OPS}
+    if new_eq == old_eq and new_range != old_range:
+        return True
+    return False
+
+
 def _is_differencing(new_plan, history):
     """True if `new_plan` reuses the same operation/group_by/metrics as a prior
-    plan but with a different (tightened or shifted) filter set."""
-    new_op, new_g, new_m, _, new_nf = _plan_signature(new_plan)
-    new_filter_set = {(f.get("column"), f.get("op"), repr(f.get("value")))
-                      for f in new_plan.filters}
+    plan and narrows or shifts the filtered population (a difference attack).
+    Disjoint sibling queries (same shape, different equality value) are allowed."""
+    new_op, new_g, new_m, _, _ = _plan_signature(new_plan)
+    new_set = _filter_set(new_plan.filters)
     for ev in history:
         if ev.blocked or ev.plan_signature is None:
             continue
-        op, g, m, _, nf = ev.plan_signature
+        op, g, m, _, _ = ev.plan_signature
         if op == new_op and g == new_g and m == new_m:
-            old_filter_set = ev.plan_signature_filters
-            if new_filter_set != old_filter_set:
-                # Same aggregate over a different population = differencing risk.
+            if _differencing_pair(new_set, ev.plan_signature_filters):
                 return True
     return False
 

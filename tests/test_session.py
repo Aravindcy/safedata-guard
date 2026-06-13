@@ -72,6 +72,35 @@ def test_session_blocks_differencing_narrowing():
     assert "differencing" in second["reason"].lower()
 
 
+def test_session_allows_disjoint_sibling_query():
+    # Same aggregate, different equality value (London vs Leeds) is NOT a
+    # differencing attack - disjoint populations, no individual isolated.
+    df = _df()
+    metrics = [{"column": "order_value", "agg": "mean", "as_name": "avg"}]
+    s = SafeSession(df, model=None, policy=safedata.Policy.basic(), budget=50)
+    s.model = _plan_model("aggregate", metrics=metrics,
+                          filters=[{"column": "city", "op": "==", "value": "London"}])
+    assert s.ask("avg in London")["blocked"] is False
+    s.model = _plan_model("aggregate", metrics=metrics,
+                          filters=[{"column": "city", "op": "==", "value": "Leeds"}])
+    assert s.ask("avg in Leeds")["blocked"] is False
+
+
+def test_session_blocks_threshold_shift():
+    # Same equality base, a shifted range threshold = differencing.
+    df = _df()
+    metrics = [{"column": "order_value", "agg": "mean", "as_name": "avg"}]
+    s = SafeSession(df, model=None, policy=safedata.Policy.basic(), budget=50)
+    s.model = _plan_model("aggregate", metrics=metrics, filters=[
+        {"column": "city", "op": "==", "value": "London"},
+        {"column": "order_value", "op": ">", "value": 5}])
+    assert s.ask("avg London over 5")["blocked"] is False
+    s.model = _plan_model("aggregate", metrics=metrics, filters=[
+        {"column": "city", "op": "==", "value": "London"},
+        {"column": "order_value", "op": ">", "value": 6}])
+    assert s.ask("avg London over 6")["blocked"] is True
+
+
 def test_session_does_not_block_identical_repeat():
     # Asking the exact same query twice is not a differencing attack.
     df = _df()
