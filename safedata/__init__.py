@@ -20,7 +20,8 @@ Quick start:
 """
 
 from .translator import summarize
-from .bodyguard import run_safely, SafetyError, check_code, CodeCheck
+from .bodyguard import (run_safely, SafetyError, check_code, CodeCheck,
+                        k_anonymize)
 from .agent import Agent, AgentResult, build_prompt
 from .report import report
 from .wrap import wrap, extract_code, ModelError
@@ -35,7 +36,8 @@ from .firewall import (create_privacy_plan, make_safe_view, safe_answer,
 
 __version__ = "1.0.9"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
-           "SafetyError", "check_code", "CodeCheck", "build_prompt", "report",
+           "SafetyError", "check_code", "CodeCheck", "k_anonymize",
+           "build_prompt", "report",
            "wrap", "extract_code", "ModelError",
            "token_savings", "token_stats", "estimate_tokens",
            "redact_text",

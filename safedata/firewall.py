@@ -185,7 +185,8 @@ def make_safe_view(df, plan: PrivacyPlan):
     return pdf[keep].copy()
 
 
-def _build_firewall_prompt(safe_df, question, plan, previous_error=None):
+def _build_firewall_prompt(safe_df, question, plan, previous_error=None,
+                           min_group_size=None):
     summary = summarize(safe_df, mask_pii=True)
     parts = [
         "You are analysing a privacy-filtered DataFrame named df. It contains "
@@ -198,6 +199,16 @@ def _build_firewall_prompt(safe_df, question, plan, previous_error=None):
         "rows); return an aggregate or top-N, not every row.",
         "- Assign the final answer to a variable named `result`. Return ONLY "
         "Python code.",
+    ]
+    if min_group_size:
+        parts.append(
+            "- For any grouped/aggregated result, INCLUDE a per-group row count "
+            "in a column named 'count' (e.g. df.groupby(k).agg("
+            "value=('x','mean'), count=('x','size')).reset_index()). Do NOT "
+            "filter or drop groups yourself and do NOT use .query()/.eval(); "
+            "return ALL groups with their counts. Small groups are removed "
+            "automatically afterwards.")
+    parts += [
         "",
         f"QUESTION: {question}",
         "",
@@ -212,7 +223,7 @@ def _build_firewall_prompt(safe_df, question, plan, previous_error=None):
 def safe_answer(df, question, model=None, code=None,
                 safe_mode: str = "drop_unneeded_pii", scan_rows=20,
                 isolation: str = "process", timeout: float = 10.0,
-                max_retries: int = 3):
+                max_retries: int = 3, min_group_size=None):
     """Answer `question` over `df` using the minimum safe data.
 
     Builds a privacy plan, creates the safe view, has `model` write code against
@@ -257,7 +268,8 @@ def safe_answer(df, question, model=None, code=None,
             max_result_rows=pol["max_result_rows"],
             max_result_bytes=pol["max_result_bytes"],
             redact_result_pii=pol["redact_result_pii"],
-            enforce_minimal_result=pol["enforce_minimal_result"])
+            enforce_minimal_result=pol["enforce_minimal_result"],
+            min_group_size=min_group_size)
 
     # Code supplied directly: run once, but return a structured block (don't raise).
     if model is None:
@@ -272,7 +284,8 @@ def safe_answer(df, question, model=None, code=None,
     error = None
     for _ in range(max(1, max_retries)):
         prompt = _build_firewall_prompt(safe_df, question, plan,
-                                        previous_error=error)
+                                        previous_error=error,
+                                        min_group_size=min_group_size)
         try:
             code = extract_code(model(prompt))
         except ModelError:

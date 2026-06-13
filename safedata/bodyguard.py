@@ -487,7 +487,7 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                      max_result_rows=None, max_result_bytes=None,
                      redact_result_pii: bool = False, deepcopy_input: bool = True,
                      enforce_minimal_result: bool = False, blocked_columns=None,
-                     block_1d_row_results: bool = False):
+                     block_1d_row_results: bool = False, min_group_size=None):
     """
     Run already-screened `code` against a deep copy of `df` and enforce the
     runtime invariants. Returns ('ok', result) or ('blocked', message).
@@ -582,6 +582,12 @@ def _execute_checked(code: str, df: pd.DataFrame, result_var: str = "result",
                     f"question expects an aggregated/summary answer, not the full "
                     f"table. Group or aggregate (e.g. groupby(...).mean()) and "
                     f"return that.")
+
+    # k-anonymity: suppress small groups (or refuse if group sizes are unknown).
+    if min_group_size:
+        status, result = _enforce_min_group_size(result, int(min_group_size))
+        if status == "blocked":
+            return ("blocked", result)
 
     return _guard_result(result, max_result_rows, max_result_bytes,
                          redact_result_pii)
@@ -687,6 +693,61 @@ def _key_suggests_pii(key) -> bool:
     return False
 
 
+# Column-name tokens that mark a group-size / count column for k-anonymity.
+_COUNT_TOKENS = {"count", "counts", "n", "size", "freq", "frequency",
+                 "groupsize", "nobs", "records", "numrows", "rowcount"}
+
+
+def _find_count_column(df):
+    """Best-effort: the column holding per-group row counts, or None."""
+    for col in df.columns:
+        spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", str(col))
+        toks = set(re.findall(r"[a-z0-9]+", spaced.lower()))
+        if toks & _COUNT_TOKENS:
+            try:
+                if pd.api.types.is_numeric_dtype(df[col]):
+                    return col
+            except Exception:
+                return col
+    return None
+
+
+def k_anonymize(frame, min_group_size: int, count_col=None):
+    """Suppress (drop) rows of a grouped result whose group size < min_group_size.
+
+    This is statistical-disclosure control: a group of one (e.g. one person in a
+    postcode) re-identifies that individual. We REMOVE such rows rather than
+    alter any reported number, so the figures that remain are exact. Needs a
+    per-group count column (auto-detected, or pass `count_col`).
+
+    Raises ValueError if no count column is found (so you can't silently believe
+    suppression happened when it didn't).
+    """
+    if not isinstance(frame, pd.DataFrame):
+        return frame
+    col = count_col or _find_count_column(frame)
+    if col is None:
+        raise ValueError(
+            "k_anonymize needs a per-group count column; none found. Add one "
+            "(e.g. a 'count' column) or pass count_col=.")
+    return frame[frame[col] >= int(min_group_size)].reset_index(drop=True)
+
+
+def _enforce_min_group_size(result, n):
+    """Runtime k-anonymity for run_safely: ('ok', maybe-suppressed) or ('blocked', msg)."""
+    if not isinstance(result, pd.DataFrame) or result.shape[0] <= 1:
+        return ("ok", result)   # scalars / single-row summaries can't single out
+    col = _find_count_column(result)
+    if col is None:
+        return ("blocked",
+                f"min_group_size={n} is set but the grouped result has no "
+                f"group-size column, so small groups (which can re-identify an "
+                f"individual) can't be suppressed. Recompute so each group "
+                f"includes its row count — e.g. df.groupby(k).agg(value=('v','mean'), "
+                f"count=('v','size')) — and keep the 'count' column.")
+    return ("ok", result[result[col] >= n].reset_index(drop=True))
+
+
 def _redact_result(result):
     """Best-effort PII redaction of a returned value before it leaves the runner.
 
@@ -783,7 +844,8 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                max_result_rows: int = None, max_result_bytes: int = None,
                redact_result_pii: bool = False, blocked_columns=None,
                enforce_minimal_result: bool = False,
-               block_1d_row_results: bool = False, **docker_opts):
+               block_1d_row_results: bool = False, min_group_size=None,
+               **docker_opts):
     """
     Execute `code` against a copy of `df`, enforcing safety invariants.
 
@@ -853,6 +915,7 @@ def run_safely(code: str, df: pd.DataFrame, result_var: str = "result",
                   redact_result_pii=redact_result_pii,
                   enforce_minimal_result=enforce_minimal_result,
                   block_1d_row_results=block_1d_row_results,
+                  min_group_size=min_group_size,
                   blocked_columns=list(blocked_columns) if blocked_columns else None)
 
     mode = _resolve_isolation(isolation, isolate)

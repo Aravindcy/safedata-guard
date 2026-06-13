@@ -115,8 +115,8 @@ class Agent:
                  max_result_bytes: int = None, redact_result_pii: bool = False,
                  mask_prompt_pii: bool = True, column_firewall: bool = False,
                  enforce_minimal_result: bool = False,
-                 block_1d_row_results: bool = False, pii_scan_rows=20,
-                 **docker_opts):
+                 block_1d_row_results: bool = False, min_group_size=None,
+                 pii_scan_rows=20, **docker_opts):
         self.model = model
         self.max_retries = max_retries
         self.isolate = isolate
@@ -135,6 +135,10 @@ class Agent:
         self.column_firewall = column_firewall
         self.enforce_minimal_result = enforce_minimal_result
         self.block_1d_row_results = block_1d_row_results
+        # k-anonymity: suppress grouped results with any group smaller than this
+        # (requires a count column; the loop asks the model to add one). Off by
+        # default; set e.g. min_group_size=5 for regulated/individual-level data.
+        self.min_group_size = min_group_size
         # how many unique values/column the PII scan inspects (int or "all").
         self.pii_scan_rows = pii_scan_rows
         self.docker_opts = docker_opts
@@ -221,6 +225,7 @@ class Agent:
                     blocked_columns=blocked_columns,
                     enforce_minimal_result=self.enforce_minimal_result,
                     block_1d_row_results=self.block_1d_row_results,
+                    min_group_size=self.min_group_size,
                     **self.docker_opts)
                 trace.append({"code": code, "blocked": False, "reason": None})
                 return _result(answer=result, code=code, blocked=False)

@@ -161,9 +161,24 @@ columns the question doesn't appear to reference. It's stronger, but column
 relevance is a heuristic — if it misses a column your analysis needed, the answer
 can be wrong, so it carries a warning and is never the default.
 
-*(Private surrogate filters and k-anonymity / minimum-group-size suppression are
-intentionally not included yet — they'll come once they can be implemented and
-tested properly, rather than claimed before they work.)*
+### k-anonymity (stop singling-out)
+
+A group of one re-identifies a person ("average salary by postcode" where a
+postcode has one resident). Set `min_group_size` and grouped results must carry a
+per-group `count`; groups below the threshold are **suppressed** — rows removed,
+the figures that remain are exact (no number is fudged):
+
+```python
+safedata.run_safely(code, df, min_group_size=5)
+safedata.safe_answer(df, "average salary by postcode", model=my_llm, min_group_size=5)
+agent = safedata.Agent.safe(model, min_group_size=5)
+# or the standalone utility on any grouped frame with a count column:
+safedata.k_anonymize(grouped_df, min_group_size=5)
+```
+
+If a grouped result has no count column, it's refused with guidance (the model
+adds counts and retries). *(Private surrogate filters — masking an individual
+lookup behind a match flag — remain deferred until they can be done properly.)*
 
 ### Is it safe to send this to an AI?
 

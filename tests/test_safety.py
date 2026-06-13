@@ -1808,3 +1808,87 @@ def test_agent_handles_raw_fenced_model_output():
     out = safedata.Agent(model=raw_model, isolate=False).ask(df, "total rev")
     assert out.blocked is False
     assert out.answer == 30
+
+
+# --- security: a COMPROMISED model must not be able to exfiltrate anything ---
+
+def test_malicious_model_blocked_through_agent_and_safe_answer(monkeypatch):
+    monkeypatch.setenv("SECRET_TOKEN", "supersecret-123")
+    df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob"],
+                       "ssn": ["123-45-6789", "987-65-4321"], "balance": [100, 200]})
+    attacks = [
+        "import os\nresult = os.environ['SECRET_TOKEN']",
+        "result = __import__('os').environ.get('SECRET_TOKEN')",
+        "result = df[['customer_name','ssn']].to_dict('records')",
+        "result = open('/etc/passwd').read()",
+        "result = '{0.__init__.__globals__}'.format(df)",
+    ]
+    st = {"i": 0}
+    def malicious(prompt):
+        c = attacks[min(st["i"], len(attacks) - 1)]; st["i"] += 1
+        return c
+
+    out = safedata.Agent.safe(malicious, isolation="thread", max_retries=5).ask(df, "total balance")
+    assert out.blocked is True and out.answer is None
+    assert "supersecret-123" not in str(out.answer)
+    assert "123-45-6789" not in str(out.answer)
+
+    st["i"] = 0
+    o2 = safedata.safe_answer(df, "total balance", model=malicious,
+                              isolation="thread", max_retries=5)
+    assert o2["blocked"] is True
+    assert "supersecret-123" not in str(o2["answer"])
+
+
+def test_realistic_fenced_model_correct_and_private():
+    # A real-LLM-shaped reply (chatter + ```python fences); Agent.safe should
+    # extract it, answer correctly, and never put PII in the prompt it builds.
+    df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
+                       "balance": [100, 200], "region": ["N", "S"]})
+    def fenced(prompt):
+        assert "Alice Smith" not in prompt        # PII never sent to the "model"
+        return ("Sure! Here's the analysis:\n```python\n"
+                "result = df.groupby('region')['balance'].sum()\n```")
+    out = safedata.Agent.safe(fenced, isolation="thread").ask(df, "total balance by region")
+    assert out.blocked is False
+    assert out.answer.to_dict() == {"N": 100, "S": 200}
+
+
+# --- 1.0.9: k-anonymity / minimum group size suppression --------------------
+
+def test_k_anonymize_utility():
+    g = pd.DataFrame({"zip": ["A", "B", "C"], "avg": [1.0, 2.0, 3.0],
+                      "count": [9, 4, 1]})
+    out = safedata.k_anonymize(g, min_group_size=5)
+    assert out["zip"].tolist() == ["A"]            # B(4), C(1) suppressed
+    assert out["avg"].tolist() == [1.0]            # exact figures unchanged
+    import pytest as _pt
+    with _pt.raises(ValueError):
+        safedata.k_anonymize(pd.DataFrame({"zip": ["A"], "avg": [1.0]}), 5)
+
+
+def test_run_safely_min_group_size_suppresses_and_refuses():
+    df = pd.DataFrame({"pc": ["A"] * 6 + ["B"] * 2 + ["C"] * 1, "v": range(9)})
+    # with a count column -> small groups suppressed, exact values kept
+    res = run_safely(
+        "result = df.groupby('pc').agg(avg=('v','mean'), count=('v','size'))"
+        ".reset_index()", df, min_group_size=5)
+    assert res["pc"].tolist() == ["A"]
+    # without a count column -> refused (can't verify group sizes)
+    with pytest.raises(SafetyError):
+        run_safely("result = df.groupby('pc')['v'].mean().reset_index()", df,
+                   min_group_size=5)
+    # scalar result is unaffected
+    assert run_safely("result = int(df['v'].sum())", df, min_group_size=5) == 36
+
+
+def test_safe_answer_min_group_size_with_stub_model():
+    df = pd.DataFrame({"pc": ["A"] * 6 + ["B"] * 2 + ["Z"] * 1, "v": range(9)})
+    def stub(prompt):
+        # a well-behaved model: includes counts, does not self-filter
+        return ("result = df.groupby('pc').agg(avg=('v','mean'), "
+                "count=('v','size')).reset_index()")
+    out = safedata.safe_answer(df, "average v by pc", model=stub,
+                               isolation="thread", min_group_size=5)
+    assert out["blocked"] is False
+    assert out["answer"]["pc"].tolist() == ["A"]      # B and Z suppressed

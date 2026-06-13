@@ -28,8 +28,13 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - `safe_answer` is self-correcting: a guardrail block (e.g. too many rows) is
     fed back to the model and retried (like `Agent.ask`); it returns
     `blocked=True` with a reason instead of raising.
-  - Private surrogate filters and k-anonymity/min-group-size suppression are
-    deliberately deferred until they can be implemented and tested properly.
+- **k-anonymity / minimum group size suppression** (`min_group_size=`). On
+  `run_safely`, `Agent`, and `safe_answer`: a grouped result must carry a
+  per-group `count` column; groups smaller than the threshold are **suppressed**
+  (rows removed — reported figures stay exact) so a group of one can't
+  re-identify an individual. If the result has no count column, it's refused with
+  guidance (the model adds counts on retry). New `safedata.k_anonymize()` utility
+  exposes the same suppression. (Private surrogate filters remain deferred.)
 
 ## [1.0.8]
 
