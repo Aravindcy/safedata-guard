@@ -353,6 +353,9 @@ _PERSON_CONTEXT = {
     "given", "family", "contact", "person", "people", "customer", "client",
     "employee", "user", "holder", "patient", "member", "applicant",
     "policyholder", "driver",
+    # regulated-industry person roles (insurance / banking / etc.)
+    "claimant", "beneficiary", "insured", "payee", "payer", "borrower",
+    "guarantor", "tenant", "passenger", "dependant", "dependent", "subscriber",
 }
 # "high sensitivity" kinds escalate to high risk even when only the NAME hints it
 _HIGH_RISK_KINDS = {"email", "phone", "national_id", "date_of_birth", "address",

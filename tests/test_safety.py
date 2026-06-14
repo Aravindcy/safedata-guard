@@ -2122,3 +2122,12 @@ def test_safe_query_blocks_single_record_aggregate():
     res = safedata.safe_query(df, "revenue for region Z", model=narrow,
                               policy=safedata.Policy.regulated(), max_retries=2)
     assert res.blocked is True and res.answer is None
+
+
+def test_pii_detects_regulated_person_roles():
+    # claimant/beneficiary/insured + 'name' are personal data; product/team are not.
+    df = pd.DataFrame({"claimant_name": ["Jane Roe"], "beneficiary_name": ["Bob"],
+                       "product_name": ["Widget"], "team_name": ["Alpha"]})
+    pii = set(safedata.privacy_report(df)["pii_columns"])
+    assert {"claimant_name", "beneficiary_name"} <= pii
+    assert not ({"product_name", "team_name"} & pii)
