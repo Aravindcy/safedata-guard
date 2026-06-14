@@ -26,11 +26,19 @@ import os
 import glob
 import json
 import pandas as pd
-from openai import OpenAI
+
+try:
+    from openai import OpenAI
+except ImportError:
+    raise SystemExit(
+        "Install benchmark dependencies with: pip install safedata-guard[benchmark]")
 
 import safedata
 from safedata import Policy
 from safedata.analysis import privacy_report
+
+if not os.getenv("OPENAI_API_KEY"):
+    raise SystemExit("Set OPENAI_API_KEY before running the live benchmark.")
 
 MODEL = os.environ.get("BENCH_MODEL", "gpt-4o-mini")
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])

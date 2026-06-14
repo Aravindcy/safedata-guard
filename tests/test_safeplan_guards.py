@@ -199,3 +199,75 @@ def test_alias_colliding_with_group_by_blocked():
         validate_safeplan(SafePlan(operation="groupby_aggregate", group_by=["region"],
                                    metrics=[MetricSpec("revenue", "sum", "region")]),
                           _df(), Policy.basic())
+
+
+# --- filter value / column dtype compatibility ------------------------------
+
+@pytest.mark.parametrize("op", [">", ">=", "<", "<="])
+def test_ordering_numeric_column_with_string_blocked(op):
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="count_rows",
+                                   filters=[{"column": "revenue", "op": op, "value": "5"}]),
+                          _df(), Policy.basic())
+
+
+def test_ordering_text_column_with_number_blocked():
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="count_rows",
+                                   filters=[{"column": "label", "op": "<", "value": 5}]),
+                          _df(), Policy.basic())
+
+
+def test_equality_dtype_mismatch_allowed_and_safe():
+    # == between a numeric column and a string does not crash in pandas; allowed.
+    res = execute_safeplan(SafePlan(operation="count_rows",
+                                    filters=[{"column": "revenue", "op": "==", "value": "5"}]),
+                           _df(), Policy.basic())
+    assert res["count"] == 0
+
+
+def test_valid_numeric_filter_still_works():
+    res = execute_safeplan(SafePlan(operation="count_rows",
+                                    filters=[{"column": "revenue", "op": ">", "value": 5}]),
+                           _df(), Policy.basic())
+    assert res["count"] == 54
+
+
+def test_safe_query_dtype_mismatch_blocks_not_crash():
+    df = _df()
+    payload = ('{"operation":"aggregate","filters":[{"column":"revenue","op":">",'
+               '"value":"5"}],"metrics":[{"column":"revenue","agg":"sum"}]}')
+    res = safedata.safe_query(df, "q", model=lambda p: payload,
+                              policy=Policy.basic(), max_retries=1)
+    assert res.blocked is True and res.answer is None
+
+
+def test_execute_prepared_fails_closed_on_unexpected_error():
+    # A backstop: even if a value slips past validation, execution fails closed.
+    from safedata.safeplan import prepare_safeplan, execute_prepared
+    df = _df()
+    prepared = prepare_safeplan(df, "q",
+                                model=lambda p: '{"operation":"count_rows"}',
+                                policy=Policy.basic())
+    # Corrupt the validated plan post-validation to force an execution error.
+    prepared.plan.filters = [{"column": "revenue", "op": ">", "value": "oops"}]
+    res = execute_prepared(prepared)
+    assert res.blocked is True and res.answer is None
+
+
+# --- limit must be a real integer (no coercion) -----------------------------
+
+@pytest.mark.parametrize("payload", [
+    '{"operation":"count_rows","limit":true}',
+    '{"operation":"count_rows","limit":1.9}',
+    '{"operation":"count_rows","limit":"5"}',
+])
+def test_limit_non_integer_rejected(payload):
+    import json
+    with pytest.raises(SafetyError):
+        parse_safeplan(json.loads(payload))
+
+
+def test_limit_real_integer_accepted():
+    import json
+    assert parse_safeplan(json.loads('{"operation":"count_rows","limit":5}')).limit == 5

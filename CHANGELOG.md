@@ -53,6 +53,18 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Output column collisions blocked.** Duplicate metric aliases, or a metric
   alias that collides with a group_by column, are rejected instead of silently
   overwriting a result column.
+- **Filter value / column dtype mismatch is blocked, not crashed.** An ordering
+  filter (`>`/`>=`/`<`/`<=`) whose value type is incompatible with the column
+  (e.g. `revenue > "5"` on a numeric column) is rejected during validation, and
+  `execute_prepared` now fails closed (blocked) on any unexpected execution error
+  instead of raising. `==`/`!=` mismatches stay allowed (pandas handles them).
+- **`limit` must be a real integer.** `parse_safeplan` no longer coerces, so
+  `true`, `1.9`, and `"5"` are rejected rather than silently turned into `1`/`5`.
+
+### Changed
+- New `benchmark` extra (`pip install safedata-guard[benchmark]`) for the live
+  benchmark's OpenAI dependency; `scripts/live_benchmark.py` now exits with a
+  clear message if `openai` or `OPENAI_API_KEY` is missing.
 - **`count_rows` suppresses small filtered counts.** A filtered count below
   `min_group_size` (e.g. "how many customers in postcode X" -> 1) is blocked, so a
   count cannot reveal whether an individual is present.

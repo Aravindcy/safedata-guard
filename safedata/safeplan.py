@@ -97,10 +97,10 @@ def parse_safeplan(obj: dict) -> SafePlan:
     for key in ("group_by", "metrics", "filters"):
         if key in obj and obj[key] is not None and not isinstance(obj[key], list):
             raise SafetyError(f"Plan field '{key}' must be a list.")
-    try:
-        limit = int(obj.get("limit", 50))
-    except (TypeError, ValueError):
+    raw_limit = obj.get("limit", 50)
+    if not isinstance(raw_limit, int) or isinstance(raw_limit, bool):
         raise SafetyError("Plan field 'limit' must be an integer.")
+    limit = raw_limit
 
     metrics = []
     for m in obj.get("metrics", []) or []:
@@ -154,6 +154,9 @@ def _is_json_scalar(x):
     return x is None or isinstance(x, (str, int, float, bool))
 
 
+_ORDERING_OPS = {">", ">=", "<", "<="}
+
+
 def _validate_filter_value(op, value):
     if op == "in":
         if not isinstance(value, list):
@@ -162,6 +165,31 @@ def _validate_filter_value(op, value):
             raise SafetyError("Blocked: 'in' filter values must be simple scalars.")
     elif not _is_json_scalar(value):
         raise SafetyError("Blocked: filter value must be a simple scalar.")
+
+
+def _is_number(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+
+def _validate_filter_dtype(series, op, value):
+    """Reject a filter whose value type is incompatible with the column dtype.
+    Ordering comparisons (>, >=, <, <=) on a numeric column with a non-numeric
+    value (or vice-versa) raise a TypeError in pandas, so block them up front."""
+    import pandas as pd
+    numeric_col = pd.api.types.is_numeric_dtype(series)
+    values = value if op == "in" else [value]
+    for v in values:
+        if v is None:
+            continue
+        if op in _ORDERING_OPS:
+            if numeric_col and not _is_number(v):
+                raise SafetyError(
+                    f"Blocked: cannot compare numeric column with non-numeric "
+                    f"value {v!r}.")
+            if not numeric_col and _is_number(v):
+                raise SafetyError(
+                    f"Blocked: cannot order a non-numeric column by the numeric "
+                    f"value {v!r}.")
 
 
 def _validate_output_names(plan):
@@ -234,6 +262,7 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
         if f["op"] not in ALLOWED_FILTER_OPS:
             raise SafetyError(f"Blocked: filter operator '{f['op']}' is not allowed.")
         _validate_filter_value(f["op"], f.get("value"))
+        _validate_filter_dtype(df[f["column"]], f["op"], f.get("value"))
 
     # Operation-specific shape checks (pre-execution, so SafeSession can inspect
     # a fully-validated plan before any data is touched).
@@ -488,3 +517,10 @@ def execute_prepared(prepared: PreparedQuery) -> SafePlanResult:
         return SafePlanResult(answer=None, plan=p.plan, blocked=True,
                               reason=str(e), receipt=receipt(None, p.plan),
                               attempts=p.attempts)
+    except Exception as e:
+        # Defense in depth: a validated plan should not raise, but if execution
+        # fails for any reason, fail closed (blocked) instead of crashing.
+        return SafePlanResult(answer=None, plan=p.plan, blocked=True,
+                              reason=f"Blocked: plan execution failed safely: "
+                                     f"{type(e).__name__}",
+                              receipt=receipt(None, p.plan), attempts=p.attempts)
