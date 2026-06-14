@@ -29,6 +29,9 @@ dev = ["pytest>=7.0", "pytest-timeout>=2.1", "openpyxl>=3.0", "xlrd>=2.0", "pola
 polars = ["polars>=0.20"]
 # Live benchmark harness (scripts/live_benchmark.py) talks to the OpenAI API.
 benchmark = ["openai>=1.0"]
+# Head-to-head comparison (scripts/compare_tools.py) also drives the LangChain
+# pandas agent. (PandasAI is intentionally omitted - it pins an older pandas.)
+compare = ["openai>=1.0", "langchain-experimental>=0.3", "langchain-openai>=0.2"]
 # International PII detection. Also needs a spaCy model, e.g.
 # python -m spacy download en_core_web_sm
 presidio = ["presidio-analyzer>=2.2", "spacy>=3.4"]

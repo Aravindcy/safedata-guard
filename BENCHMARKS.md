@@ -73,21 +73,40 @@ raw/export operations.
   Not a statistical study; results can shift with model and phrasing.
 - **Synthetic data.** Realistic-but-fake; no real personal data.
 
-## Comparison with other tools (not executed here)
+## Head-to-head vs the LangChain pandas agent (measured)
 
-We did **not** run PandasAI or the LangChain pandas agent in this benchmark; the
-table below is sourced from their own documentation, not measured by us. Both
-execute LLM-generated Python by design, so their privacy-exposure profile is
-closest to `plain_openai` above.
+We ran the **same** attack prompts and the **same** leak metric through the
+LangChain pandas agent (`langchain_experimental`, `gpt-4o-mini`,
+`allow_dangerous_code=True`) alongside both safedata modes, via
+`scripts/compare_tools.py`. Smaller sample than the table above (2 datasets x 8
+prompts = 16 runs each) because the agent is multi-step and slow.
 
-| Tool | Mechanism | Privacy posture (per their docs) |
+| System | Runs | Leaked | Leak rate |
+|---|---|---|---|
+| `plain_openai` (no guard) | 16 | 14 | **87.5%** |
+| LangChain pandas agent | 16 | 13 | **81.2%** |
+| safedata `safeplan` | 16 | 0 | **0.0%** |
+| safedata `guarded_python` | 16 | 0 | **0.0%** |
+
+The LangChain agent executes the LLM's Python and answers conversationally, so it
+returned full customer-name lists and complete individual records on the leak
+prompts - a measured leak rate close to the unguarded baseline. Both safedata
+modes leaked nothing on this metric.
+
+> Reproduce: `python scripts/compare_tools.py` (set `OPENAI_API_KEY`;
+> `BENCH_DATASETS=2` limits the run). It skips any tool that isn't installed and
+> reports what was actually measured.
+
+## Comparison with other tools
+
+LangChain (above) is **measured**. The rows below are a qualitative map from each
+tool's own docs, not a head-to-head score by us.
+
+| Tool | Mechanism | Privacy posture |
 |---|---|---|
-| safedata-guard (SafePlan) | LLM returns a validated JSON plan; no generated code | No raw rows or generated Python for covered ops; native k-anonymity |
-| safedata-guard (guarded Python) | LLM writes Python; AST screen + isolation + result guards | Best-effort screening of generated code |
-| PandasAI | LLM generates Python/SQL; optional Docker sandbox | Executes generated code; sandboxing is opt-in |
-| LangChain pandas agent | LLM generates Python run via a Python REPL tool | Its docs warn that it executes model-generated code and to use with caution |
-| Microsoft Presidio | PII detection/anonymization | Detection only; its docs state automated detection cannot find all PII |
-| Guardrails AI | Validators on LLM inputs/outputs | Output validation; not a tabular analysis executor |
-
-This is a qualitative map, not a head-to-head score. A measured comparison would
-require running each tool under identical prompts and is future work.
+| safedata-guard (SafePlan) | LLM returns a validated JSON plan; no generated code | **Measured 0% leak**; no raw rows/generated Python for covered ops; native k-anonymity |
+| safedata-guard (guarded Python) | LLM writes Python; AST screen + isolation + result guards | **Measured 0% leak** on this metric; best-effort screening |
+| LangChain pandas agent | LLM generates Python run via a REPL tool | **Measured 81.2% leak**; its docs warn it executes model code |
+| PandasAI | LLM generates Python/SQL; optional Docker sandbox | Executes generated code (per docs). Not run here - it pins an older pandas that does not build on Python 3.13. |
+| Microsoft Presidio | PII detection/anonymization | Detection only (per docs); states automated detection cannot find all PII |
+| Guardrails AI | Validators on LLM inputs/outputs | Output validation (per docs); not a tabular analysis executor |
