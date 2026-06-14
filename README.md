@@ -154,11 +154,14 @@ safedata plan data.csv "revenue by region"
 
 ## Documentation
 
-- **[SECURITY.md](SECURITY.md)** - threat model, what it defends against, and the
-  known limitations (read before relying on it).
+- **[SECURITY_MODEL.md](SECURITY_MODEL.md)** - what it protects against, reduces,
+  and does not guarantee; the recommended enterprise deployment pattern.
+- **[THREAT_MODEL.md](THREAT_MODEL.md)** - per-threat risk / mitigation /
+  limitation / test coverage.
+- **[SECURITY.md](SECURITY.md)** - how to report a vulnerability.
 - **[BENCHMARKS.md](BENCHMARKS.md)** - measured leak rates vs plain LLM-generated
   code, with methodology and honest caveats.
-- **[docs/examples.md](docs/examples.md)** - worked examples across domains.
+- **[examples/](examples/)** - runnable per-domain scripts; **[docs/examples.md](docs/examples.md)** - the same as a guide.
 - **[CHANGELOG.md](CHANGELOG.md)** - what changed in each release.
 
 ## Limitations
