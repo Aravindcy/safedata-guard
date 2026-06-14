@@ -44,9 +44,11 @@ Python. Receipt after every ask().
   ScanReport returned. New names exposed ADDITIVELY (old names still present) so
   the suite stays green. `Policy.strict()` corrected to profile="strict",
   allow_python_fallback=False, k=20.
-- **Phase 2b (next):** hard-cut `__init__` to the nine public names and migrate
-  the existing test suite off the old public names (repoint to internal modules,
-  preserving coverage). This is the breaking step and lands atomically.
+- **Phase 2b (done):** hard-cut `__init__` to the nine public names; old names are
+  no longer importable from the package. Advanced tools live under
+  `safedata.advanced.*` (leak_test, create_shadowframe, run_safely, check_code,
+  SafeSession, ...). Migrated the entire existing test suite off the old public
+  names to internal-module imports (no shim) - coverage preserved.
 - **Phase 3:** privacy detector categories (business_identifier / financial /
   health / free_text) feeding scan() and protect(); question-aware protect();
   mode router (auto/plan/summary/python) honoring `allow_python_fallback`.

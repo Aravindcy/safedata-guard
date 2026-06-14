@@ -132,7 +132,7 @@ def test_guard_reuses_profile_and_model():
 def test_guard_session_is_safesession():
     guard = sd.Guard(profile="general", model=_plan('{"operation":"count_rows"}'))
     s = guard.session(_banking())
-    assert isinstance(s, sd.SafeSession)
+    assert isinstance(s, sd.advanced.SafeSession)
 
 
 def test_safedataerror_catches_everything():

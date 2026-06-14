@@ -6,7 +6,29 @@ Run with: pytest -q
 import pandas as pd
 import pytest
 import safedata
-from safedata import run_safely as _run_safely, SafetyError, summarize
+import safedata.tokens
+import safedata.safeplan
+import safedata.cli
+# v1.1.0: the old public names are now internal-only; tests import them from
+# their modules. Policy stays public (safedata.Policy).
+from safedata.bodyguard import (run_safely, run_safely as _run_safely,
+                                SafetyError, check_code, CodeCheck, k_anonymize)
+from safedata.translator import summarize
+from safedata.report import report
+from safedata.wrap import wrap, extract_code, ModelError
+from safedata.tokens import token_savings, token_stats, estimate_tokens
+from safedata.pii import redact_text
+from safedata.agent import Agent, build_prompt
+from safedata.firewall import (safe_answer, create_privacy_plan, make_safe_view,
+                               detect_operation)
+from safedata.safeplan import safe_query
+from safedata.receipt import format_receipt
+from safedata.integrations import to_pandera_schema, to_great_expectations_suite
+from safedata.analysis import (validate, Issue, suggest_fixes, explain_issue,
+                               quality_score, ai_readiness, privacy_report,
+                               infer_columns, build_safe_prompt, create_contract,
+                               ai_risk_score, shadow, detect_ai_traps,
+                               enable_presidio)
 
 
 # Speed: by default these tests exercise the static screen and the runtime
@@ -118,7 +140,7 @@ def test_self_correction_recovers():
         # corrected: does not touch df
         return "result = df[df['date'].str.startswith('2025')]['amount'].sum()"
 
-    agent = safedata.Agent(model=flaky_model, max_retries=3, isolate=False)
+    agent = Agent(model=flaky_model, max_retries=3, isolate=False)
     out = agent.ask(df, "total 2025 sales")
 
     assert out.blocked is False
@@ -133,7 +155,7 @@ def test_gives_up_after_max_retries():
     def always_bad(prompt):
         return "import os; result = 1"
 
-    agent = safedata.Agent(model=always_bad, max_retries=2, isolate=False)
+    agent = Agent(model=always_bad, max_retries=2, isolate=False)
     out = agent.ask(df, "anything")
     assert out.blocked is True
     assert len(out.attempts) == 2
@@ -142,7 +164,7 @@ def test_gives_up_after_max_retries():
 # ---- v0.2.0 new translator checks -----------------------------------------
 
 import numpy as np
-from safedata import summarize
+from safedata.translator import summarize
 
 
 def test_detects_empty_and_high_missing_columns():
@@ -194,7 +216,7 @@ def test_margin_negatives_not_flagged():
 
 # ---- v0.3.0 HTML report ----------------------------------------------------
 
-from safedata import report
+from safedata.report import report
 
 
 def test_report_returns_html_string():
@@ -237,7 +259,7 @@ def test_report_rejects_non_dataframe():
 
 # ---- v0.4.0 universal wrap() ----------------------------------------------
 
-from safedata import wrap, extract_code, ModelError
+from safedata.wrap import wrap, extract_code, ModelError
 
 
 def test_extract_code_strips_python_fence():
@@ -262,7 +284,7 @@ def test_wrap_runs_full_loop():
     def fake_call(prompt):
         return "Sure! Here you go:\n```python\nresult = df['amount'].sum()\n```"
 
-    agent = safedata.Agent(model=wrap(fake_call), isolate=False)
+    agent = Agent(model=wrap(fake_call), isolate=False)
     out = agent.ask(df, "total amount")
     assert out.blocked is False
     assert out.answer == 60.0
@@ -274,7 +296,7 @@ def test_wrap_handles_model_failure_gracefully():
     def broken_call(prompt):
         raise ConnectionError("no internet")
 
-    agent = safedata.Agent(model=wrap(broken_call), isolate=False)
+    agent = Agent(model=wrap(broken_call), isolate=False)
     out = agent.ask(df, "total")
     assert out.blocked is True
     assert "failed" in out.reason.lower()
@@ -290,7 +312,7 @@ def test_wrap_rejects_non_callable():
 
 # ---- v0.4.0 token counter -------------------------------------------------
 
-from safedata import token_savings, token_stats, estimate_tokens
+from safedata.tokens import token_savings, token_stats, estimate_tokens
 
 
 def test_estimate_tokens_basic():
@@ -316,7 +338,7 @@ def test_token_savings_is_readable_text():
 
 def test_agent_result_includes_tokens():
     df = pd.DataFrame({"amount": [1.0, 2.0, 3.0]})
-    agent = safedata.Agent(model=lambda p: "result = df['amount'].sum()",
+    agent = Agent(model=lambda p: "result = df['amount'].sum()",
                            isolate=False)
     out = agent.ask(df, "total")
     assert out.tokens is not None
@@ -385,7 +407,7 @@ def test_blocks_from_import_of_writer_reader_funcs(tmp_path):
         "from pandas import read_pickle as rp\nresult = rp('x.pkl')",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
     import os
@@ -406,7 +428,7 @@ def test_blocks_pandas_numpy_internal_io_gateways(tmp_path):
         "from pandas.io import common\nresult = common.file_exists('/x')",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
     import os
@@ -424,7 +446,7 @@ def test_blocks_pandas_io_classes():
         "from pandas import HDFStore\nresult = HDFStore('/tmp/x.h5')",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
 
@@ -438,7 +460,7 @@ def test_blocks_sql_reader_variants():
         "from pandas import read_sql_table\nresult = 1",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
 
@@ -468,7 +490,7 @@ def test_isolation_works_from_source_checkout():
 
 
 def test_token_savings_wording_for_tiny_input():
-    from safedata import token_savings
+    from safedata.tokens import token_savings
     tiny = pd.DataFrame({"a": [1]})
     msg = token_savings(tiny)
     assert "no token saving" in msg
@@ -483,7 +505,7 @@ def test_blocks_numpy_f2py():
         "from numpy import f2py\nresult = 1",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
 
@@ -496,7 +518,7 @@ def test_blocks_numpy_ctypeslib():
         "from numpy import ctypeslib\nresult = 1",
     ]
     for code in bad:
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
 
@@ -521,7 +543,7 @@ def test_blocks_from_import_of_reexported_os():
         "import pandas.io.common.os as safe\nresult = safe.getcwd()",
         "from numpy import os as o\nresult = 1",
     ):
-        assert safedata.check_code(code).safe is False, code
+        assert check_code(code).safe is False, code
         with pytest.raises(SafetyError):
             run_safely(code, df, isolate=False)
 
@@ -645,7 +667,7 @@ def test_polars_summary_flags_empty_column():
 
 
 # --- PII masking ------------------------------------------------------------
-from safedata import redact_text
+from safedata.pii import redact_text
 
 
 def test_redact_text_catches_common_pii():
@@ -830,7 +852,7 @@ def test_cli_no_command_shows_help(capsys):
 def test_pii_does_not_flag_timestamps():
     # Real-world false positive: a datetime column was being mangled into
     # [PHONE]. Timestamps and dates must be left intact.
-    from safedata import redact_text
+    from safedata.pii import redact_text
     assert redact_text("2024-10-07 16:38:46") == "2024-10-07 16:38:46"
     assert redact_text("2020-01-01 00:00:00") == "2020-01-01 00:00:00"
     # but a genuine phone is still masked
@@ -845,7 +867,9 @@ def test_summary_no_pii_note_for_datetime_column():
 
 
 # --- previously-untested public helpers ------------------------------------
-from safedata import build_prompt, extract_code, estimate_tokens
+from safedata.agent import build_prompt
+from safedata.wrap import extract_code
+from safedata.tokens import estimate_tokens
 
 
 def test_build_prompt_accepts_dataframe_or_summary():
@@ -875,7 +899,7 @@ def test_estimate_tokens_scales_with_length():
 
 
 # --- check_code (standalone static guard for agent builders) ----------------
-from safedata import check_code, CodeCheck
+from safedata.bodyguard import check_code, CodeCheck
 
 
 def test_check_code_passes_safe_code():
@@ -1030,7 +1054,7 @@ def test_row_reduction_allowed_when_enabled():
 
 def test_agent_allow_row_reduction_flag():
     df = pd.DataFrame({"a": [1, 2, 3, 4]})
-    agent = safedata.Agent(
+    agent = Agent(
         model=lambda p: "df = df[df['a'] > 2]\nresult = df['a'].sum()",
         isolate=False, allow_row_reduction=True)
     out = agent.ask(df, "sum of a where a>2")
@@ -1079,9 +1103,9 @@ def test_raw_token_estimate_scales_for_big_frame():
 # ============================================================================
 # v1.0.6 structured analysis layer (validate / suggest_fixes / score / etc.)
 # ============================================================================
-from safedata import (validate, Issue, suggest_fixes, explain_issue,
-                      quality_score, ai_readiness, privacy_report,
-                      infer_columns, build_safe_prompt)
+from safedata.analysis import (validate, Issue, suggest_fixes, explain_issue,
+                               quality_score, ai_readiness, privacy_report,
+                               infer_columns, build_safe_prompt)
 
 
 def _messy_df():
@@ -1311,8 +1335,8 @@ def test_shared_scope_lambda_sees_module_var():
 
 
 def test_bare_dunder_name_blocked():
-    assert not safedata.check_code("f = lambda x=__build_class__: x").safe
-    assert not safedata.check_code("result = __builtins__").safe
+    assert not check_code("f = lambda x=__build_class__: x").safe
+    assert not check_code("result = __builtins__").safe
 
 
 def test_max_result_rows_blocks_oversized_frame():
@@ -1356,13 +1380,13 @@ def test_format_attribute_escape_blocked():
         "result = '{x.__init__}'.format_map({'x': df})",
         "result = '{0[0]}'.format(df['a'].tolist())",
     ]:
-        assert not safedata.check_code(code).safe, code
+        assert not check_code(code).safe, code
 
 
 def test_format_nonliteral_template_blocked():
     # A template the screen can't see (built in a variable) is refused.
     code = "t = '{0.__class__}'\nresult = t.format(df)"
-    assert not safedata.check_code(code).safe
+    assert not check_code(code).safe
 
 
 def test_format_escape_blocked_at_runtime():
@@ -1379,7 +1403,7 @@ def test_safe_format_still_allowed():
         "result = '{0} rows'.format(len(df))",
         "result = '{name}'.format(name='hi')",
     ]:
-        assert safedata.check_code(code).safe, code
+        assert check_code(code).safe, code
     df = pd.DataFrame({"a": [1, 2, 3]})
     assert run_safely("result = '{:.1f}'.format(df['a'].mean())", df) == "2.0"
 
@@ -1408,18 +1432,18 @@ def test_non_frame_input_raises_typeerror():
 
 def test_agent_safe_and_strict_presets():
     def m(p): return "result = df['a'].sum()"
-    a = safedata.Agent.safe(m)
+    a = Agent.safe(m)
     assert a.isolation == "process" and a.redact_result_pii is True
     assert a.max_result_rows == 50
-    s = safedata.Agent.strict(m)
+    s = Agent.strict(m)
     assert s.isolation == "docker"
     # overrides win
-    assert safedata.Agent.safe(m, max_result_rows=5).max_result_rows == 5
+    assert Agent.safe(m, max_result_rows=5).max_result_rows == 5
 
 
 def test_create_contract():
     df = pd.DataFrame({"email": ["a@b.com"], "amount": ["$5"], "region": ["N"]})
-    c = safedata.create_contract(df)
+    c = create_contract(df)
     assert "email" in c["blocked_columns"]
     assert "amount" in c["allowed_columns"]
     assert c["privacy_level"] == "strict"
@@ -1429,7 +1453,7 @@ def test_create_contract():
 
 def test_audit_report_html():
     def m(p): return "result = df['a'].sum()"
-    out = safedata.Agent.safe(m).ask(pd.DataFrame({"a": [1, 2, 3]}), "sum?")
+    out = Agent.safe(m).ask(pd.DataFrame({"a": [1, 2, 3]}), "sum?")
     html = out.audit_report()
     assert html.startswith("<!doctype")
     assert "audit report" in html and "sum?" in html
@@ -1448,7 +1472,7 @@ def _pii_df():
 def test_agent_masks_name_pii_in_prompt_by_default():
     def m(p):
         return "result = df['amount'].sum()"
-    out = safedata.Agent.safe(m).ask(_pii_df(), "q")
+    out = Agent.safe(m).ask(_pii_df(), "q")
     assert "Alice Smith" not in (out.summary or "")
     assert "Alice Smith" not in out.audit_report()      # audit stores the summary
 
@@ -1456,7 +1480,7 @@ def test_agent_masks_name_pii_in_prompt_by_default():
 def test_agent_mask_prompt_pii_opt_out():
     def m(p):
         return "result = df['amount'].sum()"
-    out = safedata.Agent(m, mask_prompt_pii=False).ask(_pii_df(), "q")
+    out = Agent(m, mask_prompt_pii=False).ask(_pii_df(), "q")
     assert "Alice Smith" in (out.summary or "")
 
 
@@ -1485,10 +1509,10 @@ def test_redaction_does_not_overmask_product_name():
 
 def test_build_prompt_masks_pii_by_default():
     df = pd.DataFrame({"customer_name": ["Alice Smith"], "amount": [1]})
-    assert "Alice Smith" not in safedata.build_prompt(df, "q")
-    assert "Alice Smith" in safedata.build_prompt(df, "q", mask_pii=False)
+    assert "Alice Smith" not in build_prompt(df, "q")
+    assert "Alice Smith" in build_prompt(df, "q", mask_pii=False)
     # a pre-built summary string is used verbatim
-    assert "RAW" in safedata.build_prompt("RAW", "q")
+    assert "RAW" in build_prompt("RAW", "q")
 
 
 # --- 1.0.8: column firewall, result minimisation, risk/traps/shadow --------
@@ -1525,18 +1549,18 @@ def test_enforce_minimal_result():
 
 def test_create_contract_question_aware():
     df = _firewall_df()
-    c = safedata.create_contract(df, "total revenue by region")
+    c = create_contract(df, "total revenue by region")
     assert set(c["blocked_columns"]) == {"customer_name", "email"}
     assert "revenue" in c["allowed_columns"]
     # a question that needs emails keeps the email column allowed
-    c2 = safedata.create_contract(df, "list customer emails")
+    c2 = create_contract(df, "list customer emails")
     assert "email" not in c2["blocked_columns"]
 
 
 def test_agent_strict_enforces_column_firewall():
     def m(p):
         return "result = df[['customer_name','revenue']].head(1)"
-    out = safedata.Agent.strict(m, isolation="process").ask(
+    out = Agent.strict(m, isolation="process").ask(
         _firewall_df(), "total revenue by region")
     assert out.blocked is True
     assert "customer_name" in (out.reason or "")
@@ -1544,15 +1568,15 @@ def test_agent_strict_enforces_column_firewall():
 
 def test_ai_risk_score_and_traps():
     df = _firewall_df()
-    r = safedata.ai_risk_score(df, "total revenue by region")
+    r = ai_risk_score(df, "total revenue by region")
     assert r["risk_level"] == "high" and r["recommended_mode"] == "strict"
-    traps = safedata.detect_ai_traps(pd.DataFrame({"amount": ["$5", "$6"]}))
+    traps = detect_ai_traps(pd.DataFrame({"amount": ["$5", "$6"]}))
     assert any(t["trap"] == "TEXT_NUMERIC" for t in traps)
 
 
 def test_shadow_has_no_real_values():
     df = _firewall_df()
-    sh = safedata.shadow(df, rows=4)
+    sh = shadow(df, rows=4)
     assert list(sh.columns) == list(df.columns)
     assert "Alice Smith" not in sh["customer_name"].tolist()
     assert "a@b.com" not in sh["email"].tolist()
@@ -1605,15 +1629,15 @@ def test_minimal_result_blocks_records_not_aggregate():
 def test_deep_pii_scan_catches_rare_value():
     vals = [f"user{i}" for i in range(100)] + ["leak@example.com"]
     df = pd.DataFrame({"notes": vals})
-    assert safedata.privacy_report(df)["pii_columns"] == []          # shallow
-    assert "notes" in safedata.privacy_report(df, scan_rows="all")["pii_columns"]
+    assert privacy_report(df)["pii_columns"] == []          # shallow
+    assert "notes" in privacy_report(df, scan_rows="all")["pii_columns"]
 
 
 def test_agent_safe_firewall_masks_indirect():
     df = pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
                        "email": ["a@b.com", "c@d.com"],
                        "revenue": [10, 20], "region": ["N", "S"]})
-    out = safedata.Agent.safe(
+    out = Agent.safe(
         lambda p: "result = df.iloc[:, 0].tolist()", isolate=False
     ).ask(df, "total revenue by region")
     assert "Alice Smith" not in str(out.answer)
@@ -1647,10 +1671,10 @@ def test_cli_check_masks_name_columns(tmp_path, capsys):
 def test_scan_rows_threaded_into_risk_contract_prompt():
     vals = [f"user{i}" for i in range(100)] + ["leak@example.com"]
     df = pd.DataFrame({"notes": vals})
-    assert safedata.ai_risk_score(df)["risk_level"] == "low"
-    assert safedata.ai_risk_score(df, scan_rows="all")["risk_level"] != "low"
-    assert "notes" in safedata.create_contract(df, scan_rows="all")["blocked_columns"]
-    assert "leak@example.com" not in safedata.build_prompt(df, "q", scan_rows="all")
+    assert ai_risk_score(df)["risk_level"] == "low"
+    assert ai_risk_score(df, scan_rows="all")["risk_level"] != "low"
+    assert "notes" in create_contract(df, scan_rows="all")["blocked_columns"]
+    assert "leak@example.com" not in build_prompt(df, "q", scan_rows="all")
 
 
 def test_strict_blocks_1d_row_results():
@@ -1661,16 +1685,16 @@ def test_strict_blocks_1d_row_results():
     # without the strict flag, a 1-D list is allowed (avoids groupby false-block)
     assert run_safely("result = df['a'].tolist()", df,
                       enforce_minimal_result=True) == [1, 2, 3, 4]
-    assert safedata.Agent.strict(lambda p: "").block_1d_row_results is True
+    assert Agent.strict(lambda p: "").block_1d_row_results is True
 
 
 def test_quality_and_readiness_accept_scan_rows():
     df = pd.DataFrame({"notes": [f"user{i}" for i in range(100)] + ["leak@example.com"]})
-    assert safedata.quality_score(df)["privacy_risk"] == "Low"
-    assert safedata.quality_score(df, scan_rows="all")["privacy_risk"] != "Low"
+    assert quality_score(df)["privacy_risk"] == "Low"
+    assert quality_score(df, scan_rows="all")["privacy_risk"] != "Low"
     no_pii = lambda r: [c for c in r["checks"] if c["check"] == "no_pii"][0]["ok"]
-    assert no_pii(safedata.ai_readiness(df)) is True
-    assert no_pii(safedata.ai_readiness(df, scan_rows="all")) is False
+    assert no_pii(ai_readiness(df)) is True
+    assert no_pii(ai_readiness(df, scan_rows="all")) is False
 
 
 # --- 1.0.8: camelCase PII, card detection, isolate honoring, quality verdict -
@@ -1678,28 +1702,28 @@ def test_quality_and_readiness_accept_scan_rows():
 def test_camelcase_pii_detection():
     df = pd.DataFrame({"FullName": ["Alice Smith"], "CustomerName": ["Bob"],
                        "EmailAddress": ["a@b.com"], "amount": [1]})
-    pii = set(safedata.privacy_report(df)["pii_columns"])
+    pii = set(privacy_report(df)["pii_columns"])
     assert {"FullName", "CustomerName", "EmailAddress"} <= pii
 
 
 def test_numeric_card_detection_with_luhn():
     df = pd.DataFrame({"card_number": [4111111111111111, 4012888888881881],
                        "big_id": [12345678901234, 99999999999999]})
-    pii = set(safedata.privacy_report(df)["pii_columns"])
+    pii = set(privacy_report(df)["pii_columns"])
     assert "card_number" in pii          # valid Luhn cards flagged
     assert "big_id" not in pii           # non-Luhn long ints are not
 
 
 def test_agent_safe_honors_isolate_false():
-    assert safedata.Agent.safe(lambda p: "", isolate=False).isolation is None
-    assert safedata.Agent.safe(lambda p: "").isolation == "process"
+    assert Agent.safe(lambda p: "", isolate=False).isolation is None
+    assert Agent.safe(lambda p: "").isolation == "process"
     # explicit isolation= still wins
-    assert safedata.Agent.safe(lambda p: "", isolate=False,
+    assert Agent.safe(lambda p: "", isolate=False,
                                isolation="docker").isolation == "docker"
 
 
 def test_quality_score_reflects_privacy():
-    q = safedata.quality_score(pd.DataFrame({"email": ["a@b.com", "c@d.com"],
+    q = quality_score(pd.DataFrame({"email": ["a@b.com", "c@d.com"],
                                              "v": [1, 2]}))
     assert q["privacy_risk"] == "High"
     assert q["ai_readiness"] == "Needs Review"
@@ -1720,7 +1744,7 @@ def _firewall_plan_df():
 
 def test_plan_default_drops_only_unneeded_pii():
     df = _firewall_plan_df()
-    plan = safedata.create_privacy_plan(df, "total revenue by region")
+    plan = create_privacy_plan(df, "total revenue by region")
     # all non-PII columns retained (no wrong answers)
     for c in ["region", "revenue", "contract_start_date"]:
         assert c in plan.allowed_columns
@@ -1731,14 +1755,14 @@ def test_plan_default_drops_only_unneeded_pii():
 
 def test_plan_keeps_needed_pii():
     df = _firewall_plan_df()
-    plan = safedata.create_privacy_plan(df, "list customer emails")
+    plan = create_privacy_plan(df, "list customer emails")
     assert "email" in plan.retained_pii_columns
     assert "email" in plan.allowed_columns
 
 
 def test_minimal_mode_is_opt_in_and_warns():
     df = _firewall_plan_df()
-    plan = safedata.create_privacy_plan(df, "total revenue by region",
+    plan = create_privacy_plan(df, "total revenue by region",
                                         safe_mode="minimal")
     assert "contract_start_date" not in plan.allowed_columns   # aggressive
     assert plan.warnings                                       # carries a caveat
@@ -1746,17 +1770,17 @@ def test_minimal_mode_is_opt_in_and_warns():
 
 def test_make_safe_view_has_no_dropped_values():
     df = _firewall_plan_df()
-    plan = safedata.create_privacy_plan(df, "total revenue by region")
-    sv = safedata.make_safe_view(df, plan)
+    plan = create_privacy_plan(df, "total revenue by region")
+    sv = make_safe_view(df, plan)
     assert "customer_name" not in sv.columns
     assert "Alice Smith" not in sv.to_string()
 
 
 def test_safe_answer_dry_run_and_execution():
     df = _firewall_plan_df()
-    dry = safedata.safe_answer(df, "total revenue by region")
+    dry = safe_answer(df, "total revenue by region")
     assert dry["answer"] is None and "plan" in dry and dry["audit"]
-    out = safedata.safe_answer(
+    out = safe_answer(
         df, "total revenue by region",
         code="result = df.groupby('region')['revenue'].sum()",
         isolation="thread")
@@ -1765,16 +1789,16 @@ def test_safe_answer_dry_run_and_execution():
 
 
 def test_detect_operation():
-    assert safedata.detect_operation("total revenue by region") == "aggregate"
-    assert safedata.detect_operation("top 5 customers") == "ranking"
-    assert safedata.detect_operation("monthly revenue trend") == "trend"
-    assert safedata.detect_operation("show all customers") == "raw_lookup"
+    assert detect_operation("total revenue by region") == "aggregate"
+    assert detect_operation("top 5 customers") == "ranking"
+    assert detect_operation("monthly revenue trend") == "trend"
+    assert detect_operation("show all customers") == "raw_lookup"
 
 
 def test_safe_answer_does_not_raise_on_guardrail_block():
     # Code path: an oversized result returns a structured block, not an exception.
     df = pd.DataFrame({"region": list("ABCDEFGHIJ") * 6, "rev": range(60)})
-    out = safedata.safe_answer(df, "x", code="result = df", isolation="thread")
+    out = safe_answer(df, "x", code="result = df", isolation="thread")
     assert out["blocked"] is True and out["reason"]
     assert out["answer"] is None
 
@@ -1790,7 +1814,7 @@ def test_safe_answer_model_self_corrects():
             return "result = df"                       # full table -> blocked
         return "result = df.groupby('region')['rev'].sum()"
 
-    out = safedata.safe_answer(df, "total rev by region", model=flaky,
+    out = safe_answer(df, "total rev by region", model=flaky,
                                isolation="thread")
     assert out["blocked"] is False
     assert out["answer"].to_dict() == {"N": 4, "S": 6}
@@ -1805,7 +1829,7 @@ def test_agent_handles_raw_fenced_model_output():
     def raw_model(prompt):
         return "Here is the code:\n```python\nresult = df['rev'].sum()\n```"
 
-    out = safedata.Agent(model=raw_model, isolate=False).ask(df, "total rev")
+    out = Agent(model=raw_model, isolate=False).ask(df, "total rev")
     assert out.blocked is False
     assert out.answer == 30
 
@@ -1828,13 +1852,13 @@ def test_malicious_model_blocked_through_agent_and_safe_answer(monkeypatch):
         c = attacks[min(st["i"], len(attacks) - 1)]; st["i"] += 1
         return c
 
-    out = safedata.Agent.safe(malicious, isolation="thread", max_retries=5).ask(df, "total balance")
+    out = Agent.safe(malicious, isolation="thread", max_retries=5).ask(df, "total balance")
     assert out.blocked is True and out.answer is None
     assert "supersecret-123" not in str(out.answer)
     assert "123-45-6789" not in str(out.answer)
 
     st["i"] = 0
-    o2 = safedata.safe_answer(df, "total balance", model=malicious,
+    o2 = safe_answer(df, "total balance", model=malicious,
                               isolation="thread", max_retries=5)
     assert o2["blocked"] is True
     assert "supersecret-123" not in str(o2["answer"])
@@ -1849,7 +1873,7 @@ def test_realistic_fenced_model_correct_and_private():
         assert "Alice Smith" not in prompt        # PII never sent to the "model"
         return ("Sure! Here's the analysis:\n```python\n"
                 "result = df.groupby('region')['balance'].sum()\n```")
-    out = safedata.Agent.safe(fenced, isolation="thread").ask(df, "total balance by region")
+    out = Agent.safe(fenced, isolation="thread").ask(df, "total balance by region")
     assert out.blocked is False
     assert out.answer.to_dict() == {"N": 100, "S": 200}
 
@@ -1859,12 +1883,12 @@ def test_realistic_fenced_model_correct_and_private():
 def test_k_anonymize_utility():
     g = pd.DataFrame({"zip": ["A", "B", "C"], "avg": [1.0, 2.0, 3.0],
                       "count": [9, 4, 1]})
-    out = safedata.k_anonymize(g, min_group_size=5)
+    out = k_anonymize(g, min_group_size=5)
     assert out["zip"].tolist() == ["A"]            # B(4), C(1) suppressed
     assert out["avg"].tolist() == [1.0]            # exact figures unchanged
     import pytest as _pt
     with _pt.raises(ValueError):
-        safedata.k_anonymize(pd.DataFrame({"zip": ["A"], "avg": [1.0]}), 5)
+        k_anonymize(pd.DataFrame({"zip": ["A"], "avg": [1.0]}), 5)
 
 
 def test_run_safely_min_group_size_suppresses_and_refuses():
@@ -1888,7 +1912,7 @@ def test_safe_answer_min_group_size_with_stub_model():
         # a well-behaved model: includes counts, does not self-filter
         return ("result = df.groupby('pc').agg(avg=('v','mean'), "
                 "count=('v','size')).reset_index()")
-    out = safedata.safe_answer(df, "average v by pc", model=stub,
+    out = safe_answer(df, "average v by pc", model=stub,
                                isolation="thread", min_group_size=5)
     assert out["blocked"] is False
     assert out["answer"]["pc"].tolist() == ["A"]      # B and Z suppressed
@@ -1905,21 +1929,21 @@ def test_presidio_detects_intl_pii_when_enabled():
                        "city": ["Berlin", "Madrid"], "amount": [1, 2]})
     try:
         # regex alone misses free-text city/location
-        assert "city" not in safedata.privacy_report(df)["pii_columns"]
-        assert safedata.enable_presidio(True) is True
-        pii = set(safedata.privacy_report(df)["pii_columns"])
+        assert "city" not in privacy_report(df)["pii_columns"]
+        assert enable_presidio(True) is True
+        pii = set(privacy_report(df)["pii_columns"])
         assert "city" in pii and "full_name" in pii
         # flows through the firewall pipeline
-        c = safedata.create_contract(df, "total amount")
+        c = create_contract(df, "total amount")
         assert {"city", "full_name"} <= set(c["blocked_columns"])
     finally:
-        safedata.enable_presidio(False)
+        enable_presidio(False)
 
 
 def test_plan_reports_original_and_safe_view_risk():
     df = pd.DataFrame({"customer_name": ["A", "B"], "email": ["a@b.com", "c@d.com"],
                        "region": ["N", "S"], "revenue": [10, 20]})
-    plan = safedata.create_privacy_plan(df, "total revenue by region")
+    plan = create_privacy_plan(df, "total revenue by region")
     assert plan.original_risk_level in ("low", "medium", "high")
     # the safe view (PII dropped) is no riskier than the raw frame
     order = {"low": 0, "medium": 1, "high": 2}
@@ -1961,12 +1985,12 @@ def test_safe_answer_applies_policy_and_overrides():
         return ("result = df.groupby('region').agg(v=('v','mean'), "
                 "count=('v','size')).reset_index()")
     # regulated -> k=5 suppresses the 4-row group
-    out = safedata.safe_answer(df, "average v by region", model=stub,
+    out = safe_answer(df, "average v by region", model=stub,
                                policy=safedata.Policy.regulated(),
                                isolation="thread")
     assert out["blocked"] is False and len(out["answer"]) == 1
     # explicit override beats the policy
-    out2 = safedata.safe_answer(df, "average v by region", model=stub,
+    out2 = safe_answer(df, "average v by region", model=stub,
                                 policy=safedata.Policy.regulated(),
                                 min_group_size=2, isolation="thread")
     assert len(out2["answer"]) == 2
@@ -1982,7 +2006,7 @@ def test_policy_agent_bridge():
 def test_great_expectations_suite_export():
     df = pd.DataFrame({"id": [1, 2, 3], "customer_name": ["A", "B", "C"],
                        "qty": [5, 6, 7]})
-    suite = safedata.to_great_expectations_suite(df, suite_name="s1")
+    suite = to_great_expectations_suite(df, suite_name="s1")
     assert suite["expectation_suite_name"] == "s1"
     types = {e["expectation_type"] for e in suite["expectations"]}
     assert "expect_column_to_exist" in types
@@ -1999,7 +2023,7 @@ def test_pandera_schema_export():
     except ImportError:
         pytest.skip("pandera not installed")
     df = pd.DataFrame({"id": [1, 2, 3], "qty": [5, 6, 7], "city": ["N", "S", "N"]})
-    schema = safedata.to_pandera_schema(df)
+    schema = to_pandera_schema(df)
     assert set(schema.columns.keys()) == {"id", "qty", "city"}
     # the schema actually validates conforming data
     assert len(schema.validate(df)) == 3
@@ -2066,7 +2090,7 @@ def test_safe_query_executes_json_not_python():
     def stub(prompt):
         return ('```json\n{"operation":"groupby_aggregate","group_by":["region"],'
                 '"metrics":[{"column":"revenue","agg":"sum","as_name":"total"}]}\n```')
-    res = safedata.safe_query(df, "total revenue by region", model=stub,
+    res = safe_query(df, "total revenue by region", model=stub,
                               policy=safedata.Policy.basic())
     assert res.blocked is False
     assert res.receipt["generated_python_executed"] is False
@@ -2078,17 +2102,17 @@ def test_safe_query_blocks_malicious_json_plan():
     df = _sp_df()
     def evil(prompt):
         return '{"operation":"export"}'
-    res = safedata.safe_query(df, "dump everything", model=evil,
+    res = safe_query(df, "dump everything", model=evil,
                               policy=safedata.Policy.regulated(), max_retries=2)
     assert res.blocked is True and res.answer is None
 
 
 def test_receipt_shape():
     df = _sp_df()
-    res = safedata.safe_query(df, "how many rows", model=lambda p: '{"operation":"count_rows"}')
+    res = safe_query(df, "how many rows", model=lambda p: '{"operation":"count_rows"}')
     r = res.receipt
     assert r["mode"] == "safeplan" and r["audit_id"].startswith("SDG-")
-    assert isinstance(safedata.format_receipt(r), str)
+    assert isinstance(format_receipt(r), str)
 
 
 def test_safeplan_aggregate_enforces_min_group_size():
@@ -2119,7 +2143,7 @@ def test_safe_query_blocks_single_record_aggregate():
         return ('{"operation":"aggregate",'
                 '"filters":[{"column":"region","op":"==","value":"Z"}],'
                 '"metrics":[{"column":"revenue","agg":"sum","as_name":"total"}]}')
-    res = safedata.safe_query(df, "revenue for region Z", model=narrow,
+    res = safe_query(df, "revenue for region Z", model=narrow,
                               policy=safedata.Policy.regulated(), max_retries=2)
     assert res.blocked is True and res.answer is None
 
@@ -2128,6 +2152,6 @@ def test_pii_detects_regulated_person_roles():
     # claimant/beneficiary/insured + 'name' are personal data; product/team are not.
     df = pd.DataFrame({"claimant_name": ["Jane Roe"], "beneficiary_name": ["Bob"],
                        "product_name": ["Widget"], "team_name": ["Alpha"]})
-    pii = set(safedata.privacy_report(df)["pii_columns"])
+    pii = set(privacy_report(df)["pii_columns"])
     assert {"claimant_name", "beneficiary_name"} <= pii
     assert not ({"product_name", "team_name"} & pii)

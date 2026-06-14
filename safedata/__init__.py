@@ -1,82 +1,48 @@
 """
-safedata, a safety layer and translator between an AI and your data.
+safedata-guard: a safety layer for asking AI questions over sensitive data.
 
-It does two things existing AI-data tools don't combine:
-  - TRANSLATOR: sends the AI a tiny, quality-aware summary (not 100k rows),
-    making analysis far cheaper and warning the AI about data traps upfront.
-  - BODYGUARD: runs the AI's code on a copy, blocks destructive operations,
-    checks invariants, and feeds errors back so the AI fixes itself,
-    before anything touches your real data.
+It scans your dataframe, removes unnecessary sensitive fields, executes the
+analysis through a safe engine (SafePlan - the model returns a validated JSON
+plan, not raw Python), and returns an answer with an audit receipt.
 
-Quick start:
+Quick start (the one front door):
 
-    import safedata
+    import safedata as sd
 
-    def my_model(prompt):       # plug in any LLM here
-        return "result = df['amount'].sum()"
+    result = sd.ask(df, "What is total revenue by region?",
+                    model=my_model, profile="banking")
+    print(result.answer)
+    print(result.receipt.summary())
 
-    agent = safedata.Agent(model=my_model)
-    print(agent.ask(df, "What is total amount?").answer)
+The four verbs:
+    sd.ask(df, question, model, profile)  - answer a question safely
+    sd.scan(df, profile)                  - assess privacy/quality risk
+    sd.protect(df, question, profile)     - get a privacy-filtered safe view
+    sd.Guard(profile, model)              - a reusable, configured object
+
+Policy controls everything (industry profiles: general/energy/banking/insurance/
+healthcare/strict). Advanced/power-user tools live under `sd.advanced`.
+
+This is a safety layer, not a compliance guarantee. See SECURITY.md.
 """
 
-from .translator import summarize
-from .bodyguard import (run_safely, SafetyError, check_code, CodeCheck,
-                        k_anonymize)
-from .agent import Agent, AgentResult, build_prompt
-from .report import report
-from .wrap import wrap, extract_code, ModelError
-from .tokens import token_savings, token_stats, estimate_tokens
-from .pii import redact_text
-from .analysis import (validate, Issue, suggest_fixes, explain_issue,
-                       quality_score, ai_readiness, privacy_report,
-                       infer_columns, build_safe_prompt, create_contract,
-                       ai_risk_score, detect_ai_traps, shadow, enable_presidio)
-from .firewall import (create_privacy_plan, make_safe_view, safe_answer,
-                       PrivacyPlan, detect_operation)
-from .policy import Policy
-from .integrations import to_pandera_schema, to_great_expectations_suite
-from .safeplan import (safe_query, SafePlan, SafePlanResult, MetricSpec,
-                       validate_safeplan, execute_safeplan)
-from .receipt import create_receipt, format_receipt
-from .shadowframe import create_shadowframe, profile_dataframe, ShadowFrameResult
-from .leaktest import (leak_test, LeakTestResult, LeakAttempt, detect_leak,
-                       collect_sensitive_values)
-from .session import SafeSession, SessionEvent, estimate_question_cost
-# v1.1.0 public facade (the nine names that will be the ONLY public API after
-# the Phase 2 hard cut). Added additively for now so the existing suite stays
-# green while the facade is validated.
 from .api import ask, scan, protect
 from .guard import Guard
+from .policy import Policy
 from .results import Result, ScanReport, Receipt
 from .exceptions import SafedataError
+from . import advanced
 
 __version__ = "1.1.0"
-__all__ = ["Agent", "AgentResult", "summarize", "run_safely",
-           "SafetyError", "check_code", "CodeCheck", "k_anonymize",
-           "build_prompt", "report",
-           "wrap", "extract_code", "ModelError",
-           "token_savings", "token_stats", "estimate_tokens",
-           "redact_text",
-           # structured analysis layer
-           "validate", "Issue", "suggest_fixes", "explain_issue",
-           "quality_score", "ai_readiness", "privacy_report",
-           "infer_columns", "build_safe_prompt", "create_contract",
-           "ai_risk_score", "detect_ai_traps", "shadow", "enable_presidio",
-           # query-aware privacy firewall
-           "create_privacy_plan", "make_safe_view", "safe_answer",
-           "PrivacyPlan", "detect_operation", "Policy",
-           "to_pandera_schema", "to_great_expectations_suite",
-           # SafePlan engine (JSON plan, executed locally - no generated Python)
-           "safe_query", "SafePlan", "SafePlanResult", "MetricSpec",
-           "validate_safeplan", "execute_safeplan",
-           "create_receipt", "format_receipt",
-           # ShadowFrame (synthetic same-shape stand-in; no real values)
-           "create_shadowframe", "profile_dataframe", "ShadowFrameResult",
-           # LeakScore (heuristic privacy red-team harness)
-           "leak_test", "LeakTestResult", "LeakAttempt", "detect_leak",
-           "collect_sensitive_values",
-           # SafeSession (per-conversation privacy budget + differencing guard)
-           "SafeSession", "SessionEvent", "estimate_question_cost",
-           # v1.1.0 public facade (will become the ONLY public names in Phase 2)
-           "ask", "scan", "protect", "Guard", "Result", "ScanReport", "Receipt",
-           "SafedataError"]
+
+__all__ = [
+    "ask",
+    "scan",
+    "protect",
+    "Guard",
+    "Policy",
+    "Result",
+    "ScanReport",
+    "Receipt",
+    "SafedataError",
+]

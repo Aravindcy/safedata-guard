@@ -5,10 +5,11 @@ import pandas as pd
 import pytest
 
 import safedata
-from safedata import Policy, SafetyError
+from safedata import Policy
+from safedata.bodyguard import SafetyError
 from safedata.safeplan import (SafePlan, MetricSpec, execute_safeplan,
                                validate_safeplan, parse_safeplan,
-                               prepare_safeplan, execute_prepared)
+                               prepare_safeplan, execute_prepared, safe_query)
 
 
 def _df():
@@ -61,7 +62,7 @@ def test_parse_non_list_fields(key):
 
 def test_safe_query_survives_bad_json_limit():
     # End to end: a model emitting a bad limit must come back blocked, not crash.
-    res = safedata.safe_query(_df(), "q",
+    res = safe_query(_df(), "q",
                               model=lambda p: '{"operation":"count_rows","limit":"abc"}',
                               policy=Policy.basic(), max_retries=1)
     assert res.blocked is True and res.answer is None
@@ -165,7 +166,7 @@ def test_prepare_blocks_invalid_plan():
     '{"operation":"count_rows","filters":[{"column":"region","op":"in","value":"N"}]}',
 ])
 def test_untrusted_json_returns_blocked_not_crash(payload):
-    res = safedata.safe_query(_df(), "q", model=lambda p, pl=payload: pl,
+    res = safe_query(_df(), "q", model=lambda p, pl=payload: pl,
                               policy=Policy.basic(), max_retries=1)
     assert res.blocked is True and res.answer is None
 
@@ -237,7 +238,7 @@ def test_safe_query_dtype_mismatch_blocks_not_crash():
     df = _df()
     payload = ('{"operation":"aggregate","filters":[{"column":"revenue","op":">",'
                '"value":"5"}],"metrics":[{"column":"revenue","agg":"sum"}]}')
-    res = safedata.safe_query(df, "q", model=lambda p: payload,
+    res = safe_query(df, "q", model=lambda p: payload,
                               policy=Policy.basic(), max_retries=1)
     assert res.blocked is True and res.answer is None
 

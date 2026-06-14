@@ -22,6 +22,8 @@ import pytest
 
 import safedata
 from safedata import Policy
+from safedata.safeplan import safe_query
+from safedata.firewall import safe_answer
 
 
 REAL_PII = ["Alice 0", "Alice 1", "a0@example.com", "a1@example.com"]
@@ -59,7 +61,7 @@ GUARDED_VECTORS = {
 
 @pytest.mark.parametrize("name,code", list(GUARDED_VECTORS.items()))
 def test_guarded_python_blocks_or_redacts_bulk_vectors(name, code):
-    out = safedata.safe_answer(_df(), "x", code=code, policy=Policy.regulated())
+    out = safe_answer(_df(), "x", code=code, policy=Policy.regulated())
     # Either the guard blocked it, or the returned value carries no real PII.
     assert out["blocked"] or not _leaked(out["answer"]), \
         f"{name} leaked PII: {_leaked(out['answer'])}"
@@ -67,7 +69,7 @@ def test_guarded_python_blocks_or_redacts_bulk_vectors(name, code):
 
 def test_guarded_python_redacts_pii_even_when_not_blocked():
     # A small non-row aggregate is allowed, but PII columns must be redacted.
-    out = safedata.safe_answer(_df(), "x", code="result = df.head(1)",
+    out = safe_answer(_df(), "x", code="result = df.head(1)",
                                policy=Policy.regulated())
     assert not _leaked(out["answer"])
 
@@ -81,7 +83,7 @@ def test_safeplan_blocks_group_of_one_aggregate():
                 '{"column":"city","op":"==","value":"London"},'
                 '{"column":"spend","op":"==","value":0}],'
                 '"metrics":[{"column":"spend","agg":"sum","as_name":"s"}]}')
-    res = safedata.safe_query(df, "spend of one person", model=stub,
+    res = safe_query(df, "spend of one person", model=stub,
                               policy=Policy.regulated(), max_retries=1)
     assert res.blocked is True and res.answer is None
 
@@ -91,7 +93,7 @@ def test_safeplan_blocks_small_filtered_count():
     def stub(prompt):
         return ('{"operation":"count_rows","filters":['
                 '{"column":"postcode","op":"==","value":"MK10"}]}')
-    res = safedata.safe_query(df, "how many in MK10", model=stub,
+    res = safe_query(df, "how many in MK10", model=stub,
                               policy=Policy.regulated(), max_retries=1)
     assert res.blocked is True
 
@@ -99,7 +101,7 @@ def test_safeplan_blocks_small_filtered_count():
 def test_safeplan_blocks_raw_and_export_ops():
     df = _df()
     for op in ("export", "show_rows", "raw_lookup", "list_customers"):
-        res = safedata.safe_query(df, "dump", model=lambda p, o=op: '{"operation":"%s"}' % o,
+        res = safe_query(df, "dump", model=lambda p, o=op: '{"operation":"%s"}' % o,
                                   policy=Policy.regulated(), max_retries=1)
         assert res.blocked is True
 
@@ -112,7 +114,7 @@ def test_known_limitation_guarded_python_vs_safeplan_scalar():
     and pins the documented limitation so a future regression is visible."""
     df = _df()
     code = "result = df[df['city']=='London']['spend'].iloc[0]"
-    guarded = safedata.safe_answer(df, "x", code=code, policy=Policy.regulated())
+    guarded = safe_answer(df, "x", code=code, policy=Policy.regulated())
     # The guarded-Python scalar is NOT k-anonymity protected (limitation): it may
     # return a single record's value. We only require it does not expose PII text.
     assert not _leaked(guarded["answer"])
@@ -123,6 +125,6 @@ def test_known_limitation_guarded_python_vs_safeplan_scalar():
                 '{"column":"city","op":"==","value":"London"},'
                 '{"column":"spend","op":"==","value":0}],'
                 '"metrics":[{"column":"spend","agg":"min","as_name":"m"}]}')
-    safeplan = safedata.safe_query(df, "x", model=stub, policy=Policy.regulated(),
+    safeplan = safe_query(df, "x", model=stub, policy=Policy.regulated(),
                                    max_retries=1)
     assert safeplan.blocked is True

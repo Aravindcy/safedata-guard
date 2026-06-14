@@ -4,6 +4,7 @@ import pytest
 
 import safedata
 from safedata.shadowframe import create_shadowframe, profile_dataframe
+from safedata.safeplan import safe_query
 
 
 def _df():
@@ -66,7 +67,7 @@ def test_safe_query_shadow_prompt_excludes_real_values(monkeypatch):
         captured["prompt"] = prompt
         return '{"operation":"count_rows"}'
 
-    safedata.safe_query(df, "how many rows", model=model,
+    safe_query(df, "how many rows", model=model,
                         policy=safedata.Policy.regulated(), use_shadow=True)
     p = captured["prompt"]
     assert "real0@corp.com" not in p
