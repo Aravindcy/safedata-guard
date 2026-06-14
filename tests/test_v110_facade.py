@@ -203,6 +203,39 @@ def test_scan_health_data_is_high_risk():
     assert "age" in rep.quasi_identifier_columns
 
 
+@pytest.mark.parametrize("col", ["uid", "user_id", "unique_id", "record_id",
+                                 "person_id", "driver_id", "quote_id", "User ID"])
+def test_scan_detects_generic_id_columns(col):
+    df = pd.DataFrame({col: [f"X{i}" for i in range(20)], "region": ["N"] * 20,
+                       "revenue": range(20)})
+    rep = sd.scan(df, profile="banking")
+    assert col in rep.business_identifier_columns
+
+
+@pytest.mark.parametrize("col", ["build_date", "fluid_level", "grid_ref",
+                                 "annual_mileage", "covid_cases"])
+def test_scan_does_not_false_flag_id_lookalikes(col):
+    df = pd.DataFrame({col: range(20), "region": ["N"] * 20})
+    rep = sd.scan(df, profile="banking")
+    assert col not in rep.business_identifier_columns
+
+
+def test_ask_prompt_excludes_uid_when_not_needed():
+    df = pd.DataFrame({"uid": [f"U{i}" for i in range(40)],
+                       "region": ["N"] * 20 + ["S"] * 20, "revenue": range(40)})
+    captured = {}
+
+    def model(prompt):
+        captured["prompt"] = prompt
+        return ('{"operation":"groupby_aggregate","group_by":["region"],'
+                '"metrics":[{"column":"revenue","agg":"sum","as_name":"tot"}]}')
+
+    res = sd.ask(df, "total revenue by region", model=model, profile="banking")
+    assert "uid" not in captured["prompt"]
+    assert "uid" in res.receipt.sensitive_columns
+    assert "uid" in res.receipt.dropped_columns
+
+
 def test_classifier_handles_spaced_and_hyphenated_names():
     # Real columns like "Offer ID" / "Sub-Team" must classify (separators differ
     # from the underscore tokens). Regression for a live-found bug.

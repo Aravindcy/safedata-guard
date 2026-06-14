@@ -21,7 +21,10 @@ internally). Upgraders from 1.x must migrate - see the mapping below.
   engine, Python-fallback flag, min group size, warnings, blocked operations).
 - **`sd.scan(df, profile)`** - typed `ScanReport`: risk level, PII, business
   identifier / financial / health / location / free-text / quasi-identifier
-  categories, quality issues, AI-readiness, recommendations.
+  categories, quality issues, AI-readiness, recommendations. Business-identifier
+  detection includes generic id columns (`uid`, `user_id`, `unique_id`,
+  `record_id`, `person_id`, `driver_id`, `quote_id`, `*_id`), matched on name
+  segments so look-alikes like `build`/`fluid`/`grid` are not flagged.
 - **`sd.protect(df, question, profile)`** - privacy-filtered safe view (drops
   un-needed PII and sensitive identifiers; keeps analytical columns).
 - **`sd.Guard(profile, model)`** - reusable object with `ask/scan/protect/session`.

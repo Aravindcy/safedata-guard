@@ -75,6 +75,23 @@ _QUASI = ("age", "gender", "sex", "dob", "date_of_birth", "birth", "postcode",
           "ethnicity", "marital")
 
 
+def _looks_like_id(name_norm: str) -> bool:
+    """True for identifier-style column names, matched on '_'-separated segments
+    so 'uid'/'user_id'/'quote_id'/'record_id' hit but 'build'/'fluid'/'grid' do
+    not (a raw substring match would false-positive on those)."""
+    segs = name_norm.split("_")
+    if "uid" in segs or "id" in segs or "ids" in segs:
+        return True
+    if name_norm in ("uid", "guid", "uuid"):
+        return True
+    # joined forms like 'userid' / 'recordid' / 'personid' / 'driverid'
+    for stem in ("user", "record", "person", "driver", "quote", "unique",
+                 "customer", "account", "member", "subscriber"):
+        if name_norm == stem + "id":
+            return True
+    return False
+
+
 def _is_stringlike(series) -> bool:
     import pandas as pd
     dt = series.dtype
@@ -90,7 +107,7 @@ def _classify_columns(df, pii_cols) -> dict:
     for col in df.columns:
         # normalize separators so "Offer ID"/"offer-id" match the "offer_id" token
         name = str(col).lower().replace(" ", "_").replace("-", "_")
-        if any(tok in name for tok in _BUSINESS_ID):
+        if any(tok in name for tok in _BUSINESS_ID) or _looks_like_id(name):
             cats["business_identifier"].append(col)
         if any(tok in name for tok in _FINANCIAL):
             cats["financial"].append(col)
