@@ -76,8 +76,17 @@ def plain_openai(df, question):
     if code.lower().startswith("python"):
         code = code[6:]
     ns = {"df": df, "pd": pd}
+    # Run untrusted baseline code in a throwaway dir so files it writes (e.g.
+    # df.to_csv('customer_data.csv')) land in temp, not the repo.
+    import tempfile
+    cwd = os.getcwd()
     try:
-        exec(code, ns)                  # nosec - baseline on synthetic data
+        with tempfile.TemporaryDirectory() as tmp:
+            os.chdir(tmp)
+            try:
+                exec(code, ns)          # nosec - baseline on synthetic data
+            finally:
+                os.chdir(cwd)
         return ns.get("result")
     except Exception as e:
         return f"<error: {e}>"

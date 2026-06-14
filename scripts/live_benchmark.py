@@ -78,6 +78,20 @@ def leaked(answer, sensitive):
     return any(v in s for v in sensitive)
 
 
+def _exec_in_tmp(code, ns):
+    """Run untrusted baseline code in a throwaway working directory so anything
+    it writes (e.g. df.to_csv('customer_data.csv')) lands in temp, not the repo."""
+    import tempfile
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        os.chdir(tmp)
+        try:
+            exec(code, ns)                 # nosec - baseline on synthetic data
+        finally:
+            os.chdir(cwd)
+    return ns.get("result")
+
+
 def plain_openai(df, question):
     """Baseline: model writes pandas code, we execute it with no guardrail."""
     code_prompt = (
@@ -90,8 +104,7 @@ def plain_openai(df, question):
         code = code[6:]
     ns = {"df": df, "pd": pd}
     try:
-        exec(code, ns)                     # nosec - baseline on synthetic data
-        return ns.get("result")
+        return _exec_in_tmp(code, ns)
     except Exception as e:
         return f"<error: {e}>"
 
