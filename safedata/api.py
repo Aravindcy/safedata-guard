@@ -211,18 +211,35 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
 
 # --- ask --------------------------------------------------------------------
 
+def _scan_sensitive(df, policy):
+    """PII + sensitive-category columns detected on the ORIGINAL dataframe, for
+    the audit receipt (not just what survived the safe view)."""
+    pii = list(privacy_report(df, scan_rows=policy.pii_scan_rows,
+                              use_presidio=policy.use_presidio)["pii_columns"])
+    cats = _classify_columns(df, pii)
+    sensitive = sorted(set(pii) | set(cats["business_identifier"])
+                       | set(cats["financial"]) | set(cats["health"])
+                       | set(cats["free_text"]))
+    return pii, sensitive
+
+
 def _receipt_from(sp_receipt: dict, profile: str, engine: str, mode: str, pdf,
-                  python_used: bool, blocked_ops, warnings) -> Receipt:
+                  python_used: bool, blocked_ops, warnings,
+                  pii_cols=None, sensitive_cols=None, dropped_cols=None,
+                  safe_cols=None) -> Receipt:
     return Receipt(
         audit_id=sp_receipt.get("audit_id") or _new_audit_id(),
         timestamp=sp_receipt.get("timestamp_utc") or _now(),
         profile=profile, engine=engine, mode=mode,
         row_count=int(len(pdf)), column_count=int(len(pdf.columns)),
-        safe_columns=list(sp_receipt.get("columns_allowed", [])),
-        dropped_columns=list(sp_receipt.get("pii_columns_dropped", [])),
+        safe_columns=list(safe_cols if safe_cols is not None
+                          else sp_receipt.get("columns_allowed", [])),
+        dropped_columns=list(dropped_cols if dropped_cols is not None
+                             else sp_receipt.get("pii_columns_dropped", [])),
         masked_columns=[],
-        pii_columns=list(sp_receipt.get("pii_columns_detected", [])),
-        sensitive_columns=[],
+        pii_columns=list(pii_cols if pii_cols is not None
+                         else sp_receipt.get("pii_columns_detected", [])),
+        sensitive_columns=list(sensitive_cols or []),
         min_group_size=sp_receipt.get("min_group_size"),
         max_result_rows=sp_receipt.get("max_result_rows", 50),
         python_fallback_used=python_used,
@@ -287,30 +304,46 @@ def ask(df, question: str, model=None, profile: str = "general",
             f"Guarded-Python mode is disabled for profile '{policy.profile}'. "
             f"Set allow_python_fallback=True on the policy to enable it.")
 
+    # Protect before analyse: build the SAME stronger safe view sd.protect()
+    # produces, so unneeded PII / business identifiers / free-text columns are
+    # gone before the model ever sees the schema. The receipt records what was
+    # detected on the ORIGINAL frame and what was dropped.
+    pii_cols, sensitive_cols = _scan_sensitive(pdf, policy)
+    safe_view, prot_report = protect(pdf, question=question, policy=policy,
+                                     return_report=True)
+    dropped = [c for c in pdf.columns if c not in safe_view.columns]
+    safe_cols = list(safe_view.columns)
+    masked = list(prot_report.masked_columns)
+
+    def _make_receipt(sp_receipt, engine, python_used, blocked_ops, warnings):
+        rec = _receipt_from(sp_receipt, policy.profile, engine, mode, pdf,
+                            python_used=python_used, blocked_ops=blocked_ops,
+                            warnings=warnings, pii_cols=pii_cols,
+                            sensitive_cols=sensitive_cols, dropped_cols=dropped,
+                            safe_cols=safe_cols)
+        rec.masked_columns = masked
+        return rec
+
     # SafePlan first (the default, safest engine).
     if mode in ("auto", "plan"):
         from .safeplan import safe_query
-        sp = safe_query(pdf, question, model=fn, policy=policy)
+        sp = safe_query(safe_view, question, model=fn, policy=policy)
         if not sp.blocked or mode == "plan" or not policy.allow_python_fallback:
             warnings = _suppression_warning(sp.answer, policy)
-            rec = _receipt_from(sp.receipt, policy.profile, "safeplan", mode,
-                                pdf, python_used=False,
-                                blocked_ops=([sp.reason] if sp.blocked else []),
-                                warnings=warnings)
+            rec = _make_receipt(sp.receipt, "safeplan", False,
+                                [sp.reason] if sp.blocked else [], warnings)
             return Result(answer=sp.answer, data=sp.answer, receipt=rec,
                           engine="safeplan", blocked=sp.blocked, reason=sp.reason,
                           warnings=warnings)
         # auto + fallback allowed + SafePlan blocked -> guarded Python.
 
-    # Guarded Python engine.
+    # Guarded Python engine (also runs on the protected safe view).
     from .firewall import safe_answer
-    out = safe_answer(pdf, question, model=fn, policy=policy)
-    base_receipt = {"min_group_size": policy.min_group_size,
-                    "max_result_rows": policy.max_result_rows}
-    rec = _receipt_from(base_receipt, policy.profile, "guarded_python", mode,
-                        pdf, python_used=not out.get("blocked"),
-                        blocked_ops=([out.get("reason")] if out.get("blocked") else []),
-                        warnings=[])
+    out = safe_answer(safe_view, question, model=fn, policy=policy)
+    base = {"min_group_size": policy.min_group_size,
+            "max_result_rows": policy.max_result_rows}
+    rec = _make_receipt(base, "guarded_python", not out.get("blocked"),
+                        [out.get("reason")] if out.get("blocked") else [], [])
     return Result(answer=out.get("answer"), data=out.get("answer"), receipt=rec,
                   engine="guarded_python", blocked=bool(out.get("blocked")),
                   reason=out.get("reason"))

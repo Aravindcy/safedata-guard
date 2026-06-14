@@ -4,6 +4,40 @@ All notable changes to **safedata-guard** are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0]
+
+**Breaking redesign.** The public API is now four verbs plus a small set of
+types; the old top-level functions are removed (their logic is unchanged
+internally). Upgraders from 1.x must migrate - see the mapping below.
+
+### Added
+- **One front door.** The only public names are `ask`, `scan`, `protect`,
+  `Guard`, `Policy`, `Result`, `ScanReport`, `Receipt`, `SafedataError`.
+  Advanced/power-user tools live under `safedata.advanced.*`.
+- **`sd.ask(df, question, model, profile)`** - SafePlan by default; builds the
+  same protected safe view as `protect()` first, so unneeded PII / business
+  identifiers / free-text columns never reach the model. Returns a typed
+  `Result` with an audit `Receipt` (PII + sensitive + dropped/kept columns,
+  engine, Python-fallback flag, min group size, warnings, blocked operations).
+- **`sd.scan(df, profile)`** - typed `ScanReport`: risk level, PII, business
+  identifier / financial / health / location / free-text / quasi-identifier
+  categories, quality issues, AI-readiness, recommendations.
+- **`sd.protect(df, question, profile)`** - privacy-filtered safe view (drops
+  un-needed PII and sensitive identifiers; keeps analytical columns).
+- **`sd.Guard(profile, model)`** - reusable object with `ask/scan/protect/session`.
+- **Industry `Policy` profiles** - general/energy/banking/insurance/healthcare/
+  strict; regulated profiles are SafePlan-only (`allow_python_fallback=False`).
+- **`SafedataError` hierarchy**; the engine's `SafetyError` is a subclass.
+- **CLI** realigned to `scan` / `protect` / `ask` / `advanced`.
+- **Docs**: `SECURITY_MODEL.md`, `THREAT_MODEL.md`, `examples/` scripts.
+
+### Removed (moved internal / advanced)
+- `safe_query`/`safe_answer` -> power `sd.ask`. `Agent` -> `Guard`.
+  `privacy_report`/`ai_readiness` -> `sd.scan`. `create_privacy_plan`/
+  `make_safe_view` -> `sd.protect`. `run_safely`/`check_code`/`leak_test`/
+  `create_shadowframe`/`SafeSession` -> `safedata.advanced.*` (SafeSession also
+  powers `Guard.session()`). No deprecation shim.
+
 ## [1.1.0]
 
 ### Added

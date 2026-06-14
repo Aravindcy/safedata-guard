@@ -5,8 +5,8 @@ only nine names are public.
 
 ## Decisions (locked)
 
-- **Version: 1.1.0** (owner's call; note: this is a breaking change, so upgraders
-  from 1.0.9 must read the migration notes).
+- **Version: 2.0.0** (breaking redesign - correct semver for removing public
+  names; upgraders from 1.x must read the CHANGELOG migration notes).
 - **Hard remove** the old public API. No deprecation shim. Old logic stays as
   internal implementation modules; it is just not exported.
 - **Build the facade over the existing engine now; defer the physical folder

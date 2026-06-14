@@ -33,7 +33,7 @@ from .results import Result, ScanReport, Receipt
 from .exceptions import SafedataError
 from . import advanced
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 
 __all__ = [
     "ask",

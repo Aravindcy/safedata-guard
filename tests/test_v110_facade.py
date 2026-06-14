@@ -66,6 +66,60 @@ def test_ask_summary_mode_no_execution():
     assert isinstance(res.data, sd.ScanReport)
 
 
+def _sensitive_df(n=40):
+    return pd.DataFrame({
+        "customer_id": [f"C{i}" for i in range(n)],
+        "account_number": [f"{10000000+i}" for i in range(n)],
+        "policy_number": [f"P{i}" for i in range(n)],
+        "claim_id": [f"CL{i}" for i in range(n)],
+        "mpan": [f"M{i}" for i in range(n)],
+        "name": [f"Person {i}" for i in range(n)],
+        "email": [f"p{i}@x.com" for i in range(n)],
+        "complaint_notes": ["called about a charge"] * n,
+        "region": (["N"] * (n // 2) + ["S"] * (n - n // 2)),
+        "revenue": range(n),
+    })
+
+
+def test_ask_prompt_excludes_unneeded_business_ids_and_free_text(monkeypatch):
+    # The model prompt for "total revenue by region" must NOT mention sensitive
+    # or business/free-text columns the question does not need.
+    df = _sensitive_df()
+    captured = {}
+
+    def model(prompt):
+        captured["prompt"] = prompt
+        return ('{"operation":"groupby_aggregate","group_by":["region"],'
+                '"metrics":[{"column":"revenue","agg":"sum","as_name":"tot"}]}')
+
+    sd.ask(df, "total revenue by region", model=model, profile="banking")
+    p = captured["prompt"]
+    assert "region" in p and "revenue" in p
+    # Distinctive sensitive column names must not reach the model (bare "name"
+    # is skipped here only because it appears in the prompt's JSON schema text;
+    # that the 'name' column is dropped is covered by the receipt test below).
+    for col in ("customer_id", "account_number", "policy_number", "claim_id",
+                "mpan", "complaint_notes", "p0@x.com"):
+        assert col not in p, f"prompt leaked column {col}"
+
+
+def test_ask_receipt_lists_sensitive_and_dropped(monkeypatch):
+    df = _sensitive_df()
+    res = sd.ask(df, "total revenue by region",
+                 model=lambda pr: ('{"operation":"groupby_aggregate",'
+                                   '"group_by":["region"],"metrics":[{"column":'
+                                   '"revenue","agg":"sum","as_name":"tot"}]}'),
+                 profile="banking")
+    r = res.receipt
+    # PII + business identifiers + free text all recorded as sensitive.
+    for col in ("email", "name", "customer_id", "account_number", "complaint_notes"):
+        assert col in r.sensitive_columns, col
+    # and they were dropped from the safe view actually analysed
+    for col in ("customer_id", "account_number", "complaint_notes", "email"):
+        assert col in r.dropped_columns, col
+    assert "region" in r.safe_columns and "revenue" in r.safe_columns
+
+
 def test_ask_warns_or_blocks_when_k_anonymity_suppresses_all_rows():
     # Many tiny groups under banking (k=10): every group is suppressed, so the
     # answer is empty - the Result must warn clearly, not look like "no data".

@@ -145,12 +145,13 @@ pip install "safedata-guard[presidio]"   # optional international PII detection
 
 ```bash
 safedata scan data.csv --profile banking
-safedata risk data.csv
-safedata plan data.csv "revenue by region"
+safedata protect data.csv --profile banking --question "revenue by region" --out safe.csv
+safedata ask data.csv "revenue by region" --profile banking --model openai
+safedata advanced inspect-policy banking
 ```
 
-> The CLI is being realigned to `scan` / `protect` / `ask` / `advanced` to match
-> the Python API (tracked in [REDESIGN_PLAN.md](REDESIGN_PLAN.md)).
+`scan` and `protect` need no model; `ask` (and `advanced leak-test`) use
+`--model openai` with `OPENAI_API_KEY` set.
 
 ## Documentation
 
