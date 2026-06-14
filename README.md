@@ -20,6 +20,17 @@ behind **guardrails on a copy** of your data.
 > For untrusted code, run it inside OS-level isolation (`isolation="docker"` or
 > your own container/VM).
 
+## Documentation
+
+- **This README** - the pitch, the two execution modes, and a quick start.
+- **[SECURITY.md](SECURITY.md)** - threat model, what it defends against, and the
+  known limitations (read before relying on it).
+- **[docs/examples.md](docs/examples.md)** - worked examples across banking,
+  insurance, energy, healthcare, sales, and complaints data.
+- **[BENCHMARKS.md](BENCHMARKS.md)** - measured privacy-leak rates vs plain
+  LLM-generated code, with methodology and honest caveats.
+- **[CHANGELOG.md](CHANGELOG.md)** - what changed in each release.
+
 ## The recommended path
 
 Pick a **policy** for your data and use `safe_query` (SafePlan mode) for normal

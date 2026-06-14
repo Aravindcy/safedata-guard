@@ -1,0 +1,2001 @@
+customer_id,full_name,email,sort_code,account_number,city,product,balance,monthly_txns
+CUS000000,Aisha Kowalski,aisha.kowalski0@example.com,65-73-52,32784098,Glasgow,Current,6117.44,103
+CUS000001,Mei Tanaka,mei.tanaka1@example.com,53-64-32,79914484,Liverpool,Current,5259.89,81
+CUS000002,Mei Smith,mei.smith2@example.com,62-69-17,39826675,Glasgow,Savings,3433.56,111
+CUS000003,Liam Rossi,liam.rossi3@example.com,18-59-19,24723080,Bristol,Loan,3757.91,3
+CUS000004,Mei Rossi,mei.rossi4@example.com,14-15-65,25099189,Birmingham,Savings,11154.86,47
+CUS000005,Fatima Ali,fatima.ali5@example.com,36-39-95,45202421,London,Loan,-2137.73,68
+CUS000006,Olu Nguyen,olu.nguyen6@example.com,39-57-13,48065736,Cardiff,Mortgage,18206.21,32
+CUS000007,Fatima Okafor,fatima.okafor7@example.com,73-20-95,45059391,Glasgow,Savings,9985.19,78
+CUS000008,Ivan Andersson,ivan.andersson8@example.com,91-16-96,49460131,Cardiff,Credit Card,3271.3,94
+CUS000009,Mei Khan,mei.khan9@example.com,17-25-39,17196112,Leeds,Loan,11750.26,76
+CUS000010,Liam Patel,liam.patel10@example.com,58-71-56,20689635,Cardiff,Credit Card,11583.35,95
+CUS000011,Mary Khan,mary.khan11@example.com,24-39-57,67585658,London,Mortgage,9960.72,45
+CUS000012,Aisha Ali,aisha.ali12@example.com,58-42-18,13796511,Birmingham,Savings,4104.7,114
+CUS000013,Sofia Patel,sofia.patel13@example.com,94-70-15,95395950,Liverpool,Mortgage,-492.69,50
+CUS000014,Aisha Khan,aisha.khan14@example.com,49-15-45,72662336,Birmingham,Loan,-2106.66,76
+CUS000015,Noah Ali,noah.ali15@example.com,12-18-85,27956191,Manchester,Loan,15711.92,45
+CUS000016,Mei Silva,mei.silva16@example.com,84-71-87,32481476,Glasgow,Loan,15768.28,96
+CUS000017,Olu Chen,olu.chen17@example.com,57-51-80,81123357,Bristol,Loan,-8625.45,62
+CUS000018,Olu Ali,olu.ali18@example.com,60-73-46,14293074,Glasgow,Savings,-1977.87,69
+CUS000019,Wei Ali,wei.ali19@example.com,25-42-89,64524462,Leeds,Loan,7365.27,57
+CUS000020,James Patel,james.patel20@example.com,60-53-38,42563844,Manchester,Credit Card,18603.48,106
+CUS000021,Liam Nguyen,liam.nguyen21@example.com,46-78-93,24532733,Cardiff,Savings,26055.92,106
+CUS000022,Aisha Nguyen,aisha.nguyen22@example.com,97-49-39,16180824,Manchester,Savings,-1673.6,48
+CUS000023,Priya Khan,priya.khan23@example.com,20-63-52,55732960,Cardiff,Loan,4653.7,5
+CUS000024,Ivan Rossi,ivan.rossi24@example.com,60-77-10,72966627,Liverpool,Savings,1726.79,3
+CUS000025,Mohammed Chen,mohammed.chen25@example.com,87-74-72,37316350,Birmingham,Mortgage,9839.05,56
+CUS000026,Aisha Okafor,aisha.okafor26@example.com,46-10-84,76589252,London,Savings,453.42,17
+CUS000027,Mohammed Khan,mohammed.khan27@example.com,62-52-47,48502626,Manchester,Current,9614.6,69
+CUS000028,Sofia Kowalski,sofia.kowalski28@example.com,18-36-61,18246710,Cardiff,Credit Card,1037.29,30
+CUS000029,Mei Ahmed,mei.ahmed29@example.com,65-27-59,28189221,Cardiff,Mortgage,8829.59,61
+CUS000030,Olu Andersson,olu.andersson30@example.com,52-93-64,86244248,Glasgow,Savings,3754.22,32
+CUS000031,Liam Ali,liam.ali31@example.com,76-51-63,18151077,Cardiff,Loan,17166.4,7
+CUS000032,Priya Ahmed,priya.ahmed32@example.com,43-73-97,37437572,Liverpool,Loan,-5692.4,37
+CUS000033,Mary Brown,mary.brown33@example.com,57-21-88,48958780,Birmingham,Loan,-1508.09,57
+CUS000034,Noah Brown,noah.brown34@example.com,53-12-21,59962040,Liverpool,Current,14135.25,34
+CUS000035,Aisha Silva,aisha.silva35@example.com,98-13-29,86582811,Cardiff,Savings,2217.07,59
+CUS000036,Yuki Andersson,yuki.andersson36@example.com,74-12-45,81428285,Cardiff,Mortgage,-3083.14,54
+CUS000037,Wei Nguyen,wei.nguyen37@example.com,56-84-33,88809679,Birmingham,Loan,13193.41,32
+CUS000038,James Okafor,james.okafor38@example.com,20-58-59,86931636,Glasgow,Savings,9036.2,33
+CUS000039,Priya Andersson,priya.andersson39@example.com,98-83-43,82129075,Birmingham,Loan,-5850.51,111
+CUS000040,Mohammed Okafor,mohammed.okafor40@example.com,14-90-23,69942050,Leeds,Current,11592.62,29
+CUS000041,Priya Garcia,priya.garcia41@example.com,83-87-53,62177195,London,Savings,10086.25,57
+CUS000042,Mohammed Silva,mohammed.silva42@example.com,73-38-88,88812273,London,Credit Card,275.14,83
+CUS000043,Yuki Rossi,yuki.rossi43@example.com,49-84-71,12226245,London,Mortgage,8281.89,87
+CUS000044,Mary Chen,mary.chen44@example.com,24-64-95,20399492,Manchester,Savings,5039.6,55
+CUS000045,Yuki Smith,yuki.smith45@example.com,70-32-86,41217320,Bristol,Mortgage,9066.21,74
+CUS000046,Yuki Ahmed,yuki.ahmed46@example.com,70-19-78,35061959,Manchester,Mortgage,19233.67,71
+CUS000047,Noah Khan,noah.khan47@example.com,63-16-17,68062846,Bristol,Credit Card,10778.38,14
+CUS000048,Aisha Andersson,aisha.andersson48@example.com,20-41-28,40567933,Glasgow,Credit Card,-452.47,95
+CUS000049,Mary Brown,mary.brown49@example.com,61-76-73,54898569,London,Mortgage,9987.01,113
+CUS000050,Sofia Rossi,sofia.rossi50@example.com,91-26-76,40650004,Manchester,Mortgage,18819.43,35
+CUS000051,Aisha Brown,aisha.brown51@example.com,56-18-10,97597513,Cardiff,Savings,-828.13,55
+CUS000052,Wei Rossi,wei.rossi52@example.com,45-91-57,81218091,Cardiff,Credit Card,4486.51,99
+CUS000053,Wei Ahmed,wei.ahmed53@example.com,86-38-80,86466314,London,Savings,18106.97,104
+CUS000054,Wei Ahmed,wei.ahmed54@example.com,50-96-52,99668938,Birmingham,Savings,2533.74,18
+CUS000055,Aisha Andersson,aisha.andersson55@example.com,67-92-73,93877334,Glasgow,Current,10081.46,48
+CUS000056,Noah Andersson,noah.andersson56@example.com,71-61-11,59876666,Leeds,Credit Card,13180.79,22
+CUS000057,Mei Kowalski,mei.kowalski57@example.com,23-61-70,57799044,Manchester,Loan,10456.37,33
+CUS000058,Hannah Brown,hannah.brown58@example.com,10-32-98,97167431,Glasgow,Mortgage,13798.43,27
+CUS000059,Noah Smith,noah.smith59@example.com,63-36-50,38721266,Glasgow,Mortgage,14199.53,70
+CUS000060,Mei Rossi,mei.rossi60@example.com,49-24-64,38776385,Birmingham,Credit Card,-5861.82,40
+CUS000061,Ivan Ahmed,ivan.ahmed61@example.com,39-37-51,90196007,Glasgow,Savings,1302.85,84
+CUS000062,Fatima Rossi,fatima.rossi62@example.com,26-54-21,68096443,Liverpool,Mortgage,9533.32,63
+CUS000063,Ivan Chen,ivan.chen63@example.com,91-93-28,27994024,Bristol,Credit Card,1080.55,100
+CUS000064,Aisha Garcia,aisha.garcia64@example.com,96-61-43,98860285,Liverpool,Savings,5922.91,56
+CUS000065,Wei Okafor,wei.okafor65@example.com,57-34-21,18634584,Birmingham,Credit Card,22609.79,28
+CUS000066,Mei Khan,mei.khan66@example.com,49-80-76,30763645,Liverpool,Mortgage,1053.71,18
+CUS000067,Carlos Rossi,carlos.rossi67@example.com,96-15-53,51175162,Birmingham,Current,8660.21,3
+CUS000068,Mary Garcia,mary.garcia68@example.com,44-53-75,20474792,Liverpool,Credit Card,-8831.18,64
+CUS000069,Ivan Chen,ivan.chen69@example.com,21-93-75,38413861,Cardiff,Mortgage,2183.51,21
+CUS000070,Mary Khan,mary.khan70@example.com,75-79-88,11785229,Cardiff,Loan,5230.41,105
+CUS000071,Ivan Silva,ivan.silva71@example.com,60-26-44,32890563,Birmingham,Current,-18149.74,28
+CUS000072,Wei Okafor,wei.okafor72@example.com,10-80-61,32745406,Cardiff,Mortgage,6887.17,90
+CUS000073,Yuki Okafor,yuki.okafor73@example.com,25-34-72,50575314,Leeds,Credit Card,5034.28,48
+CUS000074,Olu Tanaka,olu.tanaka74@example.com,60-66-36,93882534,Liverpool,Mortgage,1058.26,42
+CUS000075,Fatima Silva,fatima.silva75@example.com,10-28-90,55659365,Birmingham,Mortgage,-8694.19,29
+CUS000076,Mei Smith,mei.smith76@example.com,10-18-82,36482201,Bristol,Credit Card,-135.61,63
+CUS000077,Fatima Chen,fatima.chen77@example.com,64-32-30,29274880,Cardiff,Current,7700.37,17
+CUS000078,Aisha Silva,aisha.silva78@example.com,27-64-82,12606431,Leeds,Credit Card,-2400.86,90
+CUS000079,Sofia Rossi,sofia.rossi79@example.com,77-35-17,88905060,Liverpool,Credit Card,2253.47,64
+CUS000080,Aisha Khan,aisha.khan80@example.com,72-74-57,94182432,London,Mortgage,12937.86,52
+CUS000081,Aisha Okafor,aisha.okafor81@example.com,22-34-66,99836257,Cardiff,Mortgage,-5296.84,11
+CUS000082,Sofia Okafor,sofia.okafor82@example.com,27-30-90,23215448,Bristol,Loan,-1415.45,62
+CUS000083,Wei Chen,wei.chen83@example.com,66-42-89,45020935,London,Credit Card,5367.47,113
+CUS000084,Sofia Rossi,sofia.rossi84@example.com,54-10-49,29463352,Glasgow,Savings,2607.35,0
+CUS000085,Ivan Kowalski,ivan.kowalski85@example.com,30-90-81,35925724,Bristol,Current,3180.24,41
+CUS000086,Wei Okafor,wei.okafor86@example.com,87-63-71,49790437,Bristol,Mortgage,-983.43,81
+CUS000087,Aisha Nguyen,aisha.nguyen87@example.com,97-88-49,49273509,Manchester,Credit Card,15463.04,103
+CUS000088,Mohammed Nguyen,mohammed.nguyen88@example.com,64-89-57,55394696,Birmingham,Mortgage,8045.28,34
+CUS000089,Yuki Rossi,yuki.rossi89@example.com,35-58-35,68198161,Bristol,Savings,1228.66,86
+CUS000090,Noah Okafor,noah.okafor90@example.com,66-54-51,35015002,Manchester,Loan,4885.47,66
+CUS000091,Aisha Andersson,aisha.andersson91@example.com,62-82-25,36713068,Birmingham,Mortgage,8055.56,77
+CUS000092,Liam Silva,liam.silva92@example.com,95-28-33,33977658,Cardiff,Credit Card,10130.85,113
+CUS000093,Wei Brown,wei.brown93@example.com,85-88-29,24916393,Birmingham,Loan,-1192.59,92
+CUS000094,Wei Andersson,wei.andersson94@example.com,45-66-54,30412902,London,Loan,1062.71,55
+CUS000095,Mei Smith,mei.smith95@example.com,70-96-88,67265224,Leeds,Savings,12327.28,19
+CUS000096,Mohammed Tanaka,mohammed.tanaka96@example.com,48-61-86,16858371,Liverpool,Loan,9301.32,41
+CUS000097,Carlos Chen,carlos.chen97@example.com,26-88-49,14895786,Birmingham,Current,-7494.14,76
+CUS000098,Aisha Ali,aisha.ali98@example.com,81-71-59,64334354,Liverpool,Credit Card,111.4,53
+CUS000099,Mei Andersson,mei.andersson99@example.com,70-55-26,86080514,Birmingham,Current,2710.91,99
+CUS000100,Aisha Chen,aisha.chen100@example.com,11-51-65,44759698,Birmingham,Loan,6465.27,93
+CUS000101,Priya Brown,priya.brown101@example.com,82-93-25,77163982,Bristol,Current,-7457.0,55
+CUS000102,Aisha Smith,aisha.smith102@example.com,52-57-41,23925743,Liverpool,Credit Card,-180.08,19
+CUS000103,Noah Patel,noah.patel103@example.com,78-29-82,99964070,Manchester,Savings,-888.51,112
+CUS000104,Priya Ali,priya.ali104@example.com,25-95-18,94505147,Liverpool,Loan,11812.83,100
+CUS000105,Sofia Ali,sofia.ali105@example.com,30-61-61,59248875,Birmingham,Current,10015.86,42
+CUS000106,Olu Brown,olu.brown106@example.com,16-97-33,64116275,Birmingham,Current,13495.61,56
+CUS000107,Sofia Chen,sofia.chen107@example.com,58-36-24,82032202,Cardiff,Current,-7943.49,60
+CUS000108,James Smith,james.smith108@example.com,44-17-54,58093173,Liverpool,Current,8340.2,54
+CUS000109,Hannah Patel,hannah.patel109@example.com,53-56-88,49273856,Bristol,Mortgage,17033.79,40
+CUS000110,Olu Patel,olu.patel110@example.com,28-57-47,46833777,Birmingham,Loan,4528.0,31
+CUS000111,Ivan Smith,ivan.smith111@example.com,15-77-22,45823154,Manchester,Current,-20.16,93
+CUS000112,Fatima Tanaka,fatima.tanaka112@example.com,12-72-11,49469201,Birmingham,Savings,2983.15,40
+CUS000113,Mei Smith,mei.smith113@example.com,50-93-57,26548310,Cardiff,Credit Card,-11579.4,36
+CUS000114,James Ali,james.ali114@example.com,49-10-37,25013033,Manchester,Loan,12232.46,109
+CUS000115,Mei Garcia,mei.garcia115@example.com,40-66-46,87973540,Liverpool,Mortgage,-3057.44,29
+CUS000116,Ivan Tanaka,ivan.tanaka116@example.com,18-49-14,43321086,Manchester,Mortgage,-10434.68,67
+CUS000117,Noah Andersson,noah.andersson117@example.com,55-96-89,68076731,Glasgow,Loan,3370.57,117
+CUS000118,Sofia Garcia,sofia.garcia118@example.com,31-15-75,12705232,Leeds,Savings,-9084.37,71
+CUS000119,Olu Okafor,olu.okafor119@example.com,24-10-93,44030632,Bristol,Loan,9304.79,46
+CUS000120,Mei Tanaka,mei.tanaka120@example.com,79-73-22,60371337,London,Loan,2030.96,104
+CUS000121,Liam Smith,liam.smith121@example.com,89-42-65,86269874,Leeds,Savings,13281.98,15
+CUS000122,Mei Garcia,mei.garcia122@example.com,28-45-70,13383164,Leeds,Current,6461.77,42
+CUS000123,Mohammed Tanaka,mohammed.tanaka123@example.com,23-36-82,90229185,Birmingham,Loan,7288.82,82
+CUS000124,Wei Kowalski,wei.kowalski124@example.com,13-52-58,15114557,Liverpool,Current,-6981.28,117
+CUS000125,Liam Ahmed,liam.ahmed125@example.com,25-96-57,42917641,Leeds,Savings,-152.5,32
+CUS000126,Mei Rossi,mei.rossi126@example.com,40-67-51,44828226,Glasgow,Current,9932.67,5
+CUS000127,Sofia Brown,sofia.brown127@example.com,41-26-77,93175409,Cardiff,Credit Card,8623.42,102
+CUS000128,Olu Patel,olu.patel128@example.com,96-66-92,69548409,Birmingham,Savings,2492.07,44
+CUS000129,Yuki Ahmed,yuki.ahmed129@example.com,58-65-29,77991070,London,Loan,8393.23,7
+CUS000130,Priya Tanaka,priya.tanaka130@example.com,21-17-81,73506367,Birmingham,Current,9630.61,93
+CUS000131,Carlos Chen,carlos.chen131@example.com,77-67-89,74296095,Leeds,Credit Card,8761.06,1
+CUS000132,Carlos Chen,carlos.chen132@example.com,15-18-88,98275739,Leeds,Mortgage,3397.84,87
+CUS000133,Mary Chen,mary.chen133@example.com,98-97-19,63804891,Liverpool,Current,11192.27,1
+CUS000134,Wei Khan,wei.khan134@example.com,51-66-68,79362234,Cardiff,Credit Card,-17482.68,28
+CUS000135,Aisha Silva,aisha.silva135@example.com,11-25-28,20115347,Liverpool,Current,14958.81,52
+CUS000136,Olu Ali,olu.ali136@example.com,90-56-61,93799034,London,Mortgage,9237.56,2
+CUS000137,Fatima Chen,fatima.chen137@example.com,63-53-28,44439201,Cardiff,Current,-39.66,61
+CUS000138,Olu Okafor,olu.okafor138@example.com,62-78-25,95019576,Birmingham,Savings,777.08,6
+CUS000139,Olu Tanaka,olu.tanaka139@example.com,21-46-73,11955137,Liverpool,Current,-1173.93,102
+CUS000140,Mohammed Brown,mohammed.brown140@example.com,74-83-32,97896732,Cardiff,Savings,-2447.07,114
+CUS000141,James Smith,james.smith141@example.com,66-60-67,51375950,Leeds,Savings,-2035.32,76
+CUS000142,Noah Garcia,noah.garcia142@example.com,69-91-73,42476562,Manchester,Loan,-11469.52,59
+CUS000143,Mary Okafor,mary.okafor143@example.com,60-24-91,15946987,Leeds,Loan,17343.87,78
+CUS000144,Mei Nguyen,mei.nguyen144@example.com,85-53-50,63507517,Manchester,Current,15696.12,73
+CUS000145,Mohammed Andersson,mohammed.andersson145@example.com,28-90-35,82746990,Birmingham,Credit Card,5703.75,57
+CUS000146,Aisha Brown,aisha.brown146@example.com,84-12-21,36752631,Manchester,Current,30502.68,108
+CUS000147,Fatima Andersson,fatima.andersson147@example.com,57-78-95,46711960,Bristol,Loan,13475.44,88
+CUS000148,Sofia Garcia,sofia.garcia148@example.com,20-63-18,43831042,Manchester,Credit Card,-1027.89,117
+CUS000149,Mei Smith,mei.smith149@example.com,45-81-89,28914094,Manchester,Credit Card,-11908.87,78
+CUS000150,Mary Rossi,mary.rossi150@example.com,39-98-13,57630034,Manchester,Credit Card,2588.13,63
+CUS000151,Liam Chen,liam.chen151@example.com,35-19-53,67918836,Cardiff,Loan,-1242.92,59
+CUS000152,Olu Brown,olu.brown152@example.com,82-76-71,23043323,Liverpool,Current,-2880.18,1
+CUS000153,Mei Nguyen,mei.nguyen153@example.com,54-38-85,46255741,Manchester,Loan,10596.21,11
+CUS000154,Carlos Kowalski,carlos.kowalski154@example.com,89-17-94,41878517,Leeds,Mortgage,-3314.15,77
+CUS000155,Fatima Garcia,fatima.garcia155@example.com,63-85-21,30767508,Cardiff,Credit Card,5981.58,106
+CUS000156,Mary Andersson,mary.andersson156@example.com,33-65-97,52923188,Manchester,Loan,16075.81,100
+CUS000157,Mohammed Chen,mohammed.chen157@example.com,12-47-37,45237957,London,Loan,9989.62,5
+CUS000158,Wei Garcia,wei.garcia158@example.com,41-81-60,30570114,Glasgow,Credit Card,-2403.78,97
+CUS000159,Hannah Garcia,hannah.garcia159@example.com,37-60-58,54933716,London,Savings,5876.0,7
+CUS000160,Priya Smith,priya.smith160@example.com,75-92-65,81749494,Cardiff,Loan,8090.88,39
+CUS000161,Yuki Nguyen,yuki.nguyen161@example.com,50-32-78,92049492,Cardiff,Loan,857.93,71
+CUS000162,Ivan Patel,ivan.patel162@example.com,66-32-13,41726152,Cardiff,Savings,-8081.25,25
+CUS000163,Carlos Ahmed,carlos.ahmed163@example.com,31-67-94,76474430,Bristol,Current,-3634.63,64
+CUS000164,Noah Kowalski,noah.kowalski164@example.com,89-40-15,26711251,Glasgow,Loan,2035.68,19
+CUS000165,Olu Patel,olu.patel165@example.com,87-41-58,96335042,Leeds,Credit Card,4505.36,23
+CUS000166,James Tanaka,james.tanaka166@example.com,44-29-25,11619572,Manchester,Current,31786.47,5
+CUS000167,Mei Patel,mei.patel167@example.com,25-61-60,96434526,London,Loan,2619.89,12
+CUS000168,Hannah Silva,hannah.silva168@example.com,76-44-70,90092864,Bristol,Mortgage,6034.37,108
+CUS000169,Priya Khan,priya.khan169@example.com,54-17-31,60579248,Birmingham,Current,19797.54,97
+CUS000170,Ivan Brown,ivan.brown170@example.com,82-30-38,85140714,Glasgow,Mortgage,14358.03,117
+CUS000171,Mei Tanaka,mei.tanaka171@example.com,92-81-28,96229495,Liverpool,Mortgage,8491.88,114
+CUS000172,Ivan Garcia,ivan.garcia172@example.com,34-46-69,91603361,Leeds,Current,4108.83,109
+CUS000173,Sofia Patel,sofia.patel173@example.com,79-14-46,71488086,London,Mortgage,7679.7,97
+CUS000174,Noah Brown,noah.brown174@example.com,45-41-91,61496966,Manchester,Mortgage,14943.91,119
+CUS000175,Ivan Chen,ivan.chen175@example.com,81-95-41,36187434,Bristol,Current,-269.01,44
+CUS000176,Yuki Garcia,yuki.garcia176@example.com,42-66-85,69672359,Cardiff,Mortgage,-459.26,108
+CUS000177,Wei Khan,wei.khan177@example.com,93-67-14,11293996,Leeds,Current,5400.45,17
+CUS000178,Mohammed Andersson,mohammed.andersson178@example.com,85-44-16,57554580,Bristol,Loan,4679.75,23
+CUS000179,Priya Silva,priya.silva179@example.com,93-69-37,75706431,Glasgow,Current,-1520.23,111
+CUS000180,Mohammed Ali,mohammed.ali180@example.com,43-67-42,84558354,Cardiff,Credit Card,-8124.48,9
+CUS000181,James Patel,james.patel181@example.com,76-42-14,12888465,Liverpool,Current,10864.74,33
+CUS000182,Yuki Chen,yuki.chen182@example.com,98-92-93,82094153,London,Current,9047.27,67
+CUS000183,Olu Garcia,olu.garcia183@example.com,10-38-47,31049397,Manchester,Savings,-10239.86,102
+CUS000184,Liam Rossi,liam.rossi184@example.com,49-70-33,94656577,Bristol,Current,8962.7,34
+CUS000185,Sofia Brown,sofia.brown185@example.com,15-60-59,16163738,Liverpool,Credit Card,235.31,64
+CUS000186,Mary Okafor,mary.okafor186@example.com,59-43-51,72676931,Leeds,Credit Card,12358.29,88
+CUS000187,Liam Khan,liam.khan187@example.com,29-35-65,84922326,Glasgow,Mortgage,-8910.82,87
+CUS000188,Aisha Rossi,aisha.rossi188@example.com,38-49-49,38638139,Glasgow,Savings,-9502.09,65
+CUS000189,Mei Andersson,mei.andersson189@example.com,50-61-81,83974509,Leeds,Savings,8948.8,82
+CUS000190,James Patel,james.patel190@example.com,25-98-16,45563724,London,Credit Card,-10049.83,101
+CUS000191,Sofia Andersson,sofia.andersson191@example.com,36-91-59,60366951,Liverpool,Current,-4089.78,19
+CUS000192,Noah Kowalski,noah.kowalski192@example.com,15-10-87,43527212,Bristol,Loan,-2118.13,118
+CUS000193,Fatima Andersson,fatima.andersson193@example.com,40-77-21,25137156,Liverpool,Credit Card,-634.92,5
+CUS000194,Yuki Ali,yuki.ali194@example.com,65-59-28,95798848,Birmingham,Credit Card,5125.14,75
+CUS000195,Carlos Andersson,carlos.andersson195@example.com,28-30-75,26114111,Bristol,Credit Card,19176.04,15
+CUS000196,Aisha Ali,aisha.ali196@example.com,56-96-32,72946289,London,Mortgage,-9209.36,111
+CUS000197,Mohammed Nguyen,mohammed.nguyen197@example.com,91-13-40,68851656,Leeds,Current,12719.09,116
+CUS000198,Liam Brown,liam.brown198@example.com,69-57-93,86094289,Liverpool,Savings,5330.58,25
+CUS000199,Priya Patel,priya.patel199@example.com,91-65-26,68222961,Birmingham,Current,2501.85,29
+CUS000200,James Ahmed,james.ahmed200@example.com,97-69-66,51431909,Bristol,Savings,1166.56,51
+CUS000201,Mary Ahmed,mary.ahmed201@example.com,22-83-97,13221885,Cardiff,Loan,-341.64,92
+CUS000202,Mohammed Rossi,mohammed.rossi202@example.com,97-71-42,34070919,Manchester,Current,9742.11,64
+CUS000203,Priya Smith,priya.smith203@example.com,80-32-76,40381972,Manchester,Credit Card,9577.43,31
+CUS000204,Noah Nguyen,noah.nguyen204@example.com,58-74-56,94244418,Leeds,Savings,-3989.8,8
+CUS000205,Noah Tanaka,noah.tanaka205@example.com,22-94-85,20927025,Cardiff,Mortgage,-1530.9,34
+CUS000206,Olu Patel,olu.patel206@example.com,42-77-17,80286249,Cardiff,Savings,18375.86,94
+CUS000207,Ivan Smith,ivan.smith207@example.com,78-73-97,71900184,Cardiff,Credit Card,10389.12,105
+CUS000208,Aisha Tanaka,aisha.tanaka208@example.com,28-31-93,93578891,Liverpool,Loan,8471.58,35
+CUS000209,Yuki Tanaka,yuki.tanaka209@example.com,37-37-58,24549511,Manchester,Credit Card,-1482.2,62
+CUS000210,Mary Patel,mary.patel210@example.com,24-55-45,78189098,Glasgow,Savings,-3703.5,118
+CUS000211,Wei Patel,wei.patel211@example.com,16-10-20,74704801,Bristol,Credit Card,-1256.84,37
+CUS000212,Sofia Ali,sofia.ali212@example.com,85-97-70,69073123,London,Savings,6851.42,29
+CUS000213,Olu Andersson,olu.andersson213@example.com,14-91-91,89666159,Manchester,Mortgage,6703.93,108
+CUS000214,Sofia Okafor,sofia.okafor214@example.com,22-14-41,58981190,Cardiff,Mortgage,-6776.54,87
+CUS000215,Olu Silva,olu.silva215@example.com,67-10-26,71681386,Glasgow,Current,-2332.61,30
+CUS000216,Fatima Okafor,fatima.okafor216@example.com,43-86-28,87142672,Bristol,Savings,6764.0,23
+CUS000217,Yuki Okafor,yuki.okafor217@example.com,66-42-87,82340760,Leeds,Current,-9242.25,23
+CUS000218,Olu Okafor,olu.okafor218@example.com,96-19-57,90775684,Leeds,Loan,13014.28,107
+CUS000219,James Garcia,james.garcia219@example.com,73-47-54,89588146,Cardiff,Savings,1298.85,6
+CUS000220,Priya Chen,priya.chen220@example.com,32-83-79,63035057,Manchester,Savings,6629.91,4
+CUS000221,Wei Rossi,wei.rossi221@example.com,46-23-45,29899640,Birmingham,Credit Card,691.83,58
+CUS000222,Priya Rossi,priya.rossi222@example.com,48-92-66,19203081,Bristol,Mortgage,-14750.41,47
+CUS000223,Aisha Garcia,aisha.garcia223@example.com,80-21-11,97946298,London,Savings,21961.58,31
+CUS000224,Carlos Khan,carlos.khan224@example.com,15-65-21,20532447,Glasgow,Current,6640.35,8
+CUS000225,Hannah Kowalski,hannah.kowalski225@example.com,13-44-55,59237523,Cardiff,Current,-6285.55,27
+CUS000226,Sofia Kowalski,sofia.kowalski226@example.com,58-47-68,73123782,Liverpool,Credit Card,6041.71,85
+CUS000227,Carlos Ali,carlos.ali227@example.com,22-82-83,97903694,London,Current,-1063.26,97
+CUS000228,Olu Nguyen,olu.nguyen228@example.com,64-50-81,42537043,Leeds,Loan,-2023.87,105
+CUS000229,Sofia Ali,sofia.ali229@example.com,27-75-49,40589558,Bristol,Credit Card,10195.49,35
+CUS000230,Olu Smith,olu.smith230@example.com,82-90-17,11178706,Liverpool,Credit Card,-5005.75,61
+CUS000231,Ivan Nguyen,ivan.nguyen231@example.com,71-57-92,85300205,Liverpool,Mortgage,-12118.03,112
+CUS000232,Wei Smith,wei.smith232@example.com,67-82-74,39262430,London,Savings,4560.49,119
+CUS000233,Aisha Ahmed,aisha.ahmed233@example.com,43-23-80,56222612,London,Mortgage,-680.6,101
+CUS000234,Olu Ahmed,olu.ahmed234@example.com,87-49-26,88275358,Manchester,Credit Card,2456.92,101
+CUS000235,Carlos Kowalski,carlos.kowalski235@example.com,33-50-52,68763596,Liverpool,Mortgage,9069.48,91
+CUS000236,Mohammed Kowalski,mohammed.kowalski236@example.com,74-47-50,20445580,Manchester,Savings,-1067.16,76
+CUS000237,Olu Ahmed,olu.ahmed237@example.com,42-16-49,89124426,Liverpool,Current,4580.67,67
+CUS000238,Sofia Nguyen,sofia.nguyen238@example.com,20-48-31,40979439,Manchester,Current,-3698.37,97
+CUS000239,Wei Chen,wei.chen239@example.com,58-49-67,70227741,Cardiff,Mortgage,8623.07,105
+CUS000240,Hannah Tanaka,hannah.tanaka240@example.com,28-24-36,68887238,Birmingham,Current,16318.8,111
+CUS000241,Carlos Khan,carlos.khan241@example.com,69-86-23,55753284,Bristol,Current,27825.04,90
+CUS000242,Mary Garcia,mary.garcia242@example.com,49-57-27,71805029,Manchester,Savings,8761.56,113
+CUS000243,Mary Kowalski,mary.kowalski243@example.com,58-90-37,32063307,Birmingham,Loan,-1207.79,65
+CUS000244,Hannah Andersson,hannah.andersson244@example.com,88-78-80,93609788,Liverpool,Credit Card,1371.22,37
+CUS000245,Priya Brown,priya.brown245@example.com,53-39-37,18105446,Bristol,Loan,8955.66,34
+CUS000246,Ivan Ali,ivan.ali246@example.com,88-98-18,48635762,Glasgow,Current,-1217.93,83
+CUS000247,Olu Silva,olu.silva247@example.com,72-93-92,22655909,Manchester,Credit Card,15843.79,102
+CUS000248,Yuki Khan,yuki.khan248@example.com,33-47-59,68164197,London,Savings,7038.62,117
+CUS000249,Mei Nguyen,mei.nguyen249@example.com,26-95-47,78357093,Liverpool,Savings,4100.12,34
+CUS000250,Carlos Rossi,carlos.rossi250@example.com,59-38-70,14265261,Bristol,Savings,-5473.65,21
+CUS000251,Sofia Brown,sofia.brown251@example.com,61-52-50,76143006,Cardiff,Current,1289.19,0
+CUS000252,James Okafor,james.okafor252@example.com,81-94-74,35621883,Birmingham,Loan,660.6,85
+CUS000253,Carlos Okafor,carlos.okafor253@example.com,88-22-30,42466674,Birmingham,Mortgage,-2916.39,103
+CUS000254,Fatima Ahmed,fatima.ahmed254@example.com,32-86-51,95755883,Liverpool,Savings,994.16,43
+CUS000255,Carlos Tanaka,carlos.tanaka255@example.com,40-30-50,96665424,Manchester,Loan,-2270.56,62
+CUS000256,Carlos Kowalski,carlos.kowalski256@example.com,70-35-65,96574406,Leeds,Credit Card,-429.31,11
+CUS000257,Sofia Tanaka,sofia.tanaka257@example.com,26-16-43,59066841,Glasgow,Savings,7315.76,98
+CUS000258,Mei Khan,mei.khan258@example.com,62-86-69,95329583,Liverpool,Savings,4528.88,111
+CUS000259,Yuki Ahmed,yuki.ahmed259@example.com,70-97-75,60290079,Birmingham,Loan,6427.96,78
+CUS000260,Mary Kowalski,mary.kowalski260@example.com,22-37-98,90303670,London,Savings,-9555.71,22
+CUS000261,Yuki Chen,yuki.chen261@example.com,75-55-71,85309639,Leeds,Current,-5642.2,27
+CUS000262,Liam Patel,liam.patel262@example.com,75-92-53,58034990,Birmingham,Current,10220.89,110
+CUS000263,Priya Ali,priya.ali263@example.com,16-67-87,11791588,Bristol,Current,1143.21,68
+CUS000264,Noah Ahmed,noah.ahmed264@example.com,19-12-85,27396286,Bristol,Credit Card,10746.31,5
+CUS000265,Mary Ahmed,mary.ahmed265@example.com,72-48-83,32507421,London,Mortgage,-4649.99,20
+CUS000266,Carlos Garcia,carlos.garcia266@example.com,97-90-93,93223650,Glasgow,Savings,12155.77,88
+CUS000267,Liam Khan,liam.khan267@example.com,36-70-63,28880149,Bristol,Mortgage,10536.32,86
+CUS000268,James Chen,james.chen268@example.com,56-32-38,68623849,Manchester,Mortgage,-2758.81,65
+CUS000269,Sofia Chen,sofia.chen269@example.com,77-41-47,74874576,Bristol,Savings,5177.2,117
+CUS000270,Mohammed Rossi,mohammed.rossi270@example.com,91-50-81,73921709,Liverpool,Current,-1037.48,4
+CUS000271,Carlos Andersson,carlos.andersson271@example.com,76-76-45,78766569,London,Credit Card,15941.75,105
+CUS000272,Fatima Kowalski,fatima.kowalski272@example.com,90-56-80,99097903,Liverpool,Credit Card,8648.72,94
+CUS000273,Priya Okafor,priya.okafor273@example.com,33-81-38,18502526,Bristol,Credit Card,1280.27,26
+CUS000274,Priya Ali,priya.ali274@example.com,35-77-15,84450647,London,Mortgage,2392.16,67
+CUS000275,Mei Chen,mei.chen275@example.com,90-66-59,56892546,London,Loan,368.19,15
+CUS000276,Sofia Rossi,sofia.rossi276@example.com,44-53-39,73494045,Cardiff,Credit Card,3142.14,65
+CUS000277,Sofia Kowalski,sofia.kowalski277@example.com,44-83-83,75606865,Glasgow,Credit Card,-6381.01,23
+CUS000278,Priya Kowalski,priya.kowalski278@example.com,12-73-69,91406784,Manchester,Credit Card,3499.4,41
+CUS000279,Yuki Ahmed,yuki.ahmed279@example.com,29-98-10,41244034,Glasgow,Loan,6983.08,44
+CUS000280,Hannah Brown,hannah.brown280@example.com,21-91-72,78647459,Glasgow,Current,8228.31,34
+CUS000281,Liam Silva,liam.silva281@example.com,70-39-85,24806926,Liverpool,Credit Card,12642.47,105
+CUS000282,Aisha Ahmed,aisha.ahmed282@example.com,91-61-10,67220944,Leeds,Current,17061.07,116
+CUS000283,Mary Rossi,mary.rossi283@example.com,27-70-84,94272205,Bristol,Savings,17635.68,89
+CUS000284,Mei Ali,mei.ali284@example.com,37-36-63,59348425,Birmingham,Loan,4300.4,34
+CUS000285,Fatima Garcia,fatima.garcia285@example.com,63-12-96,30915899,Birmingham,Savings,-215.78,117
+CUS000286,Mohammed Rossi,mohammed.rossi286@example.com,39-88-64,44022513,Birmingham,Savings,-753.83,80
+CUS000287,Liam Kowalski,liam.kowalski287@example.com,74-27-63,99181456,Liverpool,Savings,6443.09,47
+CUS000288,Aisha Kowalski,aisha.kowalski288@example.com,17-89-57,41223669,Birmingham,Savings,13533.84,79
+CUS000289,Sofia Chen,sofia.chen289@example.com,28-84-95,20920431,Manchester,Loan,-8813.23,24
+CUS000290,Carlos Tanaka,carlos.tanaka290@example.com,73-96-34,72090703,Cardiff,Loan,10406.61,66
+CUS000291,James Kowalski,james.kowalski291@example.com,23-48-34,45500009,Glasgow,Credit Card,7074.94,23
+CUS000292,Hannah Okafor,hannah.okafor292@example.com,21-91-41,46086968,Manchester,Loan,-3733.19,91
+CUS000293,Carlos Smith,carlos.smith293@example.com,70-80-57,39076325,Glasgow,Credit Card,-1203.29,102
+CUS000294,Mary Andersson,mary.andersson294@example.com,69-63-37,75083613,Manchester,Credit Card,2291.9,25
+CUS000295,Mei Kowalski,mei.kowalski295@example.com,59-35-84,71892438,Leeds,Current,12028.43,76
+CUS000296,James Patel,james.patel296@example.com,29-34-67,10686375,Cardiff,Credit Card,7811.63,45
+CUS000297,Mei Kowalski,mei.kowalski297@example.com,44-46-28,56174708,Glasgow,Mortgage,4376.01,107
+CUS000298,James Tanaka,james.tanaka298@example.com,23-20-70,79107340,Cardiff,Mortgage,-1494.46,91
+CUS000299,Priya Rossi,priya.rossi299@example.com,20-87-76,92623033,Liverpool,Mortgage,3045.08,75
+CUS000300,Fatima Ali,fatima.ali300@example.com,92-27-89,33032961,Bristol,Current,9631.8,75
+CUS000301,Olu Smith,olu.smith301@example.com,95-29-52,71195812,Liverpool,Current,-3625.98,118
+CUS000302,Aisha Patel,aisha.patel302@example.com,50-82-26,86409812,Liverpool,Current,-367.57,60
+CUS000303,Ivan Kowalski,ivan.kowalski303@example.com,73-87-43,56361966,Cardiff,Credit Card,13908.23,66
+CUS000304,Mary Nguyen,mary.nguyen304@example.com,40-13-47,14231537,Leeds,Loan,8112.23,111
+CUS000305,Carlos Garcia,carlos.garcia305@example.com,48-36-32,33424504,Liverpool,Loan,3722.44,11
+CUS000306,Aisha Andersson,aisha.andersson306@example.com,31-64-98,41049568,Birmingham,Current,-4625.71,9
+CUS000307,Olu Chen,olu.chen307@example.com,24-72-57,27881973,Leeds,Current,12476.74,40
+CUS000308,Olu Ali,olu.ali308@example.com,73-22-92,23294216,Leeds,Loan,-7939.85,12
+CUS000309,Mary Chen,mary.chen309@example.com,84-81-13,96850573,Bristol,Savings,5936.34,50
+CUS000310,Carlos Silva,carlos.silva310@example.com,36-10-96,95626119,London,Mortgage,19368.58,98
+CUS000311,Wei Smith,wei.smith311@example.com,46-45-70,84612919,Birmingham,Current,-4261.4,27
+CUS000312,Ivan Khan,ivan.khan312@example.com,89-48-27,35032666,Glasgow,Mortgage,5826.02,9
+CUS000313,Hannah Brown,hannah.brown313@example.com,28-53-11,41896390,Glasgow,Current,-6867.91,9
+CUS000314,Mohammed Rossi,mohammed.rossi314@example.com,32-68-98,34589952,Liverpool,Loan,-1418.37,51
+CUS000315,Aisha Rossi,aisha.rossi315@example.com,40-38-77,87083370,Birmingham,Credit Card,-15964.99,80
+CUS000316,Carlos Andersson,carlos.andersson316@example.com,35-18-64,73594952,Birmingham,Mortgage,-1054.98,103
+CUS000317,Hannah Smith,hannah.smith317@example.com,61-81-11,31218645,Birmingham,Mortgage,3457.38,11
+CUS000318,Mei Okafor,mei.okafor318@example.com,12-86-37,25664910,Glasgow,Loan,11824.44,102
+CUS000319,Aisha Rossi,aisha.rossi319@example.com,44-40-65,59996341,Birmingham,Current,17940.65,74
+CUS000320,Wei Smith,wei.smith320@example.com,54-72-38,34674058,Leeds,Savings,3649.41,111
+CUS000321,Sofia Okafor,sofia.okafor321@example.com,77-46-19,61101129,Bristol,Savings,4058.88,10
+CUS000322,Liam Brown,liam.brown322@example.com,26-80-52,89853426,Bristol,Credit Card,5372.3,12
+CUS000323,Olu Kowalski,olu.kowalski323@example.com,68-46-76,87547574,Manchester,Loan,-10036.39,97
+CUS000324,Liam Khan,liam.khan324@example.com,27-51-70,53461500,Leeds,Savings,7835.58,6
+CUS000325,Mohammed Silva,mohammed.silva325@example.com,44-94-60,82131430,Manchester,Credit Card,-3064.28,39
+CUS000326,Aisha Kowalski,aisha.kowalski326@example.com,43-38-81,76524160,Birmingham,Credit Card,7694.49,84
+CUS000327,James Smith,james.smith327@example.com,25-18-73,10843744,Glasgow,Mortgage,-7312.87,36
+CUS000328,Priya Kowalski,priya.kowalski328@example.com,84-60-69,74898551,Glasgow,Mortgage,8908.4,102
+CUS000329,Sofia Andersson,sofia.andersson329@example.com,44-21-12,38757166,Cardiff,Mortgage,12776.06,54
+CUS000330,Olu Chen,olu.chen330@example.com,13-87-65,32913269,London,Savings,2406.77,95
+CUS000331,Mei Tanaka,mei.tanaka331@example.com,33-91-56,35812390,London,Loan,-1195.73,102
+CUS000332,Sofia Ahmed,sofia.ahmed332@example.com,40-17-36,23264240,Liverpool,Current,3498.93,28
+CUS000333,Yuki Tanaka,yuki.tanaka333@example.com,74-20-25,49287970,Manchester,Credit Card,4497.61,87
+CUS000334,Noah Khan,noah.khan334@example.com,36-65-93,39446456,Manchester,Mortgage,-17906.89,41
+CUS000335,Noah Ahmed,noah.ahmed335@example.com,12-52-61,45036504,Glasgow,Mortgage,858.63,86
+CUS000336,Mei Ali,mei.ali336@example.com,40-45-53,89044640,Manchester,Savings,11141.74,43
+CUS000337,Wei Kowalski,wei.kowalski337@example.com,30-79-54,73088045,Liverpool,Credit Card,1684.17,116
+CUS000338,Wei Rossi,wei.rossi338@example.com,94-56-65,68323717,Bristol,Mortgage,22168.0,74
+CUS000339,Aisha Andersson,aisha.andersson339@example.com,14-93-30,20123079,Bristol,Credit Card,6132.14,100
+CUS000340,Priya Chen,priya.chen340@example.com,43-32-49,66230022,Cardiff,Loan,12366.34,60
+CUS000341,Priya Smith,priya.smith341@example.com,61-44-88,52128745,Bristol,Credit Card,8729.97,91
+CUS000342,Noah Garcia,noah.garcia342@example.com,26-33-27,57068911,Liverpool,Credit Card,4966.11,7
+CUS000343,Ivan Khan,ivan.khan343@example.com,85-52-97,79823508,Manchester,Loan,8791.0,9
+CUS000344,Aisha Khan,aisha.khan344@example.com,82-18-16,91782728,Birmingham,Loan,5056.22,1
+CUS000345,Wei Brown,wei.brown345@example.com,44-69-94,66002740,Liverpool,Savings,10445.82,29
+CUS000346,Priya Okafor,priya.okafor346@example.com,11-73-55,59823793,Cardiff,Current,1506.32,17
+CUS000347,James Kowalski,james.kowalski347@example.com,57-80-15,35174585,Glasgow,Loan,-931.53,57
+CUS000348,Sofia Silva,sofia.silva348@example.com,48-82-65,42761274,London,Mortgage,9744.45,92
+CUS000349,Hannah Patel,hannah.patel349@example.com,13-53-57,71779906,London,Savings,15836.39,93
+CUS000350,Aisha Andersson,aisha.andersson350@example.com,81-18-93,11543920,Glasgow,Savings,7134.13,67
+CUS000351,Liam Nguyen,liam.nguyen351@example.com,52-65-45,50718989,Liverpool,Loan,5748.15,69
+CUS000352,Mei Patel,mei.patel352@example.com,26-61-75,68212667,Birmingham,Loan,11356.61,103
+CUS000353,Priya Brown,priya.brown353@example.com,40-37-84,37865134,Birmingham,Savings,853.51,89
+CUS000354,Noah Brown,noah.brown354@example.com,67-48-27,90175375,Birmingham,Current,10094.55,106
+CUS000355,Liam Silva,liam.silva355@example.com,20-34-93,25974027,Bristol,Mortgage,5571.05,8
+CUS000356,Sofia Patel,sofia.patel356@example.com,27-60-56,16508892,Leeds,Credit Card,13664.1,16
+CUS000357,Aisha Andersson,aisha.andersson357@example.com,27-96-44,80622987,Cardiff,Credit Card,-685.21,109
+CUS000358,Olu Silva,olu.silva358@example.com,41-65-89,99811485,Manchester,Loan,-2498.55,80
+CUS000359,Mohammed Khan,mohammed.khan359@example.com,97-88-53,33654604,Birmingham,Credit Card,5706.66,83
+CUS000360,Aisha Okafor,aisha.okafor360@example.com,82-36-41,75721616,Leeds,Credit Card,-1092.86,107
+CUS000361,Ivan Chen,ivan.chen361@example.com,85-25-51,71609505,Manchester,Loan,15184.01,89
+CUS000362,Mary Brown,mary.brown362@example.com,96-91-44,59928857,Birmingham,Savings,6558.07,24
+CUS000363,Yuki Kowalski,yuki.kowalski363@example.com,72-75-72,92513498,Liverpool,Savings,10165.11,7
+CUS000364,Wei Patel,wei.patel364@example.com,40-67-23,32344792,Cardiff,Current,8599.93,14
+CUS000365,Carlos Kowalski,carlos.kowalski365@example.com,55-10-14,82027171,Cardiff,Loan,-2613.86,45
+CUS000366,Wei Andersson,wei.andersson366@example.com,95-64-88,55801227,Bristol,Credit Card,14935.56,79
+CUS000367,Carlos Ahmed,carlos.ahmed367@example.com,72-66-59,89521001,Birmingham,Savings,3409.09,10
+CUS000368,Aisha Kowalski,aisha.kowalski368@example.com,39-55-65,12112677,Liverpool,Mortgage,-738.75,10
+CUS000369,Ivan Okafor,ivan.okafor369@example.com,46-54-75,87228962,Bristol,Savings,5170.05,29
+CUS000370,Yuki Ahmed,yuki.ahmed370@example.com,15-41-47,16483660,Bristol,Mortgage,17077.39,65
+CUS000371,Mohammed Tanaka,mohammed.tanaka371@example.com,28-63-42,56343210,Birmingham,Savings,5449.42,37
+CUS000372,Sofia Ali,sofia.ali372@example.com,85-42-16,45839854,London,Loan,5451.1,23
+CUS000373,Hannah Patel,hannah.patel373@example.com,82-72-93,35383451,Birmingham,Mortgage,-16659.95,81
+CUS000374,Sofia Okafor,sofia.okafor374@example.com,11-52-79,50802784,London,Credit Card,-5247.89,27
+CUS000375,Mei Brown,mei.brown375@example.com,89-88-53,15213223,Glasgow,Mortgage,1788.91,119
+CUS000376,Olu Patel,olu.patel376@example.com,86-52-28,53372338,Cardiff,Savings,13398.38,19
+CUS000377,Yuki Rossi,yuki.rossi377@example.com,15-75-51,21396627,Cardiff,Current,14755.96,12
+CUS000378,Hannah Kowalski,hannah.kowalski378@example.com,95-78-20,95843380,London,Savings,-10940.01,83
+CUS000379,Mei Brown,mei.brown379@example.com,65-84-87,17613050,Leeds,Credit Card,7718.41,5
+CUS000380,Hannah Smith,hannah.smith380@example.com,75-95-67,33183190,Birmingham,Savings,12966.22,64
+CUS000381,Wei Okafor,wei.okafor381@example.com,22-92-63,88964667,Birmingham,Savings,2128.95,87
+CUS000382,Aisha Kowalski,aisha.kowalski382@example.com,67-62-10,55401361,Manchester,Credit Card,2151.65,91
+CUS000383,Mary Chen,mary.chen383@example.com,66-36-43,12237792,Bristol,Loan,3243.35,55
+CUS000384,Noah Ahmed,noah.ahmed384@example.com,14-74-89,47662041,Liverpool,Credit Card,15606.93,12
+CUS000385,Mary Khan,mary.khan385@example.com,55-79-96,56585355,Bristol,Loan,12812.58,19
+CUS000386,Mohammed Garcia,mohammed.garcia386@example.com,17-45-80,55907349,Liverpool,Loan,7315.45,116
+CUS000387,Yuki Smith,yuki.smith387@example.com,93-93-59,50195273,Leeds,Savings,-3349.94,60
+CUS000388,Liam Chen,liam.chen388@example.com,84-84-74,68170821,Cardiff,Credit Card,793.08,5
+CUS000389,Sofia Patel,sofia.patel389@example.com,49-36-98,84207632,Liverpool,Credit Card,10481.33,38
+CUS000390,Mei Andersson,mei.andersson390@example.com,39-77-91,88765350,Glasgow,Loan,6165.15,62
+CUS000391,Wei Smith,wei.smith391@example.com,75-51-69,19638104,Glasgow,Loan,4531.82,35
+CUS000392,Priya Okafor,priya.okafor392@example.com,24-51-42,27897798,Birmingham,Loan,19842.87,114
+CUS000393,Fatima Kowalski,fatima.kowalski393@example.com,21-13-24,34834397,Liverpool,Current,7574.25,57
+CUS000394,Aisha Rossi,aisha.rossi394@example.com,93-69-23,90018434,Glasgow,Mortgage,10040.36,15
+CUS000395,Mary Chen,mary.chen395@example.com,12-24-35,85042757,Bristol,Loan,7937.55,116
+CUS000396,James Ali,james.ali396@example.com,47-65-61,72881835,Leeds,Savings,13543.82,116
+CUS000397,Mohammed Rossi,mohammed.rossi397@example.com,20-71-20,23650646,Liverpool,Current,-3796.37,61
+CUS000398,Carlos Tanaka,carlos.tanaka398@example.com,33-67-83,19685786,Birmingham,Current,-308.69,67
+CUS000399,James Garcia,james.garcia399@example.com,79-39-76,87295241,Leeds,Savings,22690.62,99
+CUS000400,Mei Ali,mei.ali400@example.com,56-77-98,70440357,Glasgow,Mortgage,-1296.79,8
+CUS000401,Liam Ali,liam.ali401@example.com,16-83-10,57396267,London,Current,-2378.65,16
+CUS000402,Mary Smith,mary.smith402@example.com,22-72-41,80338928,Bristol,Mortgage,4588.1,75
+CUS000403,Sofia Silva,sofia.silva403@example.com,69-22-26,17502927,London,Savings,3904.47,13
+CUS000404,Noah Ali,noah.ali404@example.com,68-38-18,60391138,Bristol,Mortgage,5576.26,88
+CUS000405,Hannah Patel,hannah.patel405@example.com,17-92-12,34430740,Cardiff,Mortgage,461.85,15
+CUS000406,Hannah Rossi,hannah.rossi406@example.com,28-56-55,70171708,Leeds,Credit Card,14697.47,76
+CUS000407,James Garcia,james.garcia407@example.com,49-54-33,84165305,Glasgow,Credit Card,5883.91,10
+CUS000408,Mary Khan,mary.khan408@example.com,71-54-89,66112062,London,Savings,5964.45,80
+CUS000409,Fatima Nguyen,fatima.nguyen409@example.com,53-42-60,56766282,Liverpool,Credit Card,2768.29,18
+CUS000410,Carlos Garcia,carlos.garcia410@example.com,74-98-27,54171837,Manchester,Mortgage,3019.8,116
+CUS000411,Mei Chen,mei.chen411@example.com,91-53-91,54908357,Cardiff,Credit Card,-11287.19,64
+CUS000412,Mohammed Tanaka,mohammed.tanaka412@example.com,20-93-91,96745801,Liverpool,Savings,-18710.35,80
+CUS000413,Yuki Rossi,yuki.rossi413@example.com,52-90-70,77936838,London,Current,241.92,81
+CUS000414,Mei Nguyen,mei.nguyen414@example.com,60-61-71,33409787,London,Savings,-720.42,30
+CUS000415,Yuki Brown,yuki.brown415@example.com,59-39-11,86895911,London,Credit Card,-745.34,52
+CUS000416,Wei Brown,wei.brown416@example.com,70-33-98,51715608,Leeds,Loan,7299.68,112
+CUS000417,Noah Ali,noah.ali417@example.com,31-51-30,87437458,Bristol,Savings,2203.94,81
+CUS000418,Noah Garcia,noah.garcia418@example.com,24-46-74,84096419,Cardiff,Credit Card,11314.85,53
+CUS000419,Mary Kowalski,mary.kowalski419@example.com,80-89-32,72327155,Birmingham,Mortgage,6761.19,45
+CUS000420,Mei Ahmed,mei.ahmed420@example.com,69-59-10,74695696,Bristol,Mortgage,4698.68,98
+CUS000421,Hannah Smith,hannah.smith421@example.com,59-44-59,67034921,Manchester,Credit Card,15239.22,36
+CUS000422,Ivan Rossi,ivan.rossi422@example.com,60-66-63,37708235,Cardiff,Savings,19651.39,1
+CUS000423,Noah Okafor,noah.okafor423@example.com,80-16-59,97464656,London,Credit Card,-382.95,41
+CUS000424,Olu Andersson,olu.andersson424@example.com,35-20-72,20754615,Leeds,Loan,-10299.64,21
+CUS000425,Mohammed Okafor,mohammed.okafor425@example.com,85-61-77,89785673,Leeds,Savings,4385.86,105
+CUS000426,Wei Chen,wei.chen426@example.com,82-53-52,91490299,Manchester,Current,-1438.93,17
+CUS000427,Ivan Ahmed,ivan.ahmed427@example.com,41-59-60,67405625,Cardiff,Savings,9349.11,105
+CUS000428,Wei Kowalski,wei.kowalski428@example.com,47-21-55,38525591,Cardiff,Current,9074.28,117
+CUS000429,Sofia Khan,sofia.khan429@example.com,48-46-12,46999656,Liverpool,Current,13094.48,53
+CUS000430,Ivan Silva,ivan.silva430@example.com,29-40-78,17632273,Cardiff,Current,7744.54,102
+CUS000431,Mohammed Smith,mohammed.smith431@example.com,58-34-75,29718954,Manchester,Mortgage,7856.83,28
+CUS000432,Priya Kowalski,priya.kowalski432@example.com,25-31-71,25490212,Bristol,Current,17401.2,107
+CUS000433,Mary Kowalski,mary.kowalski433@example.com,50-12-83,25929889,Leeds,Loan,3092.47,10
+CUS000434,Fatima Ahmed,fatima.ahmed434@example.com,12-15-59,41443450,Liverpool,Current,5072.75,10
+CUS000435,Mei Okafor,mei.okafor435@example.com,87-53-86,55352027,Bristol,Credit Card,3069.29,47
+CUS000436,Ivan Kowalski,ivan.kowalski436@example.com,95-24-49,90359860,Leeds,Loan,596.74,106
+CUS000437,Fatima Ahmed,fatima.ahmed437@example.com,91-41-94,72689123,Birmingham,Current,17724.1,48
+CUS000438,Sofia Ali,sofia.ali438@example.com,58-68-29,53104745,Liverpool,Mortgage,-683.34,69
+CUS000439,Hannah Andersson,hannah.andersson439@example.com,16-33-62,99705708,London,Savings,4217.63,74
+CUS000440,Sofia Silva,sofia.silva440@example.com,77-33-59,10562901,Leeds,Loan,4326.96,3
+CUS000441,Yuki Nguyen,yuki.nguyen441@example.com,77-20-76,53853628,Glasgow,Loan,2545.41,11
+CUS000442,Wei Ali,wei.ali442@example.com,57-29-97,23743462,London,Current,-4246.59,36
+CUS000443,Wei Tanaka,wei.tanaka443@example.com,42-41-20,30539227,London,Savings,10161.56,41
+CUS000444,Mary Rossi,mary.rossi444@example.com,80-44-17,26165802,London,Loan,213.65,35
+CUS000445,Aisha Ali,aisha.ali445@example.com,48-25-19,42830398,Leeds,Mortgage,13347.49,72
+CUS000446,Hannah Nguyen,hannah.nguyen446@example.com,93-90-70,44795026,Bristol,Savings,-4058.12,26
+CUS000447,Mohammed Kowalski,mohammed.kowalski447@example.com,53-47-81,14888771,Cardiff,Mortgage,-8843.13,53
+CUS000448,Fatima Patel,fatima.patel448@example.com,17-86-82,66823534,Leeds,Current,8917.98,3
+CUS000449,James Ahmed,james.ahmed449@example.com,85-48-81,83943454,Leeds,Loan,7451.66,92
+CUS000450,Wei Okafor,wei.okafor450@example.com,32-40-40,18349453,Glasgow,Mortgage,2137.96,41
+CUS000451,Hannah Kowalski,hannah.kowalski451@example.com,69-61-39,21501870,Leeds,Mortgage,10545.63,84
+CUS000452,Mohammed Chen,mohammed.chen452@example.com,83-25-73,38260080,Glasgow,Mortgage,7639.0,37
+CUS000453,Aisha Patel,aisha.patel453@example.com,17-93-27,65243901,Liverpool,Loan,-3050.42,74
+CUS000454,James Okafor,james.okafor454@example.com,65-16-40,74064198,Glasgow,Savings,2022.34,98
+CUS000455,Noah Tanaka,noah.tanaka455@example.com,85-78-91,39557708,Bristol,Credit Card,17426.17,113
+CUS000456,James Ali,james.ali456@example.com,57-60-14,45113313,Glasgow,Credit Card,13587.92,94
+CUS000457,Priya Kowalski,priya.kowalski457@example.com,87-24-63,14482893,Birmingham,Mortgage,-11972.1,27
+CUS000458,Olu Okafor,olu.okafor458@example.com,25-69-22,58440427,Cardiff,Current,5497.71,95
+CUS000459,Carlos Garcia,carlos.garcia459@example.com,43-50-95,88333371,Manchester,Current,8131.57,42
+CUS000460,Fatima Ahmed,fatima.ahmed460@example.com,85-89-69,32760943,Manchester,Credit Card,11739.61,29
+CUS000461,Olu Rossi,olu.rossi461@example.com,81-63-68,27575024,Cardiff,Credit Card,9713.98,90
+CUS000462,Mei Andersson,mei.andersson462@example.com,71-16-74,49974523,Leeds,Mortgage,-4208.4,18
+CUS000463,Sofia Ali,sofia.ali463@example.com,40-45-23,12859930,London,Credit Card,-1450.14,94
+CUS000464,Olu Smith,olu.smith464@example.com,26-69-35,24906078,Liverpool,Savings,-4113.29,3
+CUS000465,Liam Rossi,liam.rossi465@example.com,53-31-89,19764066,Liverpool,Mortgage,8723.59,93
+CUS000466,Aisha Smith,aisha.smith466@example.com,49-68-68,52964496,London,Loan,11319.63,31
+CUS000467,Mei Kowalski,mei.kowalski467@example.com,23-15-43,90814834,Cardiff,Loan,7922.43,76
+CUS000468,James Tanaka,james.tanaka468@example.com,83-56-77,32243086,Birmingham,Loan,-7971.15,15
+CUS000469,Mohammed Andersson,mohammed.andersson469@example.com,34-33-56,17336653,Manchester,Credit Card,-31.37,46
+CUS000470,Fatima Okafor,fatima.okafor470@example.com,60-48-98,72061537,Birmingham,Mortgage,5492.87,90
+CUS000471,Wei Patel,wei.patel471@example.com,66-15-19,39675038,Manchester,Savings,5278.85,93
+CUS000472,Ivan Silva,ivan.silva472@example.com,53-38-86,44252310,Leeds,Savings,3393.46,71
+CUS000473,Olu Ali,olu.ali473@example.com,82-50-57,40583247,Glasgow,Savings,3605.38,13
+CUS000474,Ivan Chen,ivan.chen474@example.com,88-59-79,78651811,Cardiff,Mortgage,2019.13,62
+CUS000475,Ivan Brown,ivan.brown475@example.com,49-53-53,82913957,London,Loan,9068.35,95
+CUS000476,Fatima Khan,fatima.khan476@example.com,14-59-40,53942292,Glasgow,Current,8231.99,99
+CUS000477,Olu Tanaka,olu.tanaka477@example.com,47-57-84,92744905,Cardiff,Current,-501.85,54
+CUS000478,Noah Khan,noah.khan478@example.com,90-78-32,34656641,Glasgow,Credit Card,8941.66,9
+CUS000479,Aisha Ahmed,aisha.ahmed479@example.com,30-95-26,54268193,Birmingham,Mortgage,3667.21,20
+CUS000480,Liam Kowalski,liam.kowalski480@example.com,62-77-76,98335786,Liverpool,Savings,19712.15,107
+CUS000481,Mohammed Andersson,mohammed.andersson481@example.com,79-38-21,19142238,Glasgow,Credit Card,-449.21,2
+CUS000482,Fatima Silva,fatima.silva482@example.com,56-49-89,82116290,Glasgow,Credit Card,5686.62,65
+CUS000483,James Ahmed,james.ahmed483@example.com,68-38-59,69942688,Manchester,Credit Card,2475.5,118
+CUS000484,Mohammed Kowalski,mohammed.kowalski484@example.com,19-23-81,42500139,Birmingham,Current,-9145.83,102
+CUS000485,James Ali,james.ali485@example.com,23-33-23,61497574,Liverpool,Credit Card,6372.19,14
+CUS000486,Yuki Garcia,yuki.garcia486@example.com,76-84-31,56649140,Bristol,Credit Card,8668.7,50
+CUS000487,Mei Kowalski,mei.kowalski487@example.com,98-19-78,50470815,Manchester,Loan,9581.55,35
+CUS000488,Mary Nguyen,mary.nguyen488@example.com,95-84-17,85784429,Birmingham,Current,6126.73,29
+CUS000489,James Chen,james.chen489@example.com,37-48-33,34202638,Leeds,Savings,12265.4,47
+CUS000490,Wei Silva,wei.silva490@example.com,33-61-82,32362549,Bristol,Savings,-161.53,83
+CUS000491,Priya Andersson,priya.andersson491@example.com,26-67-49,86488272,London,Mortgage,3952.09,40
+CUS000492,Mohammed Ali,mohammed.ali492@example.com,62-25-68,80184935,Cardiff,Savings,10304.57,105
+CUS000493,Sofia Silva,sofia.silva493@example.com,46-55-17,47346318,London,Credit Card,2933.13,107
+CUS000494,Wei Okafor,wei.okafor494@example.com,91-66-66,77272277,Manchester,Loan,15722.41,97
+CUS000495,Wei Rossi,wei.rossi495@example.com,67-34-96,42480458,Glasgow,Current,-6172.33,88
+CUS000496,Noah Andersson,noah.andersson496@example.com,81-78-46,30538898,Glasgow,Loan,18234.23,84
+CUS000497,Mary Andersson,mary.andersson497@example.com,41-49-76,31653581,Birmingham,Credit Card,2951.95,115
+CUS000498,Liam Silva,liam.silva498@example.com,22-79-27,77505161,Bristol,Mortgage,465.9,113
+CUS000499,Noah Andersson,noah.andersson499@example.com,70-85-86,16728029,Leeds,Savings,-347.75,5
+CUS000500,Aisha Brown,aisha.brown500@example.com,83-27-91,84082161,Glasgow,Savings,439.4,86
+CUS000501,Aisha Silva,aisha.silva501@example.com,20-68-83,21580816,Manchester,Loan,19525.16,87
+CUS000502,Liam Ahmed,liam.ahmed502@example.com,47-27-95,49960788,Leeds,Mortgage,16373.82,73
+CUS000503,Mei Ahmed,mei.ahmed503@example.com,90-65-65,86877707,Bristol,Credit Card,13363.6,55
+CUS000504,Priya Chen,priya.chen504@example.com,51-47-56,56638983,Glasgow,Mortgage,12045.1,7
+CUS000505,Aisha Nguyen,aisha.nguyen505@example.com,50-87-64,26972505,Leeds,Mortgage,-5645.13,71
+CUS000506,Ivan Silva,ivan.silva506@example.com,65-57-68,50359035,Birmingham,Credit Card,8756.18,100
+CUS000507,Aisha Tanaka,aisha.tanaka507@example.com,92-59-36,81192299,Manchester,Savings,1368.44,64
+CUS000508,Fatima Ali,fatima.ali508@example.com,24-39-70,71708310,Bristol,Loan,-11943.74,7
+CUS000509,Ivan Andersson,ivan.andersson509@example.com,78-21-55,81278339,Liverpool,Loan,5563.8,52
+CUS000510,Priya Tanaka,priya.tanaka510@example.com,10-24-14,21791693,Cardiff,Current,4295.94,57
+CUS000511,Mary Ali,mary.ali511@example.com,14-60-70,27496773,Bristol,Credit Card,1402.51,35
+CUS000512,Sofia Chen,sofia.chen512@example.com,53-73-12,81322966,Glasgow,Savings,8109.0,21
+CUS000513,Hannah Kowalski,hannah.kowalski513@example.com,50-98-68,47255761,Manchester,Current,8631.46,54
+CUS000514,Wei Nguyen,wei.nguyen514@example.com,85-55-66,69102946,Liverpool,Current,-4532.35,10
+CUS000515,Liam Chen,liam.chen515@example.com,65-93-16,38746440,Manchester,Credit Card,8589.71,36
+CUS000516,Liam Ahmed,liam.ahmed516@example.com,53-35-27,72592714,Bristol,Loan,13440.24,39
+CUS000517,Priya Kowalski,priya.kowalski517@example.com,98-26-96,84606597,Manchester,Current,10619.12,80
+CUS000518,Priya Patel,priya.patel518@example.com,27-20-54,27249197,Cardiff,Loan,17740.68,113
+CUS000519,Yuki Ahmed,yuki.ahmed519@example.com,68-17-34,12745690,Bristol,Savings,-7616.78,24
+CUS000520,Yuki Nguyen,yuki.nguyen520@example.com,27-68-79,18540588,Cardiff,Current,12111.33,70
+CUS000521,Aisha Khan,aisha.khan521@example.com,91-21-36,78765750,Liverpool,Loan,14667.69,4
+CUS000522,Priya Khan,priya.khan522@example.com,48-90-45,74399680,Glasgow,Mortgage,144.33,26
+CUS000523,Sofia Nguyen,sofia.nguyen523@example.com,27-58-27,64274185,London,Loan,26961.92,53
+CUS000524,Carlos Khan,carlos.khan524@example.com,96-19-15,17542119,Liverpool,Loan,10940.66,7
+CUS000525,Noah Patel,noah.patel525@example.com,84-22-85,90417698,Manchester,Loan,11930.54,38
+CUS000526,Noah Andersson,noah.andersson526@example.com,42-94-19,94113151,Manchester,Current,2264.3,95
+CUS000527,Olu Tanaka,olu.tanaka527@example.com,52-97-25,94316628,Liverpool,Current,-5708.45,57
+CUS000528,Fatima Tanaka,fatima.tanaka528@example.com,51-79-82,10598591,Cardiff,Savings,8113.87,63
+CUS000529,Carlos Tanaka,carlos.tanaka529@example.com,30-56-69,69314911,Bristol,Loan,5831.04,73
+CUS000530,Priya Khan,priya.khan530@example.com,93-37-13,61864910,Cardiff,Savings,10148.14,114
+CUS000531,Mei Rossi,mei.rossi531@example.com,47-65-27,97674812,London,Savings,11374.28,2
+CUS000532,James Garcia,james.garcia532@example.com,37-57-57,66433083,Cardiff,Mortgage,15428.6,66
+CUS000533,Olu Andersson,olu.andersson533@example.com,53-77-16,89464277,Liverpool,Savings,6037.51,117
+CUS000534,Carlos Garcia,carlos.garcia534@example.com,92-20-34,28730902,Liverpool,Credit Card,1976.54,75
+CUS000535,James Tanaka,james.tanaka535@example.com,84-15-58,92978499,Liverpool,Loan,11213.49,41
+CUS000536,Fatima Ali,fatima.ali536@example.com,71-79-48,39646022,Manchester,Current,8.37,33
+CUS000537,Ivan Patel,ivan.patel537@example.com,86-57-91,46293727,Liverpool,Loan,11396.41,113
+CUS000538,Ivan Tanaka,ivan.tanaka538@example.com,45-72-56,59529988,Cardiff,Credit Card,-3415.02,18
+CUS000539,Hannah Garcia,hannah.garcia539@example.com,61-85-37,59374563,London,Loan,-714.02,11
+CUS000540,Mary Rossi,mary.rossi540@example.com,90-63-49,27257870,Birmingham,Mortgage,11897.36,86
+CUS000541,Olu Nguyen,olu.nguyen541@example.com,12-91-37,71326754,Manchester,Credit Card,-3268.69,14
+CUS000542,Ivan Silva,ivan.silva542@example.com,56-79-25,11715455,Birmingham,Current,5428.16,41
+CUS000543,Carlos Garcia,carlos.garcia543@example.com,86-95-71,98612494,Manchester,Credit Card,7333.08,39
+CUS000544,Mary Patel,mary.patel544@example.com,24-96-89,88238475,Liverpool,Credit Card,7282.13,107
+CUS000545,Aisha Kowalski,aisha.kowalski545@example.com,19-24-11,41038775,Leeds,Credit Card,-3443.94,115
+CUS000546,Mary Okafor,mary.okafor546@example.com,45-80-30,35456979,Cardiff,Credit Card,-3543.94,52
+CUS000547,Carlos Ali,carlos.ali547@example.com,85-92-11,13151890,London,Mortgage,6348.56,99
+CUS000548,Aisha Ali,aisha.ali548@example.com,52-84-18,41961351,Glasgow,Current,19157.22,57
+CUS000549,Noah Patel,noah.patel549@example.com,81-90-73,58326793,Birmingham,Current,-7365.08,34
+CUS000550,Mohammed Chen,mohammed.chen550@example.com,56-13-87,73470754,Bristol,Mortgage,6225.28,5
+CUS000551,Wei Garcia,wei.garcia551@example.com,66-14-93,75403613,Leeds,Savings,1992.09,62
+CUS000552,James Brown,james.brown552@example.com,51-60-72,91252164,Cardiff,Credit Card,19798.54,91
+CUS000553,Yuki Nguyen,yuki.nguyen553@example.com,79-27-21,77672456,Leeds,Credit Card,17468.87,18
+CUS000554,Yuki Nguyen,yuki.nguyen554@example.com,52-42-63,48027733,Bristol,Savings,16241.2,94
+CUS000555,James Khan,james.khan555@example.com,44-73-41,55742896,Leeds,Current,12957.23,6
+CUS000556,Yuki Kowalski,yuki.kowalski556@example.com,30-71-59,38517264,Leeds,Current,-1116.99,34
+CUS000557,Carlos Kowalski,carlos.kowalski557@example.com,95-97-84,46345111,Cardiff,Savings,9102.69,20
+CUS000558,James Ahmed,james.ahmed558@example.com,21-84-47,30401630,Liverpool,Savings,5305.3,18
+CUS000559,Mohammed Ali,mohammed.ali559@example.com,63-55-16,16362623,Birmingham,Current,542.16,89
+CUS000560,Wei Andersson,wei.andersson560@example.com,32-11-91,58800455,Liverpool,Mortgage,6839.92,3
+CUS000561,Mary Andersson,mary.andersson561@example.com,13-21-35,38989344,Birmingham,Credit Card,9179.64,85
+CUS000562,Priya Chen,priya.chen562@example.com,20-94-22,50785920,Cardiff,Credit Card,1110.2,39
+CUS000563,Priya Ahmed,priya.ahmed563@example.com,32-94-63,49514332,Cardiff,Mortgage,19551.74,18
+CUS000564,Mohammed Okafor,mohammed.okafor564@example.com,10-13-94,39911079,London,Credit Card,7209.12,89
+CUS000565,Aisha Ali,aisha.ali565@example.com,10-39-53,60126038,Cardiff,Credit Card,7007.51,71
+CUS000566,Carlos Garcia,carlos.garcia566@example.com,67-20-15,52764891,Bristol,Current,4301.09,79
+CUS000567,Fatima Chen,fatima.chen567@example.com,40-77-48,53482791,Liverpool,Loan,8842.3,51
+CUS000568,James Nguyen,james.nguyen568@example.com,10-15-93,99728127,Birmingham,Savings,10359.08,96
+CUS000569,Mary Ahmed,mary.ahmed569@example.com,11-51-93,80140182,Liverpool,Loan,-3996.74,44
+CUS000570,Liam Andersson,liam.andersson570@example.com,55-10-89,77199420,Leeds,Savings,-3767.83,107
+CUS000571,James Chen,james.chen571@example.com,62-23-23,62583375,Birmingham,Credit Card,-341.71,55
+CUS000572,Carlos Nguyen,carlos.nguyen572@example.com,27-83-20,43833686,London,Current,4335.71,34
+CUS000573,James Nguyen,james.nguyen573@example.com,78-64-56,12655290,Manchester,Current,13215.4,45
+CUS000574,Mei Ahmed,mei.ahmed574@example.com,53-60-63,85634260,Glasgow,Loan,2778.61,97
+CUS000575,Mohammed Andersson,mohammed.andersson575@example.com,86-23-93,96940576,Manchester,Current,-14011.94,91
+CUS000576,Sofia Chen,sofia.chen576@example.com,72-58-96,29928638,Cardiff,Current,14467.66,93
+CUS000577,Aisha Chen,aisha.chen577@example.com,21-66-27,83105260,Manchester,Credit Card,1576.44,40
+CUS000578,Yuki Chen,yuki.chen578@example.com,76-52-36,17627720,Manchester,Loan,-4408.46,117
+CUS000579,Ivan Nguyen,ivan.nguyen579@example.com,10-89-90,10353981,Liverpool,Current,7848.94,63
+CUS000580,Wei Smith,wei.smith580@example.com,64-88-43,52179972,Manchester,Mortgage,-2058.8,16
+CUS000581,Mei Silva,mei.silva581@example.com,49-66-94,57334343,Liverpool,Savings,4018.08,71
+CUS000582,Priya Silva,priya.silva582@example.com,30-28-67,96917213,Glasgow,Savings,11136.46,12
+CUS000583,Yuki Brown,yuki.brown583@example.com,20-78-46,67036330,Birmingham,Savings,-3559.85,97
+CUS000584,Wei Chen,wei.chen584@example.com,73-35-98,33096042,Cardiff,Loan,-3598.46,114
+CUS000585,Hannah Okafor,hannah.okafor585@example.com,96-78-35,95969847,Birmingham,Loan,19466.06,118
+CUS000586,Olu Kowalski,olu.kowalski586@example.com,14-50-35,70363629,Leeds,Current,12193.0,114
+CUS000587,Wei Khan,wei.khan587@example.com,15-32-59,46165933,Liverpool,Credit Card,8588.3,76
+CUS000588,Liam Silva,liam.silva588@example.com,72-33-24,82392437,Liverpool,Credit Card,8817.98,75
+CUS000589,Liam Garcia,liam.garcia589@example.com,74-49-82,15138745,Leeds,Current,7978.9,19
+CUS000590,Liam Chen,liam.chen590@example.com,37-54-42,78764030,Birmingham,Loan,21332.63,85
+CUS000591,Wei Brown,wei.brown591@example.com,86-62-11,14885077,Liverpool,Credit Card,-7499.27,72
+CUS000592,Liam Ahmed,liam.ahmed592@example.com,18-88-76,63739988,Leeds,Loan,-5397.73,31
+CUS000593,Carlos Andersson,carlos.andersson593@example.com,64-53-36,32669284,Leeds,Loan,6186.18,112
+CUS000594,Yuki Ali,yuki.ali594@example.com,25-85-52,40449861,Liverpool,Current,8883.09,99
+CUS000595,Hannah Okafor,hannah.okafor595@example.com,62-82-68,59345401,Liverpool,Mortgage,8597.1,10
+CUS000596,Carlos Chen,carlos.chen596@example.com,71-30-66,41979427,Cardiff,Mortgage,16416.57,96
+CUS000597,Mary Okafor,mary.okafor597@example.com,73-93-46,78677448,London,Mortgage,15019.79,0
+CUS000598,Yuki Okafor,yuki.okafor598@example.com,71-52-19,25363837,Birmingham,Current,13487.16,118
+CUS000599,Carlos Chen,carlos.chen599@example.com,50-67-16,73086384,Leeds,Credit Card,17930.98,10
+CUS000600,Aisha Ahmed,aisha.ahmed600@example.com,36-74-28,78890583,Manchester,Savings,15423.34,69
+CUS000601,Priya Nguyen,priya.nguyen601@example.com,94-49-61,14877049,Bristol,Mortgage,5416.35,104
+CUS000602,Noah Khan,noah.khan602@example.com,67-82-57,29221946,Leeds,Current,9056.08,1
+CUS000603,Hannah Ahmed,hannah.ahmed603@example.com,32-42-40,14465719,Leeds,Current,14617.19,73
+CUS000604,Liam Brown,liam.brown604@example.com,66-71-26,40115835,Birmingham,Credit Card,3154.44,8
+CUS000605,Liam Brown,liam.brown605@example.com,42-59-16,41723544,Liverpool,Current,3118.79,95
+CUS000606,Mei Okafor,mei.okafor606@example.com,23-32-31,20313439,Cardiff,Credit Card,2454.49,105
+CUS000607,Sofia Ali,sofia.ali607@example.com,88-64-59,99234265,Leeds,Credit Card,3310.39,46
+CUS000608,Mohammed Kowalski,mohammed.kowalski608@example.com,37-52-31,40201430,Manchester,Savings,2851.38,7
+CUS000609,Aisha Chen,aisha.chen609@example.com,25-10-13,91769350,Cardiff,Current,8125.91,30
+CUS000610,Liam Patel,liam.patel610@example.com,63-31-69,72178091,Bristol,Savings,-9799.2,100
+CUS000611,Liam Tanaka,liam.tanaka611@example.com,44-85-63,62209988,Manchester,Loan,16604.46,38
+CUS000612,Noah Kowalski,noah.kowalski612@example.com,10-69-45,57768767,Manchester,Mortgage,-11600.44,8
+CUS000613,Liam Smith,liam.smith613@example.com,21-26-73,13301955,Bristol,Mortgage,4663.65,5
+CUS000614,Wei Chen,wei.chen614@example.com,65-13-97,15410010,Manchester,Credit Card,8603.67,52
+CUS000615,Fatima Okafor,fatima.okafor615@example.com,43-15-96,40147280,Manchester,Mortgage,-6904.9,81
+CUS000616,Liam Patel,liam.patel616@example.com,94-44-61,15346012,Leeds,Savings,10761.22,3
+CUS000617,Liam Kowalski,liam.kowalski617@example.com,87-90-67,92617459,Manchester,Loan,14474.35,115
+CUS000618,Carlos Brown,carlos.brown618@example.com,80-46-41,41941580,Glasgow,Credit Card,-796.77,44
+CUS000619,Olu Patel,olu.patel619@example.com,54-57-57,72813930,Bristol,Loan,-15757.62,104
+CUS000620,Hannah Khan,hannah.khan620@example.com,79-38-62,16916111,Birmingham,Savings,-5849.87,37
+CUS000621,Mohammed Nguyen,mohammed.nguyen621@example.com,35-36-30,39017992,Leeds,Savings,-4728.92,59
+CUS000622,Liam Garcia,liam.garcia622@example.com,19-86-89,13917856,Leeds,Savings,2205.58,79
+CUS000623,Fatima Rossi,fatima.rossi623@example.com,19-69-56,35326498,London,Loan,20658.11,61
+CUS000624,James Rossi,james.rossi624@example.com,86-23-11,40621648,Manchester,Mortgage,-6005.1,47
+CUS000625,Fatima Okafor,fatima.okafor625@example.com,39-47-97,50030908,Glasgow,Loan,13376.78,48
+CUS000626,Mohammed Ahmed,mohammed.ahmed626@example.com,93-27-77,27428294,London,Mortgage,6754.52,85
+CUS000627,Mary Ahmed,mary.ahmed627@example.com,41-26-63,79943281,Birmingham,Credit Card,-7856.95,106
+CUS000628,Olu Brown,olu.brown628@example.com,37-78-17,89777388,Birmingham,Loan,-91.23,44
+CUS000629,Noah Nguyen,noah.nguyen629@example.com,78-84-20,76577173,Manchester,Savings,13945.15,109
+CUS000630,Aisha Kowalski,aisha.kowalski630@example.com,33-57-54,26956748,Glasgow,Loan,-6644.84,0
+CUS000631,Wei Nguyen,wei.nguyen631@example.com,71-11-84,21106112,Birmingham,Current,14906.88,73
+CUS000632,Mei Ali,mei.ali632@example.com,76-71-22,52420123,Birmingham,Current,5641.39,114
+CUS000633,Mohammed Rossi,mohammed.rossi633@example.com,82-71-28,87756604,Manchester,Current,335.18,29
+CUS000634,James Tanaka,james.tanaka634@example.com,72-83-87,88467059,Liverpool,Loan,5929.84,32
+CUS000635,Priya Khan,priya.khan635@example.com,71-65-97,96307193,Liverpool,Credit Card,15581.84,36
+CUS000636,Hannah Ahmed,hannah.ahmed636@example.com,46-19-12,44256783,Manchester,Savings,1439.63,115
+CUS000637,Fatima Patel,fatima.patel637@example.com,76-20-97,96705414,Cardiff,Credit Card,4995.17,80
+CUS000638,Carlos Garcia,carlos.garcia638@example.com,10-62-26,46654250,Glasgow,Loan,-7742.37,32
+CUS000639,Hannah Garcia,hannah.garcia639@example.com,16-23-62,51248844,London,Loan,14042.23,108
+CUS000640,Aisha Khan,aisha.khan640@example.com,14-44-11,26711148,Glasgow,Loan,3078.28,64
+CUS000641,Ivan Okafor,ivan.okafor641@example.com,79-78-46,61614550,Bristol,Credit Card,-3046.28,50
+CUS000642,Wei Khan,wei.khan642@example.com,22-45-50,19261557,Leeds,Credit Card,12174.05,53
+CUS000643,Olu Brown,olu.brown643@example.com,85-77-53,14545196,Liverpool,Credit Card,7314.35,5
+CUS000644,Aisha Khan,aisha.khan644@example.com,67-70-31,14816369,Bristol,Credit Card,-20462.48,1
+CUS000645,Olu Andersson,olu.andersson645@example.com,95-35-86,71328272,London,Current,-489.56,13
+CUS000646,Mary Tanaka,mary.tanaka646@example.com,72-39-94,35177170,Birmingham,Savings,-3460.52,45
+CUS000647,Hannah Khan,hannah.khan647@example.com,44-90-76,32668311,Liverpool,Credit Card,8463.75,55
+CUS000648,James Nguyen,james.nguyen648@example.com,48-47-93,84650758,Cardiff,Savings,6811.63,75
+CUS000649,Ivan Patel,ivan.patel649@example.com,91-70-38,50464944,Manchester,Credit Card,-8245.13,1
+CUS000650,Mei Ali,mei.ali650@example.com,45-80-61,35814919,Birmingham,Savings,15238.72,87
+CUS000651,James Tanaka,james.tanaka651@example.com,96-94-32,60737784,Cardiff,Credit Card,5607.51,17
+CUS000652,Liam Andersson,liam.andersson652@example.com,26-89-14,66153250,Birmingham,Loan,7302.3,91
+CUS000653,Mei Brown,mei.brown653@example.com,82-70-13,57390765,Glasgow,Mortgage,1203.55,104
+CUS000654,Yuki Garcia,yuki.garcia654@example.com,95-19-16,91936097,Cardiff,Loan,5506.75,16
+CUS000655,Mohammed Okafor,mohammed.okafor655@example.com,81-14-81,35777243,London,Mortgage,14923.74,36
+CUS000656,Mohammed Nguyen,mohammed.nguyen656@example.com,84-13-93,55747959,London,Current,-1108.51,88
+CUS000657,Noah Smith,noah.smith657@example.com,16-34-50,49638698,Bristol,Savings,-240.4,55
+CUS000658,Priya Khan,priya.khan658@example.com,79-15-26,57246636,Cardiff,Loan,-8452.18,6
+CUS000659,Wei Okafor,wei.okafor659@example.com,84-67-72,22580447,Liverpool,Current,-4058.04,81
+CUS000660,Carlos Nguyen,carlos.nguyen660@example.com,83-26-93,52999520,Manchester,Savings,502.16,42
+CUS000661,Carlos Nguyen,carlos.nguyen661@example.com,71-39-58,13955841,Manchester,Credit Card,28769.47,78
+CUS000662,Carlos Tanaka,carlos.tanaka662@example.com,53-75-60,72946664,Birmingham,Current,7034.81,68
+CUS000663,Wei Andersson,wei.andersson663@example.com,84-74-40,76379528,Glasgow,Loan,6896.9,9
+CUS000664,Carlos Okafor,carlos.okafor664@example.com,97-25-53,18624402,Birmingham,Mortgage,8709.79,102
+CUS000665,Mary Ali,mary.ali665@example.com,53-43-39,21760363,Bristol,Savings,-240.05,73
+CUS000666,Yuki Kowalski,yuki.kowalski666@example.com,82-63-96,43154956,Cardiff,Credit Card,-11227.82,56
+CUS000667,Mei Okafor,mei.okafor667@example.com,77-81-42,16253132,London,Savings,-5669.32,82
+CUS000668,Fatima Silva,fatima.silva668@example.com,96-84-13,23587614,Cardiff,Savings,14776.82,62
+CUS000669,Priya Andersson,priya.andersson669@example.com,94-17-32,83238830,London,Loan,17462.32,7
+CUS000670,Aisha Silva,aisha.silva670@example.com,59-91-10,48084204,Manchester,Mortgage,19653.11,102
+CUS000671,Mohammed Rossi,mohammed.rossi671@example.com,62-95-57,92003237,Leeds,Mortgage,9110.06,82
+CUS000672,Mohammed Ali,mohammed.ali672@example.com,57-59-55,40569676,Birmingham,Savings,13589.56,64
+CUS000673,Yuki Nguyen,yuki.nguyen673@example.com,15-26-25,66610893,Manchester,Loan,-8621.92,31
+CUS000674,Mohammed Smith,mohammed.smith674@example.com,58-87-48,71868034,Glasgow,Loan,-9809.98,114
+CUS000675,Wei Patel,wei.patel675@example.com,68-14-38,73672617,London,Savings,13825.4,76
+CUS000676,Fatima Tanaka,fatima.tanaka676@example.com,44-18-51,51095049,Leeds,Current,831.11,19
+CUS000677,Wei Andersson,wei.andersson677@example.com,21-94-40,72401245,Leeds,Credit Card,-4918.06,118
+CUS000678,Mary Brown,mary.brown678@example.com,38-58-31,82975546,Birmingham,Credit Card,-1460.56,20
+CUS000679,Priya Tanaka,priya.tanaka679@example.com,90-96-68,75271909,Leeds,Loan,-6688.45,35
+CUS000680,Aisha Smith,aisha.smith680@example.com,43-72-26,66773693,Manchester,Credit Card,-11554.12,52
+CUS000681,Liam Andersson,liam.andersson681@example.com,25-21-32,18398145,Cardiff,Mortgage,4094.31,0
+CUS000682,Mohammed Okafor,mohammed.okafor682@example.com,27-17-70,33926615,Bristol,Savings,-12557.46,55
+CUS000683,Mohammed Nguyen,mohammed.nguyen683@example.com,34-48-49,40582082,Cardiff,Loan,10921.9,4
+CUS000684,Priya Andersson,priya.andersson684@example.com,69-77-86,18957752,Manchester,Mortgage,-1470.59,88
+CUS000685,Sofia Smith,sofia.smith685@example.com,84-74-41,36961675,Liverpool,Current,2549.44,52
+CUS000686,Yuki Smith,yuki.smith686@example.com,53-42-22,61505733,Manchester,Loan,9942.57,55
+CUS000687,Noah Ahmed,noah.ahmed687@example.com,43-22-98,74245491,Liverpool,Savings,23596.78,64
+CUS000688,Mohammed Ali,mohammed.ali688@example.com,67-46-90,39194295,Liverpool,Mortgage,-1328.65,5
+CUS000689,Yuki Okafor,yuki.okafor689@example.com,64-91-22,80467749,London,Credit Card,6626.37,95
+CUS000690,Mohammed Andersson,mohammed.andersson690@example.com,17-90-47,22011481,Liverpool,Loan,-708.77,72
+CUS000691,Aisha Silva,aisha.silva691@example.com,75-43-36,46428319,London,Mortgage,-1498.27,67
+CUS000692,Wei Rossi,wei.rossi692@example.com,15-45-62,55587321,Birmingham,Savings,8801.67,27
+CUS000693,Liam Ahmed,liam.ahmed693@example.com,49-56-91,74613047,London,Current,8190.12,63
+CUS000694,Ivan Andersson,ivan.andersson694@example.com,96-92-58,83303851,Liverpool,Current,-615.96,67
+CUS000695,Mei Ali,mei.ali695@example.com,93-12-86,91011143,Manchester,Savings,10890.85,45
+CUS000696,Mary Andersson,mary.andersson696@example.com,32-11-94,59211538,Birmingham,Current,-1764.25,12
+CUS000697,Hannah Brown,hannah.brown697@example.com,11-73-71,85804065,Liverpool,Loan,7570.41,68
+CUS000698,Liam Kowalski,liam.kowalski698@example.com,57-44-60,42138575,Glasgow,Loan,14467.23,113
+CUS000699,Yuki Andersson,yuki.andersson699@example.com,24-29-47,95503124,Birmingham,Mortgage,4265.14,8
+CUS000700,Mary Silva,mary.silva700@example.com,95-59-11,95053002,Liverpool,Savings,26803.65,61
+CUS000701,Olu Andersson,olu.andersson701@example.com,17-26-58,41327679,Manchester,Savings,-2158.57,118
+CUS000702,Aisha Ahmed,aisha.ahmed702@example.com,69-45-46,23901471,Bristol,Mortgage,-15450.54,70
+CUS000703,Fatima Smith,fatima.smith703@example.com,61-29-47,46256570,Birmingham,Loan,5184.06,5
+CUS000704,Fatima Andersson,fatima.andersson704@example.com,75-71-64,65003335,Liverpool,Mortgage,5038.23,9
+CUS000705,Ivan Garcia,ivan.garcia705@example.com,17-25-28,21687571,Birmingham,Current,-2026.72,54
+CUS000706,James Silva,james.silva706@example.com,53-44-67,54180391,Liverpool,Loan,-10076.07,86
+CUS000707,Mei Nguyen,mei.nguyen707@example.com,39-67-42,72469148,Birmingham,Loan,1761.13,40
+CUS000708,Fatima Okafor,fatima.okafor708@example.com,81-64-41,95470954,Glasgow,Credit Card,-6023.33,26
+CUS000709,Olu Kowalski,olu.kowalski709@example.com,46-73-14,15692609,Liverpool,Loan,14453.6,46
+CUS000710,Mei Smith,mei.smith710@example.com,91-79-20,21714298,Bristol,Current,19030.65,7
+CUS000711,Fatima Andersson,fatima.andersson711@example.com,59-12-90,41706110,Birmingham,Loan,10837.38,58
+CUS000712,Hannah Patel,hannah.patel712@example.com,87-65-68,10010341,London,Current,-2126.55,9
+CUS000713,Priya Nguyen,priya.nguyen713@example.com,64-18-59,64650602,Cardiff,Savings,-7541.74,61
+CUS000714,Noah Nguyen,noah.nguyen714@example.com,87-83-83,96021321,Manchester,Current,19938.73,18
+CUS000715,Liam Patel,liam.patel715@example.com,74-35-29,23207028,Cardiff,Current,2464.9,22
+CUS000716,Sofia Ali,sofia.ali716@example.com,46-51-51,67044537,Cardiff,Mortgage,14496.78,34
+CUS000717,Fatima Khan,fatima.khan717@example.com,78-29-33,92979639,Leeds,Loan,10561.6,9
+CUS000718,Noah Ahmed,noah.ahmed718@example.com,51-29-32,36813943,London,Credit Card,2874.52,41
+CUS000719,Priya Silva,priya.silva719@example.com,86-88-23,53184351,Cardiff,Savings,12109.41,52
+CUS000720,Hannah Patel,hannah.patel720@example.com,46-17-46,36250000,Glasgow,Mortgage,10253.02,109
+CUS000721,Liam Nguyen,liam.nguyen721@example.com,23-57-42,10413033,Birmingham,Savings,2511.51,77
+CUS000722,Mary Ali,mary.ali722@example.com,48-85-60,88387051,Bristol,Credit Card,5461.45,55
+CUS000723,Mohammed Silva,mohammed.silva723@example.com,77-28-11,87907391,Glasgow,Loan,961.02,9
+CUS000724,Olu Okafor,olu.okafor724@example.com,81-74-21,84114770,Leeds,Current,9783.52,82
+CUS000725,Priya Khan,priya.khan725@example.com,46-94-88,74003128,London,Savings,15949.79,47
+CUS000726,Fatima Patel,fatima.patel726@example.com,44-35-71,88582068,London,Loan,-4735.92,46
+CUS000727,Mary Ahmed,mary.ahmed727@example.com,66-30-31,96142560,Cardiff,Loan,-345.57,49
+CUS000728,Sofia Ahmed,sofia.ahmed728@example.com,69-56-62,37018368,Bristol,Credit Card,-10374.06,70
+CUS000729,Mei Smith,mei.smith729@example.com,37-61-34,72072950,Leeds,Loan,4535.31,11
+CUS000730,James Ahmed,james.ahmed730@example.com,60-79-43,33763726,Liverpool,Credit Card,7531.07,112
+CUS000731,Olu Nguyen,olu.nguyen731@example.com,47-20-82,87960799,Manchester,Mortgage,19556.97,72
+CUS000732,Mary Chen,mary.chen732@example.com,79-49-43,15155877,Liverpool,Savings,19850.0,37
+CUS000733,Mei Garcia,mei.garcia733@example.com,35-48-26,68962761,Leeds,Savings,3724.47,55
+CUS000734,Fatima Tanaka,fatima.tanaka734@example.com,98-78-59,25983131,Birmingham,Savings,-6360.64,92
+CUS000735,Wei Silva,wei.silva735@example.com,65-15-22,10187052,Bristol,Credit Card,14014.18,3
+CUS000736,Mary Rossi,mary.rossi736@example.com,53-67-96,68550697,Bristol,Loan,6427.63,47
+CUS000737,Carlos Okafor,carlos.okafor737@example.com,36-76-76,26872719,Birmingham,Current,15999.73,91
+CUS000738,Yuki Patel,yuki.patel738@example.com,38-93-39,74538939,Leeds,Savings,12685.43,12
+CUS000739,Fatima Tanaka,fatima.tanaka739@example.com,49-98-24,28507217,Birmingham,Loan,-1055.12,15
+CUS000740,Mohammed Brown,mohammed.brown740@example.com,60-29-85,90201275,Manchester,Current,3764.96,78
+CUS000741,Priya Rossi,priya.rossi741@example.com,14-69-98,99067925,Glasgow,Savings,19376.3,83
+CUS000742,Priya Rossi,priya.rossi742@example.com,38-44-33,39745505,Cardiff,Mortgage,-5037.29,77
+CUS000743,Ivan Smith,ivan.smith743@example.com,37-15-11,90613918,London,Mortgage,-8912.11,77
+CUS000744,Olu Tanaka,olu.tanaka744@example.com,80-88-43,46064221,Bristol,Loan,3737.82,46
+CUS000745,Olu Khan,olu.khan745@example.com,46-47-17,78748088,Birmingham,Current,1467.36,6
+CUS000746,James Silva,james.silva746@example.com,34-98-94,25964660,Glasgow,Savings,12355.7,6
+CUS000747,Aisha Rossi,aisha.rossi747@example.com,69-74-38,89387931,London,Savings,12940.88,35
+CUS000748,Hannah Silva,hannah.silva748@example.com,11-15-38,32939340,Liverpool,Credit Card,5215.57,3
+CUS000749,Priya Garcia,priya.garcia749@example.com,53-78-59,67329278,Birmingham,Loan,13526.31,87
+CUS000750,Mary Kowalski,mary.kowalski750@example.com,18-18-98,14333940,Bristol,Mortgage,8857.67,86
+CUS000751,Liam Tanaka,liam.tanaka751@example.com,49-81-18,50266324,Manchester,Credit Card,17521.51,32
+CUS000752,Yuki Brown,yuki.brown752@example.com,78-90-35,38956894,Birmingham,Current,8315.73,51
+CUS000753,Ivan Nguyen,ivan.nguyen753@example.com,67-64-83,45334492,Cardiff,Current,-6601.25,65
+CUS000754,Olu Nguyen,olu.nguyen754@example.com,86-12-82,18223848,Liverpool,Mortgage,8645.85,55
+CUS000755,Noah Nguyen,noah.nguyen755@example.com,96-27-59,80652879,Leeds,Credit Card,407.31,91
+CUS000756,Liam Khan,liam.khan756@example.com,37-35-98,73957408,Manchester,Loan,-10270.62,75
+CUS000757,Mohammed Patel,mohammed.patel757@example.com,66-73-63,26396039,Manchester,Loan,-3111.94,26
+CUS000758,Noah Rossi,noah.rossi758@example.com,24-69-30,96159829,London,Current,13810.51,58
+CUS000759,Wei Andersson,wei.andersson759@example.com,72-45-91,93728895,Leeds,Savings,5974.42,44
+CUS000760,Mohammed Patel,mohammed.patel760@example.com,51-14-23,17219819,Bristol,Loan,186.74,32
+CUS000761,Noah Okafor,noah.okafor761@example.com,49-66-11,29029597,Birmingham,Credit Card,6104.55,56
+CUS000762,Mohammed Nguyen,mohammed.nguyen762@example.com,88-14-15,65050059,Manchester,Current,15733.62,20
+CUS000763,Mei Ali,mei.ali763@example.com,30-81-29,54613782,Manchester,Mortgage,-11919.0,105
+CUS000764,Fatima Kowalski,fatima.kowalski764@example.com,78-90-75,62282112,Leeds,Loan,12669.54,39
+CUS000765,Noah Tanaka,noah.tanaka765@example.com,13-49-16,23441193,Bristol,Credit Card,1402.0,5
+CUS000766,Liam Chen,liam.chen766@example.com,66-69-85,77188282,Leeds,Current,9443.95,111
+CUS000767,Mei Chen,mei.chen767@example.com,26-96-31,93339873,Leeds,Savings,18224.72,103
+CUS000768,Hannah Smith,hannah.smith768@example.com,64-48-93,35130124,Manchester,Mortgage,6128.05,117
+CUS000769,Priya Kowalski,priya.kowalski769@example.com,45-79-96,48087876,Bristol,Current,1287.23,14
+CUS000770,Priya Tanaka,priya.tanaka770@example.com,63-49-43,71782729,Manchester,Current,5052.78,106
+CUS000771,Priya Garcia,priya.garcia771@example.com,50-45-22,55054389,Birmingham,Credit Card,-4459.23,67
+CUS000772,Ivan Khan,ivan.khan772@example.com,23-90-81,13341035,London,Savings,-2216.57,45
+CUS000773,Yuki Nguyen,yuki.nguyen773@example.com,78-93-57,77056149,Bristol,Current,14375.01,58
+CUS000774,Yuki Ahmed,yuki.ahmed774@example.com,34-69-12,43343926,Bristol,Current,-768.43,48
+CUS000775,Mary Brown,mary.brown775@example.com,75-59-86,27399943,Manchester,Current,11813.43,102
+CUS000776,Liam Ali,liam.ali776@example.com,73-30-58,37977256,Glasgow,Current,335.1,43
+CUS000777,James Okafor,james.okafor777@example.com,72-20-93,71862390,Bristol,Savings,459.04,111
+CUS000778,Priya Andersson,priya.andersson778@example.com,84-38-53,27140771,London,Loan,17241.1,84
+CUS000779,Fatima Andersson,fatima.andersson779@example.com,34-23-18,16884750,Manchester,Mortgage,6107.63,18
+CUS000780,Mary Ahmed,mary.ahmed780@example.com,89-36-49,81227887,Glasgow,Loan,-3404.85,77
+CUS000781,Priya Andersson,priya.andersson781@example.com,97-37-56,98935671,Glasgow,Credit Card,7421.09,43
+CUS000782,James Khan,james.khan782@example.com,64-64-68,89220557,Liverpool,Loan,260.35,24
+CUS000783,Sofia Brown,sofia.brown783@example.com,74-58-43,47426637,Birmingham,Savings,18977.67,27
+CUS000784,Priya Andersson,priya.andersson784@example.com,85-15-14,89855978,Manchester,Current,4424.89,113
+CUS000785,Noah Rossi,noah.rossi785@example.com,34-30-35,31506999,Glasgow,Savings,10166.71,32
+CUS000786,Mohammed Rossi,mohammed.rossi786@example.com,45-34-16,89365966,Leeds,Loan,-4732.63,67
+CUS000787,Fatima Khan,fatima.khan787@example.com,84-43-34,32937011,Liverpool,Current,-17097.01,84
+CUS000788,Hannah Kowalski,hannah.kowalski788@example.com,43-49-31,80603065,Manchester,Mortgage,1587.57,33
+CUS000789,Ivan Khan,ivan.khan789@example.com,52-70-15,98959026,London,Loan,-21521.57,113
+CUS000790,Priya Ahmed,priya.ahmed790@example.com,36-74-76,62121077,Leeds,Mortgage,-9579.23,78
+CUS000791,Wei Silva,wei.silva791@example.com,69-73-68,75281405,Liverpool,Savings,4244.0,78
+CUS000792,Wei Nguyen,wei.nguyen792@example.com,50-41-89,87017719,Bristol,Mortgage,10784.36,16
+CUS000793,Carlos Brown,carlos.brown793@example.com,61-59-23,30166001,Birmingham,Loan,8546.76,104
+CUS000794,Fatima Ahmed,fatima.ahmed794@example.com,13-48-48,85448014,Glasgow,Mortgage,-1445.1,73
+CUS000795,Mohammed Nguyen,mohammed.nguyen795@example.com,47-24-31,59459600,Liverpool,Savings,23562.06,39
+CUS000796,Yuki Kowalski,yuki.kowalski796@example.com,85-98-59,31932014,Bristol,Current,3434.97,26
+CUS000797,Olu Rossi,olu.rossi797@example.com,22-64-23,40845923,Leeds,Loan,-3620.65,62
+CUS000798,Mary Nguyen,mary.nguyen798@example.com,26-70-60,53838291,Cardiff,Credit Card,9501.1,115
+CUS000799,Olu Silva,olu.silva799@example.com,25-95-53,88527208,Liverpool,Savings,20489.52,33
+CUS000800,Aisha Andersson,aisha.andersson800@example.com,31-59-58,93929219,Cardiff,Loan,-10640.77,68
+CUS000801,Liam Tanaka,liam.tanaka801@example.com,38-60-74,61395931,Liverpool,Credit Card,-3362.17,37
+CUS000802,Carlos Smith,carlos.smith802@example.com,23-36-23,72449774,Leeds,Mortgage,-462.26,6
+CUS000803,Fatima Khan,fatima.khan803@example.com,30-33-10,63864600,London,Loan,2380.53,49
+CUS000804,Mohammed Garcia,mohammed.garcia804@example.com,56-85-87,17392708,Cardiff,Loan,19033.55,40
+CUS000805,Hannah Tanaka,hannah.tanaka805@example.com,76-24-27,81590063,Birmingham,Current,5154.88,73
+CUS000806,Olu Rossi,olu.rossi806@example.com,65-45-13,95650392,Leeds,Loan,-8225.63,9
+CUS000807,Noah Chen,noah.chen807@example.com,91-98-95,46418312,Leeds,Mortgage,2968.96,43
+CUS000808,Mohammed Ahmed,mohammed.ahmed808@example.com,57-85-23,50537933,Manchester,Loan,13216.95,102
+CUS000809,Olu Smith,olu.smith809@example.com,45-49-36,85383296,Glasgow,Savings,19838.32,66
+CUS000810,Olu Nguyen,olu.nguyen810@example.com,82-78-30,37255384,Leeds,Savings,-2284.3,35
+CUS000811,Yuki Ahmed,yuki.ahmed811@example.com,85-73-96,21732277,Leeds,Mortgage,3620.83,97
+CUS000812,Sofia Patel,sofia.patel812@example.com,70-51-83,53196829,Birmingham,Mortgage,-612.52,95
+CUS000813,Priya Khan,priya.khan813@example.com,50-38-11,20148649,Bristol,Loan,18544.7,63
+CUS000814,Mei Okafor,mei.okafor814@example.com,82-81-11,28542092,Cardiff,Current,-258.32,13
+CUS000815,Olu Silva,olu.silva815@example.com,61-72-80,28047662,Bristol,Credit Card,80.63,35
+CUS000816,Sofia Rossi,sofia.rossi816@example.com,68-48-10,95412096,Liverpool,Credit Card,13998.91,18
+CUS000817,Liam Tanaka,liam.tanaka817@example.com,28-42-91,78718864,Glasgow,Current,-3951.16,103
+CUS000818,Yuki Garcia,yuki.garcia818@example.com,11-87-35,20729217,London,Mortgage,15877.58,98
+CUS000819,James Brown,james.brown819@example.com,46-54-70,11441459,Bristol,Loan,3673.62,88
+CUS000820,Liam Andersson,liam.andersson820@example.com,94-41-27,51494086,Liverpool,Mortgage,2023.23,27
+CUS000821,Mary Khan,mary.khan821@example.com,50-59-83,51813941,Birmingham,Mortgage,14427.08,117
+CUS000822,Mary Rossi,mary.rossi822@example.com,84-27-41,17493654,Glasgow,Loan,9562.48,19
+CUS000823,Olu Chen,olu.chen823@example.com,56-52-43,49065026,Birmingham,Loan,13239.8,91
+CUS000824,Priya Nguyen,priya.nguyen824@example.com,86-23-69,13198361,Cardiff,Credit Card,6919.64,15
+CUS000825,Wei Kowalski,wei.kowalski825@example.com,79-53-36,75135736,Leeds,Mortgage,5803.66,47
+CUS000826,Mary Chen,mary.chen826@example.com,95-27-42,56765839,Birmingham,Mortgage,131.51,38
+CUS000827,Fatima Smith,fatima.smith827@example.com,88-90-48,80481831,Glasgow,Credit Card,10924.42,19
+CUS000828,Hannah Brown,hannah.brown828@example.com,77-92-58,10372119,Leeds,Loan,12089.24,63
+CUS000829,Wei Rossi,wei.rossi829@example.com,74-17-71,83072638,Manchester,Mortgage,2974.6,97
+CUS000830,Aisha Patel,aisha.patel830@example.com,34-91-15,88618063,Glasgow,Current,824.87,54
+CUS000831,Wei Tanaka,wei.tanaka831@example.com,18-40-72,63512380,Liverpool,Current,6904.77,13
+CUS000832,Carlos Tanaka,carlos.tanaka832@example.com,15-83-41,77403828,Bristol,Loan,23544.58,82
+CUS000833,Aisha Garcia,aisha.garcia833@example.com,52-87-97,51197390,Liverpool,Mortgage,11693.81,71
+CUS000834,Fatima Patel,fatima.patel834@example.com,27-81-65,70168988,Glasgow,Loan,4710.09,24
+CUS000835,Aisha Chen,aisha.chen835@example.com,81-14-43,81227910,Bristol,Credit Card,-3744.47,64
+CUS000836,Liam Nguyen,liam.nguyen836@example.com,25-61-70,24333461,London,Current,-1448.34,31
+CUS000837,Hannah Silva,hannah.silva837@example.com,90-60-43,97408114,Bristol,Mortgage,9438.73,69
+CUS000838,Carlos Khan,carlos.khan838@example.com,27-79-75,33757545,Manchester,Mortgage,17527.38,4
+CUS000839,Fatima Patel,fatima.patel839@example.com,57-89-36,74653292,Manchester,Loan,8459.69,56
+CUS000840,Mohammed Khan,mohammed.khan840@example.com,57-60-85,67122228,London,Credit Card,5585.15,59
+CUS000841,Ivan Ali,ivan.ali841@example.com,84-54-91,22230387,Leeds,Savings,6647.12,92
+CUS000842,Aisha Andersson,aisha.andersson842@example.com,47-78-60,87207342,London,Loan,4263.61,74
+CUS000843,Mohammed Tanaka,mohammed.tanaka843@example.com,53-94-28,91105969,Birmingham,Savings,-63.86,74
+CUS000844,Mohammed Silva,mohammed.silva844@example.com,81-41-53,29519466,Manchester,Mortgage,8421.55,35
+CUS000845,Hannah Ali,hannah.ali845@example.com,89-45-36,37852153,Glasgow,Loan,6551.19,95
+CUS000846,Sofia Rossi,sofia.rossi846@example.com,16-39-97,36772428,Bristol,Credit Card,7233.84,53
+CUS000847,Olu Rossi,olu.rossi847@example.com,41-83-94,76897560,Bristol,Mortgage,7500.63,110
+CUS000848,Hannah Patel,hannah.patel848@example.com,42-49-57,34997747,Liverpool,Credit Card,802.67,79
+CUS000849,Noah Okafor,noah.okafor849@example.com,17-36-71,48727930,Leeds,Current,9994.73,11
+CUS000850,Liam Okafor,liam.okafor850@example.com,37-46-84,31290180,Leeds,Current,16060.75,6
+CUS000851,Liam Tanaka,liam.tanaka851@example.com,71-49-55,42561150,Manchester,Current,10393.4,83
+CUS000852,Mei Garcia,mei.garcia852@example.com,77-30-79,21270779,Bristol,Mortgage,6268.22,57
+CUS000853,James Patel,james.patel853@example.com,55-54-10,57938740,Liverpool,Loan,8317.79,9
+CUS000854,Mary Andersson,mary.andersson854@example.com,88-55-30,79426294,Liverpool,Savings,7438.73,36
+CUS000855,Sofia Tanaka,sofia.tanaka855@example.com,97-64-41,77097101,Cardiff,Current,4934.32,13
+CUS000856,Carlos Okafor,carlos.okafor856@example.com,91-31-75,21806843,Glasgow,Savings,3247.95,4
+CUS000857,James Ahmed,james.ahmed857@example.com,21-39-35,23653606,Birmingham,Credit Card,2362.31,4
+CUS000858,Sofia Garcia,sofia.garcia858@example.com,12-45-14,47206562,Bristol,Mortgage,7366.46,31
+CUS000859,Noah Andersson,noah.andersson859@example.com,68-74-30,16884487,Birmingham,Current,13039.23,66
+CUS000860,Carlos Andersson,carlos.andersson860@example.com,55-13-94,36822306,Birmingham,Loan,6729.54,115
+CUS000861,Ivan Garcia,ivan.garcia861@example.com,28-86-83,43161714,Cardiff,Current,-4625.23,77
+CUS000862,Noah Brown,noah.brown862@example.com,43-83-14,66025743,Birmingham,Loan,-2803.01,81
+CUS000863,Aisha Patel,aisha.patel863@example.com,55-70-18,97677835,Leeds,Savings,4922.22,0
+CUS000864,Mei Tanaka,mei.tanaka864@example.com,77-54-67,65779941,Manchester,Savings,2210.78,40
+CUS000865,Hannah Rossi,hannah.rossi865@example.com,51-15-44,17246148,London,Savings,10026.44,95
+CUS000866,Aisha Rossi,aisha.rossi866@example.com,21-97-34,84936279,Cardiff,Current,8966.32,109
+CUS000867,Mei Ali,mei.ali867@example.com,20-48-88,78503259,London,Loan,-829.12,116
+CUS000868,Sofia Smith,sofia.smith868@example.com,33-38-58,73410317,Leeds,Current,3283.75,69
+CUS000869,Priya Nguyen,priya.nguyen869@example.com,81-44-45,21618374,Glasgow,Loan,-2639.03,10
+CUS000870,James Ali,james.ali870@example.com,47-61-13,80023673,London,Savings,8657.31,103
+CUS000871,Fatima Smith,fatima.smith871@example.com,95-68-31,11608706,Bristol,Loan,-10197.15,70
+CUS000872,Priya Ahmed,priya.ahmed872@example.com,36-83-66,69312096,Manchester,Mortgage,14015.79,103
+CUS000873,Sofia Chen,sofia.chen873@example.com,74-36-46,92961597,London,Current,15584.18,65
+CUS000874,Mohammed Ali,mohammed.ali874@example.com,56-13-26,88982959,London,Savings,-13252.17,43
+CUS000875,Aisha Okafor,aisha.okafor875@example.com,36-39-96,18687117,Manchester,Mortgage,11237.26,6
+CUS000876,Priya Andersson,priya.andersson876@example.com,85-78-56,13553889,Leeds,Loan,14568.07,119
+CUS000877,Noah Silva,noah.silva877@example.com,22-47-10,58505639,Birmingham,Current,5529.62,93
+CUS000878,Carlos Patel,carlos.patel878@example.com,32-20-19,17983140,Leeds,Mortgage,-1652.07,68
+CUS000879,Sofia Brown,sofia.brown879@example.com,13-39-45,59689461,Bristol,Savings,10572.12,44
+CUS000880,Priya Okafor,priya.okafor880@example.com,24-20-47,14771511,Glasgow,Current,-7914.09,79
+CUS000881,Mei Tanaka,mei.tanaka881@example.com,28-11-34,74062823,Glasgow,Mortgage,11986.39,97
+CUS000882,Liam Smith,liam.smith882@example.com,44-66-18,27655275,Birmingham,Loan,4646.35,43
+CUS000883,Yuki Silva,yuki.silva883@example.com,21-71-98,75906822,Cardiff,Credit Card,9064.65,12
+CUS000884,Aisha Rossi,aisha.rossi884@example.com,40-41-55,23463610,Liverpool,Credit Card,18769.91,112
+CUS000885,James Okafor,james.okafor885@example.com,44-43-70,29717165,Birmingham,Mortgage,16106.17,101
+CUS000886,Sofia Khan,sofia.khan886@example.com,31-10-83,93843023,Cardiff,Loan,13157.83,50
+CUS000887,Liam Brown,liam.brown887@example.com,40-73-96,44828383,Birmingham,Credit Card,-1451.91,16
+CUS000888,Wei Garcia,wei.garcia888@example.com,70-19-14,71987797,Cardiff,Mortgage,3379.92,34
+CUS000889,Ivan Smith,ivan.smith889@example.com,44-70-89,14845183,Glasgow,Mortgage,9568.34,20
+CUS000890,Mei Kowalski,mei.kowalski890@example.com,77-66-71,53133972,London,Savings,5690.9,38
+CUS000891,Sofia Chen,sofia.chen891@example.com,38-54-95,85780024,London,Savings,-115.89,73
+CUS000892,Mohammed Garcia,mohammed.garcia892@example.com,69-83-77,51601920,London,Loan,13773.67,79
+CUS000893,Liam Kowalski,liam.kowalski893@example.com,53-81-95,41408000,Liverpool,Mortgage,10747.56,29
+CUS000894,Mary Smith,mary.smith894@example.com,70-79-64,53510711,Glasgow,Savings,12619.87,18
+CUS000895,Liam Rossi,liam.rossi895@example.com,38-86-42,58806479,Cardiff,Credit Card,11186.75,93
+CUS000896,Wei Patel,wei.patel896@example.com,59-90-50,75072153,Glasgow,Current,3926.34,89
+CUS000897,Yuki Andersson,yuki.andersson897@example.com,71-81-64,34321519,Birmingham,Savings,8576.63,25
+CUS000898,Priya Patel,priya.patel898@example.com,91-49-71,60200079,Glasgow,Savings,13117.55,106
+CUS000899,Ivan Chen,ivan.chen899@example.com,82-68-75,81914071,Birmingham,Current,2042.48,13
+CUS000900,Wei Garcia,wei.garcia900@example.com,63-80-31,78363664,London,Current,-2208.69,45
+CUS000901,Olu Silva,olu.silva901@example.com,47-10-90,20021080,Cardiff,Savings,-3471.48,70
+CUS000902,Ivan Chen,ivan.chen902@example.com,91-70-21,56212601,London,Savings,3942.7,23
+CUS000903,Fatima Nguyen,fatima.nguyen903@example.com,14-49-40,98654406,Cardiff,Savings,8074.57,31
+CUS000904,Ivan Kowalski,ivan.kowalski904@example.com,13-56-69,23443053,Cardiff,Mortgage,14288.33,93
+CUS000905,Liam Nguyen,liam.nguyen905@example.com,90-77-70,93112704,Glasgow,Current,10553.91,2
+CUS000906,Noah Ali,noah.ali906@example.com,81-69-21,98730137,London,Credit Card,10109.03,102
+CUS000907,Priya Smith,priya.smith907@example.com,82-77-51,59108551,Birmingham,Loan,606.88,83
+CUS000908,Liam Tanaka,liam.tanaka908@example.com,65-75-84,58179926,Cardiff,Savings,509.04,39
+CUS000909,Mei Ahmed,mei.ahmed909@example.com,79-73-14,93982834,London,Loan,10383.73,37
+CUS000910,Carlos Patel,carlos.patel910@example.com,95-90-53,51889780,Cardiff,Credit Card,-8519.13,62
+CUS000911,Carlos Nguyen,carlos.nguyen911@example.com,10-80-37,12786790,London,Loan,-6052.42,7
+CUS000912,James Patel,james.patel912@example.com,80-17-31,89575603,Birmingham,Loan,1324.14,16
+CUS000913,Mei Patel,mei.patel913@example.com,35-22-62,49001285,Leeds,Loan,7191.91,96
+CUS000914,Fatima Okafor,fatima.okafor914@example.com,12-31-32,58559473,Leeds,Savings,11075.23,23
+CUS000915,Hannah Andersson,hannah.andersson915@example.com,12-51-18,72216857,Glasgow,Credit Card,-3613.77,34
+CUS000916,Mary Andersson,mary.andersson916@example.com,72-62-63,48051369,Glasgow,Loan,1559.93,70
+CUS000917,Sofia Tanaka,sofia.tanaka917@example.com,51-30-14,69418913,Manchester,Current,1747.25,75
+CUS000918,Ivan Garcia,ivan.garcia918@example.com,61-96-80,19195321,Birmingham,Mortgage,-11490.19,54
+CUS000919,Liam Garcia,liam.garcia919@example.com,76-65-39,62528777,London,Loan,-257.73,114
+CUS000920,Fatima Khan,fatima.khan920@example.com,40-18-39,22311126,Bristol,Current,23512.49,25
+CUS000921,Mary Brown,mary.brown921@example.com,32-78-95,24305136,Cardiff,Current,-126.03,79
+CUS000922,Priya Okafor,priya.okafor922@example.com,38-44-57,20297844,Bristol,Savings,13157.86,25
+CUS000923,Mary Tanaka,mary.tanaka923@example.com,70-65-53,61329081,Birmingham,Savings,6266.3,19
+CUS000924,Hannah Nguyen,hannah.nguyen924@example.com,15-14-89,98999315,Birmingham,Current,-2320.59,36
+CUS000925,Ivan Chen,ivan.chen925@example.com,54-50-70,89152983,London,Loan,-1003.5,11
+CUS000926,Hannah Okafor,hannah.okafor926@example.com,60-38-81,32865136,Bristol,Current,4146.96,119
+CUS000927,Noah Patel,noah.patel927@example.com,91-88-49,15421288,Manchester,Current,3685.18,73
+CUS000928,Hannah Ahmed,hannah.ahmed928@example.com,30-38-63,67558132,Cardiff,Current,5186.68,108
+CUS000929,Mohammed Ali,mohammed.ali929@example.com,18-21-86,57791741,Birmingham,Credit Card,8937.87,17
+CUS000930,Noah Ali,noah.ali930@example.com,64-41-23,99646512,Birmingham,Savings,3418.85,117
+CUS000931,Priya Okafor,priya.okafor931@example.com,41-10-31,87321332,Leeds,Savings,-8878.99,23
+CUS000932,Hannah Rossi,hannah.rossi932@example.com,52-82-96,56669536,Liverpool,Credit Card,-2797.75,80
+CUS000933,Mohammed Andersson,mohammed.andersson933@example.com,72-58-30,63581800,Bristol,Loan,-5153.6,0
+CUS000934,Mohammed Nguyen,mohammed.nguyen934@example.com,82-70-76,35648436,Bristol,Loan,11855.37,95
+CUS000935,Wei Rossi,wei.rossi935@example.com,60-44-18,15662036,Glasgow,Current,4429.11,32
+CUS000936,Wei Garcia,wei.garcia936@example.com,12-74-69,97728959,Manchester,Savings,8596.99,56
+CUS000937,Noah Garcia,noah.garcia937@example.com,66-39-81,26387571,Manchester,Current,17178.96,84
+CUS000938,Fatima Smith,fatima.smith938@example.com,76-33-89,50989970,Bristol,Credit Card,-819.92,5
+CUS000939,Yuki Smith,yuki.smith939@example.com,14-51-96,10368346,Leeds,Loan,-332.51,67
+CUS000940,Mohammed Smith,mohammed.smith940@example.com,32-85-88,15894649,Birmingham,Credit Card,551.53,29
+CUS000941,Sofia Patel,sofia.patel941@example.com,87-63-66,43392995,Liverpool,Credit Card,1392.66,76
+CUS000942,Priya Chen,priya.chen942@example.com,26-54-89,78327339,London,Loan,-13046.11,32
+CUS000943,Hannah Tanaka,hannah.tanaka943@example.com,78-12-25,77825718,Leeds,Loan,-11165.17,31
+CUS000944,Olu Okafor,olu.okafor944@example.com,73-77-91,34891668,Manchester,Savings,7334.4,58
+CUS000945,Wei Nguyen,wei.nguyen945@example.com,96-22-10,72867066,London,Loan,-6226.0,48
+CUS000946,Priya Garcia,priya.garcia946@example.com,28-90-13,83345954,Bristol,Credit Card,3409.01,26
+CUS000947,Olu Kowalski,olu.kowalski947@example.com,78-85-32,93046760,Manchester,Loan,-72.89,52
+CUS000948,Mary Tanaka,mary.tanaka948@example.com,21-16-77,10637577,Leeds,Current,2404.38,5
+CUS000949,Ivan Khan,ivan.khan949@example.com,82-14-80,98734749,London,Loan,7536.57,58
+CUS000950,Aisha Patel,aisha.patel950@example.com,74-96-54,53085836,London,Savings,5919.35,112
+CUS000951,Ivan Khan,ivan.khan951@example.com,16-31-79,70169196,London,Current,4337.73,98
+CUS000952,Ivan Khan,ivan.khan952@example.com,50-41-30,84174133,Cardiff,Current,11478.39,50
+CUS000953,Carlos Smith,carlos.smith953@example.com,45-19-44,72662251,Cardiff,Savings,14340.94,116
+CUS000954,Fatima Okafor,fatima.okafor954@example.com,50-39-47,67867265,Leeds,Credit Card,22148.21,28
+CUS000955,Yuki Nguyen,yuki.nguyen955@example.com,40-40-51,61841153,Manchester,Current,14760.48,43
+CUS000956,James Okafor,james.okafor956@example.com,92-79-28,92417065,Glasgow,Loan,6999.03,79
+CUS000957,Mary Chen,mary.chen957@example.com,51-11-88,55252903,Birmingham,Loan,-1031.4,22
+CUS000958,Yuki Andersson,yuki.andersson958@example.com,93-54-54,39544811,Bristol,Savings,2264.97,15
+CUS000959,Noah Ahmed,noah.ahmed959@example.com,40-75-27,20742776,Glasgow,Savings,6644.79,54
+CUS000960,Ivan Okafor,ivan.okafor960@example.com,35-75-59,86194201,London,Savings,2720.01,13
+CUS000961,Noah Okafor,noah.okafor961@example.com,51-69-23,66295694,Manchester,Current,-1231.51,4
+CUS000962,Aisha Brown,aisha.brown962@example.com,16-83-91,64081149,Birmingham,Credit Card,-1678.79,102
+CUS000963,Fatima Okafor,fatima.okafor963@example.com,52-78-18,66956348,Bristol,Credit Card,16550.63,103
+CUS000964,Mei Patel,mei.patel964@example.com,81-30-58,30888405,Glasgow,Savings,10468.58,4
+CUS000965,Hannah Tanaka,hannah.tanaka965@example.com,92-91-20,83585752,Liverpool,Credit Card,-4955.47,61
+CUS000966,Hannah Andersson,hannah.andersson966@example.com,53-45-18,82437061,Birmingham,Credit Card,12004.96,71
+CUS000967,Mei Garcia,mei.garcia967@example.com,74-70-32,83472060,Cardiff,Credit Card,4300.23,43
+CUS000968,Carlos Smith,carlos.smith968@example.com,79-12-98,64377935,Leeds,Loan,4719.3,92
+CUS000969,Ivan Nguyen,ivan.nguyen969@example.com,24-95-64,26477738,Leeds,Savings,-9704.45,28
+CUS000970,Mohammed Tanaka,mohammed.tanaka970@example.com,88-12-25,19460187,Leeds,Credit Card,-7273.94,57
+CUS000971,Yuki Tanaka,yuki.tanaka971@example.com,39-21-25,55499061,Manchester,Credit Card,-3294.72,108
+CUS000972,Sofia Silva,sofia.silva972@example.com,43-41-70,66291114,Manchester,Current,11786.8,73
+CUS000973,Yuki Okafor,yuki.okafor973@example.com,24-51-17,77815487,Leeds,Mortgage,5397.61,49
+CUS000974,Yuki Tanaka,yuki.tanaka974@example.com,86-34-39,17642722,Birmingham,Current,370.3,36
+CUS000975,Aisha Nguyen,aisha.nguyen975@example.com,53-77-29,31128210,Leeds,Credit Card,-3005.68,7
+CUS000976,Wei Patel,wei.patel976@example.com,62-94-45,89372722,Glasgow,Savings,5666.26,34
+CUS000977,Ivan Chen,ivan.chen977@example.com,91-19-83,73704299,Liverpool,Current,11160.91,69
+CUS000978,Hannah Brown,hannah.brown978@example.com,21-40-58,59938837,Cardiff,Loan,-4445.09,92
+CUS000979,Mei Ahmed,mei.ahmed979@example.com,30-68-43,89452774,Glasgow,Savings,17195.48,117
+CUS000980,James Tanaka,james.tanaka980@example.com,58-62-21,47230538,Leeds,Credit Card,-4901.41,103
+CUS000981,Noah Khan,noah.khan981@example.com,68-66-59,81500303,London,Current,11908.25,65
+CUS000982,Wei Tanaka,wei.tanaka982@example.com,11-47-70,81521888,Manchester,Current,23370.54,115
+CUS000983,Priya Andersson,priya.andersson983@example.com,66-13-36,47700825,Leeds,Loan,-791.9,67
+CUS000984,Mary Tanaka,mary.tanaka984@example.com,46-91-73,56374509,Birmingham,Current,13812.11,17
+CUS000985,Mohammed Brown,mohammed.brown985@example.com,49-58-65,73040000,Leeds,Current,8759.4,79
+CUS000986,Wei Rossi,wei.rossi986@example.com,33-80-94,13824034,London,Current,463.56,108
+CUS000987,Fatima Kowalski,fatima.kowalski987@example.com,87-66-37,45578053,Leeds,Mortgage,-5887.54,114
+CUS000988,Yuki Brown,yuki.brown988@example.com,40-68-88,72527061,Leeds,Credit Card,-8321.32,68
+CUS000989,Noah Tanaka,noah.tanaka989@example.com,63-71-89,85559828,Cardiff,Credit Card,-3777.78,108
+CUS000990,Carlos Ali,carlos.ali990@example.com,14-30-64,35552279,Leeds,Current,6509.24,7
+CUS000991,Ivan Ali,ivan.ali991@example.com,86-13-65,79590799,Manchester,Mortgage,3686.2,24
+CUS000992,Wei Chen,wei.chen992@example.com,56-67-30,26667016,Leeds,Savings,-6434.76,26
+CUS000993,Fatima Smith,fatima.smith993@example.com,51-23-57,49803406,Birmingham,Credit Card,419.49,41
+CUS000994,Mei Patel,mei.patel994@example.com,46-35-17,36214831,Manchester,Mortgage,-2935.96,25
+CUS000995,Sofia Ali,sofia.ali995@example.com,49-94-30,97412057,Manchester,Credit Card,13087.02,4
+CUS000996,Aisha Khan,aisha.khan996@example.com,17-79-36,19689947,Birmingham,Loan,14806.5,7
+CUS000997,Hannah Silva,hannah.silva997@example.com,59-78-46,87368626,Bristol,Savings,7109.59,38
+CUS000998,Aisha Kowalski,aisha.kowalski998@example.com,91-94-61,75969120,Cardiff,Loan,10039.77,90
+CUS000999,Wei Rossi,wei.rossi999@example.com,50-64-55,59661687,London,Mortgage,10808.33,117
+CUS001000,James Silva,james.silva1000@example.com,15-44-16,10885297,Cardiff,Mortgage,8559.14,113
+CUS001001,Mohammed Kowalski,mohammed.kowalski1001@example.com,20-53-84,81117102,Birmingham,Mortgage,-10444.27,116
+CUS001002,Yuki Andersson,yuki.andersson1002@example.com,37-89-56,97789705,Manchester,Mortgage,18789.64,114
+CUS001003,Ivan Tanaka,ivan.tanaka1003@example.com,48-73-35,82456276,Birmingham,Credit Card,6139.0,15
+CUS001004,Yuki Kowalski,yuki.kowalski1004@example.com,89-23-14,40070296,Birmingham,Loan,-1005.56,10
+CUS001005,Mei Brown,mei.brown1005@example.com,77-31-20,14746810,Cardiff,Credit Card,12480.66,86
+CUS001006,Mohammed Khan,mohammed.khan1006@example.com,85-70-84,48451480,Bristol,Mortgage,355.78,58
+CUS001007,Yuki Nguyen,yuki.nguyen1007@example.com,10-72-72,61736135,Leeds,Loan,1949.49,115
+CUS001008,Olu Rossi,olu.rossi1008@example.com,81-63-10,60899527,Birmingham,Loan,14856.35,28
+CUS001009,Ivan Okafor,ivan.okafor1009@example.com,16-43-21,85985080,Cardiff,Savings,8738.4,90
+CUS001010,James Ali,james.ali1010@example.com,18-44-78,16696186,Glasgow,Current,5884.75,119
+CUS001011,Aisha Ahmed,aisha.ahmed1011@example.com,30-65-48,33920339,Leeds,Current,16902.2,117
+CUS001012,Olu Nguyen,olu.nguyen1012@example.com,39-48-92,53325351,Bristol,Current,-6856.75,83
+CUS001013,Aisha Ali,aisha.ali1013@example.com,22-47-65,12530392,Manchester,Loan,9310.05,21
+CUS001014,Olu Rossi,olu.rossi1014@example.com,57-46-71,93031209,Liverpool,Current,-84.24,4
+CUS001015,Priya Okafor,priya.okafor1015@example.com,33-22-81,57636334,Manchester,Loan,14084.56,55
+CUS001016,Priya Nguyen,priya.nguyen1016@example.com,42-49-57,94121773,Cardiff,Credit Card,7370.39,18
+CUS001017,Yuki Okafor,yuki.okafor1017@example.com,26-23-25,97038918,Bristol,Current,-4388.95,23
+CUS001018,Olu Silva,olu.silva1018@example.com,60-27-88,80448984,Manchester,Savings,19187.3,65
+CUS001019,Ivan Nguyen,ivan.nguyen1019@example.com,96-93-11,91930256,Bristol,Mortgage,1223.67,44
+CUS001020,Hannah Brown,hannah.brown1020@example.com,28-80-16,10807496,Manchester,Credit Card,-4355.43,45
+CUS001021,Mohammed Ahmed,mohammed.ahmed1021@example.com,54-77-32,18342630,Cardiff,Current,10857.56,49
+CUS001022,Liam Nguyen,liam.nguyen1022@example.com,89-81-69,24319490,Liverpool,Credit Card,4389.14,117
+CUS001023,Sofia Ahmed,sofia.ahmed1023@example.com,19-30-77,98506066,London,Credit Card,15749.93,96
+CUS001024,Wei Andersson,wei.andersson1024@example.com,46-74-57,92537122,London,Current,4267.98,16
+CUS001025,Carlos Okafor,carlos.okafor1025@example.com,68-80-58,89962065,Leeds,Mortgage,-17338.37,29
+CUS001026,James Ali,james.ali1026@example.com,24-64-25,80778955,Birmingham,Loan,13190.81,55
+CUS001027,Mohammed Tanaka,mohammed.tanaka1027@example.com,86-38-59,64457861,London,Mortgage,8163.16,18
+CUS001028,Mohammed Brown,mohammed.brown1028@example.com,71-85-45,11714248,Cardiff,Current,5036.89,93
+CUS001029,Yuki Ahmed,yuki.ahmed1029@example.com,34-26-61,81171380,Glasgow,Loan,9212.47,15
+CUS001030,Aisha Garcia,aisha.garcia1030@example.com,67-12-14,81008361,Liverpool,Loan,3651.9,5
+CUS001031,Carlos Patel,carlos.patel1031@example.com,29-93-27,87738911,Leeds,Current,9654.47,14
+CUS001032,Wei Ahmed,wei.ahmed1032@example.com,82-66-87,80692934,Leeds,Credit Card,11508.41,117
+CUS001033,James Okafor,james.okafor1033@example.com,87-33-67,90709034,Liverpool,Mortgage,-2650.46,52
+CUS001034,Hannah Silva,hannah.silva1034@example.com,72-15-31,63240595,Manchester,Current,11420.22,98
+CUS001035,Carlos Garcia,carlos.garcia1035@example.com,46-81-60,70149331,Cardiff,Mortgage,2204.73,13
+CUS001036,Carlos Rossi,carlos.rossi1036@example.com,36-50-95,10281385,London,Credit Card,7863.42,47
+CUS001037,James Tanaka,james.tanaka1037@example.com,49-53-98,46565010,Leeds,Loan,-7619.49,66
+CUS001038,Mei Ahmed,mei.ahmed1038@example.com,27-17-27,41226959,London,Loan,-3941.67,17
+CUS001039,Aisha Kowalski,aisha.kowalski1039@example.com,90-50-75,76597418,Glasgow,Credit Card,17460.14,13
+CUS001040,Priya Silva,priya.silva1040@example.com,73-37-90,10176536,Bristol,Credit Card,11686.83,46
+CUS001041,Olu Tanaka,olu.tanaka1041@example.com,12-91-98,30859977,Bristol,Credit Card,-15040.42,47
+CUS001042,Priya Nguyen,priya.nguyen1042@example.com,14-30-63,72747711,Liverpool,Savings,5376.12,51
+CUS001043,Carlos Khan,carlos.khan1043@example.com,33-54-57,70126493,Glasgow,Current,11597.42,63
+CUS001044,Aisha Brown,aisha.brown1044@example.com,80-33-43,67471629,Leeds,Savings,-3270.03,37
+CUS001045,Mohammed Kowalski,mohammed.kowalski1045@example.com,15-45-95,43691422,Cardiff,Mortgage,12677.89,93
+CUS001046,Aisha Patel,aisha.patel1046@example.com,52-42-94,38253380,Birmingham,Mortgage,1014.25,74
+CUS001047,Liam Rossi,liam.rossi1047@example.com,80-48-90,33105159,Bristol,Current,14041.64,98
+CUS001048,Mei Ahmed,mei.ahmed1048@example.com,15-94-63,33568789,London,Mortgage,-6908.66,17
+CUS001049,Sofia Tanaka,sofia.tanaka1049@example.com,26-65-72,69878034,London,Loan,-33.98,89
+CUS001050,Noah Brown,noah.brown1050@example.com,79-52-90,81575242,London,Savings,-5754.65,96
+CUS001051,Mary Ali,mary.ali1051@example.com,36-47-15,93496883,Liverpool,Savings,-8638.48,76
+CUS001052,Priya Brown,priya.brown1052@example.com,96-46-32,23431549,Manchester,Loan,9794.8,54
+CUS001053,Mohammed Andersson,mohammed.andersson1053@example.com,81-69-94,18454789,London,Current,3318.05,84
+CUS001054,Priya Tanaka,priya.tanaka1054@example.com,32-95-32,37396347,Bristol,Loan,-9155.13,34
+CUS001055,Fatima Smith,fatima.smith1055@example.com,77-23-35,47597731,Glasgow,Credit Card,13515.68,117
+CUS001056,Hannah Brown,hannah.brown1056@example.com,27-90-29,76812572,Birmingham,Credit Card,6848.98,101
+CUS001057,Mei Okafor,mei.okafor1057@example.com,40-44-38,83626628,Liverpool,Credit Card,-1258.02,55
+CUS001058,James Chen,james.chen1058@example.com,87-39-94,63021438,Liverpool,Savings,3758.0,100
+CUS001059,Carlos Nguyen,carlos.nguyen1059@example.com,43-85-77,88771720,London,Mortgage,-4868.04,37
+CUS001060,Wei Okafor,wei.okafor1060@example.com,71-33-36,79931894,Birmingham,Savings,9221.8,107
+CUS001061,James Andersson,james.andersson1061@example.com,87-62-50,20704162,Leeds,Loan,242.88,76
+CUS001062,Priya Ahmed,priya.ahmed1062@example.com,38-67-62,91360004,Manchester,Credit Card,12901.15,102
+CUS001063,Priya Silva,priya.silva1063@example.com,69-70-81,35020244,Liverpool,Credit Card,-1791.19,69
+CUS001064,Wei Nguyen,wei.nguyen1064@example.com,87-49-52,35576039,Bristol,Loan,20801.1,114
+CUS001065,Liam Smith,liam.smith1065@example.com,61-27-98,51877828,London,Savings,10256.53,51
+CUS001066,Noah Brown,noah.brown1066@example.com,13-47-62,18359002,Liverpool,Current,7910.51,33
+CUS001067,James Ali,james.ali1067@example.com,53-15-12,71656088,Leeds,Current,2575.27,88
+CUS001068,Liam Tanaka,liam.tanaka1068@example.com,90-31-85,42917313,Leeds,Current,1494.21,39
+CUS001069,Liam Ali,liam.ali1069@example.com,76-35-63,95827270,Leeds,Mortgage,1322.23,39
+CUS001070,Hannah Khan,hannah.khan1070@example.com,49-55-41,79349504,Bristol,Savings,-13326.83,31
+CUS001071,James Chen,james.chen1071@example.com,71-57-14,30048345,Glasgow,Mortgage,-1729.5,2
+CUS001072,Carlos Andersson,carlos.andersson1072@example.com,42-54-85,27751991,Glasgow,Mortgage,15005.57,45
+CUS001073,Noah Patel,noah.patel1073@example.com,58-19-52,41741149,Manchester,Current,-1155.53,29
+CUS001074,Yuki Okafor,yuki.okafor1074@example.com,97-69-19,80052248,Manchester,Mortgage,8173.41,75
+CUS001075,Yuki Chen,yuki.chen1075@example.com,36-34-13,65612708,Bristol,Savings,4634.25,41
+CUS001076,Fatima Ali,fatima.ali1076@example.com,35-65-68,61088016,Cardiff,Mortgage,19099.88,55
+CUS001077,Yuki Nguyen,yuki.nguyen1077@example.com,45-87-10,72162971,Liverpool,Credit Card,-21.34,98
+CUS001078,Priya Nguyen,priya.nguyen1078@example.com,84-21-65,28815932,Bristol,Savings,-2578.09,82
+CUS001079,Priya Rossi,priya.rossi1079@example.com,47-44-37,75027557,Cardiff,Mortgage,260.97,23
+CUS001080,Yuki Brown,yuki.brown1080@example.com,33-80-41,46120807,Glasgow,Current,13435.86,116
+CUS001081,Yuki Smith,yuki.smith1081@example.com,20-88-76,90033682,Manchester,Savings,7515.0,38
+CUS001082,Olu Nguyen,olu.nguyen1082@example.com,26-40-27,35206843,London,Mortgage,9925.71,22
+CUS001083,Mohammed Nguyen,mohammed.nguyen1083@example.com,10-76-59,91740416,Birmingham,Loan,4145.64,29
+CUS001084,Aisha Andersson,aisha.andersson1084@example.com,41-33-10,61309061,Liverpool,Current,-3137.27,9
+CUS001085,Fatima Rossi,fatima.rossi1085@example.com,34-14-62,64573335,Cardiff,Current,-2440.6,40
+CUS001086,Aisha Silva,aisha.silva1086@example.com,89-96-18,78181380,Cardiff,Current,26821.58,77
+CUS001087,Mei Nguyen,mei.nguyen1087@example.com,46-15-75,17429070,London,Loan,315.42,65
+CUS001088,Mary Chen,mary.chen1088@example.com,43-83-79,32008754,Birmingham,Mortgage,-6783.49,29
+CUS001089,Sofia Nguyen,sofia.nguyen1089@example.com,59-42-29,49608166,Liverpool,Mortgage,307.67,40
+CUS001090,Sofia Ali,sofia.ali1090@example.com,39-25-37,99682725,Cardiff,Savings,10734.53,76
+CUS001091,Noah Tanaka,noah.tanaka1091@example.com,54-47-66,28872757,Cardiff,Current,7779.48,109
+CUS001092,Yuki Andersson,yuki.andersson1092@example.com,10-86-23,71723101,Manchester,Mortgage,13914.14,8
+CUS001093,Noah Okafor,noah.okafor1093@example.com,73-70-15,93901514,Leeds,Credit Card,30074.8,5
+CUS001094,Sofia Ahmed,sofia.ahmed1094@example.com,73-33-78,77328269,Birmingham,Mortgage,10033.38,48
+CUS001095,Yuki Silva,yuki.silva1095@example.com,47-50-50,78203560,Cardiff,Loan,13916.62,64
+CUS001096,Noah Okafor,noah.okafor1096@example.com,77-42-82,71206797,Glasgow,Savings,4535.89,76
+CUS001097,Hannah Garcia,hannah.garcia1097@example.com,15-75-76,89843244,Bristol,Loan,4251.96,9
+CUS001098,James Brown,james.brown1098@example.com,38-53-89,44623276,Cardiff,Loan,7857.6,35
+CUS001099,Wei Ahmed,wei.ahmed1099@example.com,96-79-33,26889627,Birmingham,Loan,14777.97,70
+CUS001100,James Patel,james.patel1100@example.com,36-19-32,72910382,London,Savings,8479.04,33
+CUS001101,Olu Patel,olu.patel1101@example.com,44-42-85,45562208,Liverpool,Credit Card,12024.14,57
+CUS001102,Fatima Tanaka,fatima.tanaka1102@example.com,27-48-28,12154290,Liverpool,Credit Card,-6359.28,74
+CUS001103,Sofia Kowalski,sofia.kowalski1103@example.com,71-21-70,24098722,Bristol,Current,9797.29,69
+CUS001104,Mary Okafor,mary.okafor1104@example.com,21-44-74,33789458,Leeds,Credit Card,5736.36,42
+CUS001105,Hannah Smith,hannah.smith1105@example.com,58-68-73,44228264,Liverpool,Credit Card,-8385.51,27
+CUS001106,Ivan Ahmed,ivan.ahmed1106@example.com,44-31-74,12547235,Glasgow,Current,5738.97,72
+CUS001107,Fatima Rossi,fatima.rossi1107@example.com,47-16-72,44045875,Cardiff,Credit Card,-6685.21,102
+CUS001108,Liam Khan,liam.khan1108@example.com,68-49-47,27357809,Cardiff,Savings,5260.71,13
+CUS001109,Aisha Silva,aisha.silva1109@example.com,74-55-12,79400942,Liverpool,Savings,6723.57,101
+CUS001110,James Chen,james.chen1110@example.com,42-81-32,27292848,Birmingham,Mortgage,-4094.06,39
+CUS001111,Wei Nguyen,wei.nguyen1111@example.com,97-71-50,36851094,Leeds,Current,7255.49,94
+CUS001112,James Nguyen,james.nguyen1112@example.com,97-63-42,67999125,Liverpool,Savings,5974.79,52
+CUS001113,Ivan Andersson,ivan.andersson1113@example.com,64-20-75,97994361,Manchester,Mortgage,16760.47,16
+CUS001114,Olu Garcia,olu.garcia1114@example.com,14-88-20,91930222,Glasgow,Credit Card,-913.25,78
+CUS001115,Mohammed Khan,mohammed.khan1115@example.com,33-47-71,54985251,London,Credit Card,7438.15,61
+CUS001116,Mohammed Tanaka,mohammed.tanaka1116@example.com,86-41-96,10663653,Manchester,Savings,11220.84,9
+CUS001117,Wei Silva,wei.silva1117@example.com,73-83-64,15953257,Cardiff,Credit Card,5413.64,52
+CUS001118,Noah Nguyen,noah.nguyen1118@example.com,63-43-18,46418054,Leeds,Mortgage,16062.58,97
+CUS001119,Yuki Okafor,yuki.okafor1119@example.com,84-26-91,27484128,Leeds,Credit Card,7327.99,103
+CUS001120,Mary Okafor,mary.okafor1120@example.com,86-93-13,49981215,London,Loan,8828.31,110
+CUS001121,Carlos Smith,carlos.smith1121@example.com,46-91-26,61247864,Leeds,Loan,4528.14,63
+CUS001122,James Ahmed,james.ahmed1122@example.com,88-54-87,60154398,London,Savings,-7540.82,18
+CUS001123,Liam Tanaka,liam.tanaka1123@example.com,90-44-38,36488171,London,Savings,-4614.86,96
+CUS001124,Ivan Okafor,ivan.okafor1124@example.com,22-15-71,52960962,Birmingham,Savings,7767.1,92
+CUS001125,Mary Silva,mary.silva1125@example.com,40-60-59,56408661,Birmingham,Loan,1990.32,101
+CUS001126,Mohammed Okafor,mohammed.okafor1126@example.com,34-19-31,62235392,London,Credit Card,7568.92,16
+CUS001127,Mei Smith,mei.smith1127@example.com,13-39-45,49905918,Liverpool,Savings,561.59,77
+CUS001128,Noah Brown,noah.brown1128@example.com,28-31-86,75930825,Cardiff,Savings,5247.89,116
+CUS001129,Wei Khan,wei.khan1129@example.com,61-68-67,11394869,Liverpool,Savings,14168.99,11
+CUS001130,Carlos Chen,carlos.chen1130@example.com,43-93-63,55486520,Liverpool,Credit Card,2113.01,84
+CUS001131,Liam Silva,liam.silva1131@example.com,63-69-51,50742846,Birmingham,Savings,19324.36,80
+CUS001132,Yuki Andersson,yuki.andersson1132@example.com,50-97-77,38175704,Manchester,Mortgage,12171.3,105
+CUS001133,Mary Garcia,mary.garcia1133@example.com,39-70-42,90971076,Liverpool,Mortgage,1034.08,114
+CUS001134,Mei Patel,mei.patel1134@example.com,31-72-35,97625699,Cardiff,Loan,-11.89,112
+CUS001135,Ivan Chen,ivan.chen1135@example.com,88-44-44,57017701,Bristol,Mortgage,8449.05,109
+CUS001136,Aisha Nguyen,aisha.nguyen1136@example.com,79-77-11,73959507,London,Savings,11937.87,87
+CUS001137,Mei Ahmed,mei.ahmed1137@example.com,63-77-50,26181639,Liverpool,Credit Card,9507.51,100
+CUS001138,Ivan Patel,ivan.patel1138@example.com,22-76-63,45085830,Bristol,Savings,-10.21,36
+CUS001139,Priya Ali,priya.ali1139@example.com,95-66-42,11087558,Glasgow,Savings,4772.2,106
+CUS001140,Liam Ahmed,liam.ahmed1140@example.com,32-49-87,69045080,Bristol,Credit Card,11452.17,74
+CUS001141,Wei Kowalski,wei.kowalski1141@example.com,28-86-24,18292796,Liverpool,Loan,2068.36,117
+CUS001142,Mary Smith,mary.smith1142@example.com,68-40-87,41856888,London,Loan,12657.05,12
+CUS001143,James Nguyen,james.nguyen1143@example.com,59-23-18,12995499,Manchester,Savings,-645.88,115
+CUS001144,Carlos Brown,carlos.brown1144@example.com,90-23-11,96749917,Leeds,Credit Card,257.8,119
+CUS001145,Wei Chen,wei.chen1145@example.com,57-66-22,96088145,Bristol,Credit Card,8084.17,45
+CUS001146,James Rossi,james.rossi1146@example.com,82-11-32,92130125,Manchester,Loan,8173.09,80
+CUS001147,Mary Smith,mary.smith1147@example.com,57-54-91,14612777,Cardiff,Loan,12977.2,47
+CUS001148,Sofia Rossi,sofia.rossi1148@example.com,39-12-64,54748983,Cardiff,Savings,-3252.22,65
+CUS001149,Mei Tanaka,mei.tanaka1149@example.com,81-10-16,55284488,Cardiff,Credit Card,6594.82,33
+CUS001150,Mei Okafor,mei.okafor1150@example.com,23-55-87,46026762,Cardiff,Loan,-4929.75,76
+CUS001151,Noah Silva,noah.silva1151@example.com,20-28-98,98730896,Glasgow,Mortgage,15380.12,77
+CUS001152,Liam Patel,liam.patel1152@example.com,88-33-29,33358127,Manchester,Mortgage,6031.17,109
+CUS001153,James Okafor,james.okafor1153@example.com,42-49-83,45207738,Glasgow,Savings,-6781.85,39
+CUS001154,Mei Rossi,mei.rossi1154@example.com,93-72-42,28261698,Liverpool,Mortgage,3636.76,40
+CUS001155,Carlos Andersson,carlos.andersson1155@example.com,71-79-26,43724728,London,Savings,12171.26,118
+CUS001156,Mohammed Rossi,mohammed.rossi1156@example.com,21-29-17,82093188,Cardiff,Loan,-871.41,35
+CUS001157,James Brown,james.brown1157@example.com,81-98-55,84369405,Glasgow,Current,17868.58,118
+CUS001158,Priya Patel,priya.patel1158@example.com,41-50-16,85958208,London,Savings,8342.63,62
+CUS001159,Priya Rossi,priya.rossi1159@example.com,17-64-25,90404742,London,Current,5710.84,23
+CUS001160,Noah Ahmed,noah.ahmed1160@example.com,83-26-51,35153659,London,Mortgage,-2644.35,0
+CUS001161,Olu Chen,olu.chen1161@example.com,38-89-14,18997604,Leeds,Loan,8145.25,70
+CUS001162,Sofia Ali,sofia.ali1162@example.com,61-15-64,26199317,Liverpool,Savings,5871.11,77
+CUS001163,Mary Ali,mary.ali1163@example.com,87-81-55,67014741,Bristol,Loan,17833.62,102
+CUS001164,Carlos Tanaka,carlos.tanaka1164@example.com,88-82-77,83669592,Manchester,Mortgage,-6740.57,49
+CUS001165,Mohammed Ahmed,mohammed.ahmed1165@example.com,76-33-27,57682151,Glasgow,Savings,-3040.44,22
+CUS001166,Aisha Rossi,aisha.rossi1166@example.com,29-41-44,50577851,Liverpool,Credit Card,4141.09,63
+CUS001167,Priya Chen,priya.chen1167@example.com,67-64-78,96471720,Liverpool,Credit Card,9024.96,1
+CUS001168,Aisha Ali,aisha.ali1168@example.com,45-22-85,94290047,Birmingham,Savings,-260.17,109
+CUS001169,Hannah Khan,hannah.khan1169@example.com,72-68-31,38954830,Bristol,Savings,8287.65,20
+CUS001170,Mei Brown,mei.brown1170@example.com,13-40-76,23739061,Manchester,Loan,8460.74,116
+CUS001171,Carlos Andersson,carlos.andersson1171@example.com,30-75-62,19873564,London,Current,9898.59,22
+CUS001172,Olu Kowalski,olu.kowalski1172@example.com,71-37-63,91833961,Liverpool,Savings,17561.56,47
+CUS001173,Mary Okafor,mary.okafor1173@example.com,11-37-10,40760225,Glasgow,Savings,10387.64,35
+CUS001174,Noah Nguyen,noah.nguyen1174@example.com,63-53-81,42722742,Liverpool,Credit Card,13773.82,72
+CUS001175,James Rossi,james.rossi1175@example.com,55-79-13,25758912,Leeds,Loan,2514.24,103
+CUS001176,Priya Chen,priya.chen1176@example.com,78-10-29,16025022,Manchester,Savings,-3751.92,15
+CUS001177,Hannah Chen,hannah.chen1177@example.com,33-79-36,93894449,Glasgow,Current,699.58,110
+CUS001178,Yuki Silva,yuki.silva1178@example.com,87-74-13,57419279,Cardiff,Mortgage,11874.94,9
+CUS001179,Aisha Kowalski,aisha.kowalski1179@example.com,39-36-50,78244891,Cardiff,Mortgage,1227.03,41
+CUS001180,Ivan Chen,ivan.chen1180@example.com,77-94-81,61587289,Manchester,Credit Card,8055.44,42
+CUS001181,Priya Ali,priya.ali1181@example.com,62-60-96,36860253,Glasgow,Current,-2740.44,114
+CUS001182,James Nguyen,james.nguyen1182@example.com,95-56-31,81453830,Leeds,Current,-4484.85,50
+CUS001183,Sofia Rossi,sofia.rossi1183@example.com,68-16-47,31618674,Leeds,Loan,1541.0,30
+CUS001184,Liam Brown,liam.brown1184@example.com,24-32-16,41234910,Bristol,Current,4408.21,64
+CUS001185,Sofia Brown,sofia.brown1185@example.com,66-41-21,69374841,Leeds,Loan,13555.31,113
+CUS001186,Ivan Garcia,ivan.garcia1186@example.com,50-52-91,19711599,Birmingham,Current,3245.56,34
+CUS001187,Ivan Silva,ivan.silva1187@example.com,72-80-23,27985352,Leeds,Current,5217.98,19
+CUS001188,Hannah Ahmed,hannah.ahmed1188@example.com,44-40-79,79671326,Manchester,Current,-3487.54,86
+CUS001189,Priya Brown,priya.brown1189@example.com,54-93-56,37164657,Glasgow,Loan,9739.37,94
+CUS001190,Aisha Smith,aisha.smith1190@example.com,76-44-53,27756272,Birmingham,Mortgage,13496.75,84
+CUS001191,Sofia Rossi,sofia.rossi1191@example.com,40-62-34,82295483,Leeds,Current,7906.86,37
+CUS001192,Noah Okafor,noah.okafor1192@example.com,14-15-90,81968797,Leeds,Current,-8245.63,50
+CUS001193,Sofia Smith,sofia.smith1193@example.com,20-61-73,20419659,Liverpool,Savings,9023.41,82
+CUS001194,Yuki Khan,yuki.khan1194@example.com,96-31-80,96541150,Manchester,Credit Card,-5201.4,64
+CUS001195,Mary Garcia,mary.garcia1195@example.com,67-89-49,42933020,London,Current,-560.25,90
+CUS001196,Mohammed Garcia,mohammed.garcia1196@example.com,14-21-80,73032124,Liverpool,Loan,827.14,69
+CUS001197,Aisha Silva,aisha.silva1197@example.com,61-66-22,46070849,Birmingham,Credit Card,16467.74,46
+CUS001198,Sofia Brown,sofia.brown1198@example.com,83-35-78,79017679,Manchester,Credit Card,9144.51,29
+CUS001199,Carlos Ali,carlos.ali1199@example.com,43-27-48,36900320,London,Mortgage,-3322.75,107
+CUS001200,James Smith,james.smith1200@example.com,20-41-53,17636010,Liverpool,Savings,5878.85,67
+CUS001201,Mary Okafor,mary.okafor1201@example.com,49-55-75,13458417,Manchester,Savings,15017.6,43
+CUS001202,Sofia Nguyen,sofia.nguyen1202@example.com,36-67-68,56361176,Birmingham,Savings,-3655.57,4
+CUS001203,Mohammed Khan,mohammed.khan1203@example.com,67-53-34,32044510,Cardiff,Mortgage,-3855.63,60
+CUS001204,Noah Tanaka,noah.tanaka1204@example.com,56-85-41,94683041,Liverpool,Mortgage,12677.35,0
+CUS001205,Ivan Ali,ivan.ali1205@example.com,67-60-90,75594757,Manchester,Current,6631.84,62
+CUS001206,Sofia Garcia,sofia.garcia1206@example.com,56-17-38,46963674,Glasgow,Loan,-8331.71,48
+CUS001207,Ivan Smith,ivan.smith1207@example.com,64-41-33,73548394,Birmingham,Current,6633.23,37
+CUS001208,Olu Brown,olu.brown1208@example.com,10-60-72,30397155,Birmingham,Mortgage,4422.03,16
+CUS001209,Hannah Ahmed,hannah.ahmed1209@example.com,81-88-63,94620321,Glasgow,Current,12045.95,58
+CUS001210,Aisha Nguyen,aisha.nguyen1210@example.com,45-80-39,32859898,Manchester,Savings,3923.75,37
+CUS001211,Yuki Khan,yuki.khan1211@example.com,31-36-36,63031646,Glasgow,Credit Card,15504.86,104
+CUS001212,Olu Khan,olu.khan1212@example.com,19-62-33,24293174,Glasgow,Loan,12621.36,110
+CUS001213,Carlos Ahmed,carlos.ahmed1213@example.com,57-27-72,36780412,Glasgow,Loan,5997.33,70
+CUS001214,Noah Patel,noah.patel1214@example.com,33-84-78,90429406,Manchester,Loan,7423.25,62
+CUS001215,Olu Okafor,olu.okafor1215@example.com,86-18-60,89895173,Glasgow,Loan,15906.98,107
+CUS001216,Liam Tanaka,liam.tanaka1216@example.com,35-93-58,22770846,Manchester,Current,-746.49,84
+CUS001217,Aisha Nguyen,aisha.nguyen1217@example.com,19-12-21,18953969,Birmingham,Mortgage,4213.67,6
+CUS001218,Hannah Rossi,hannah.rossi1218@example.com,44-22-91,48297862,Glasgow,Credit Card,12511.52,43
+CUS001219,Mary Tanaka,mary.tanaka1219@example.com,79-76-76,43844605,Birmingham,Credit Card,7859.16,31
+CUS001220,Carlos Ahmed,carlos.ahmed1220@example.com,90-83-57,97385789,Manchester,Current,6451.94,47
+CUS001221,Ivan Ali,ivan.ali1221@example.com,65-74-46,45700936,Liverpool,Loan,4434.1,31
+CUS001222,Ivan Nguyen,ivan.nguyen1222@example.com,25-89-70,87101979,London,Credit Card,-3980.5,27
+CUS001223,Mei Garcia,mei.garcia1223@example.com,90-21-16,57879575,London,Current,11877.57,69
+CUS001224,Olu Kowalski,olu.kowalski1224@example.com,37-44-78,23692934,Leeds,Current,1472.49,1
+CUS001225,Noah Garcia,noah.garcia1225@example.com,46-35-58,29421209,London,Current,14390.31,109
+CUS001226,Mary Kowalski,mary.kowalski1226@example.com,39-88-85,42494182,Manchester,Current,-1602.66,23
+CUS001227,Aisha Ahmed,aisha.ahmed1227@example.com,58-22-13,68462947,Manchester,Loan,8616.43,5
+CUS001228,Noah Nguyen,noah.nguyen1228@example.com,85-67-40,46093167,London,Current,2801.05,81
+CUS001229,Carlos Smith,carlos.smith1229@example.com,72-18-34,78232161,Manchester,Current,17710.57,115
+CUS001230,Liam Ahmed,liam.ahmed1230@example.com,87-29-67,69246261,Bristol,Savings,7360.23,42
+CUS001231,Hannah Nguyen,hannah.nguyen1231@example.com,72-46-25,39563414,Cardiff,Loan,5035.46,109
+CUS001232,Carlos Garcia,carlos.garcia1232@example.com,57-51-37,10016576,Cardiff,Savings,2618.6,24
+CUS001233,Priya Kowalski,priya.kowalski1233@example.com,51-52-80,25680777,Leeds,Loan,7024.99,49
+CUS001234,Carlos Smith,carlos.smith1234@example.com,38-80-46,87143369,Glasgow,Savings,3968.1,60
+CUS001235,Wei Tanaka,wei.tanaka1235@example.com,43-34-26,51473099,Leeds,Current,-4484.64,33
+CUS001236,Mary Brown,mary.brown1236@example.com,79-66-21,67381439,London,Current,4078.14,44
+CUS001237,Priya Khan,priya.khan1237@example.com,89-81-92,20161166,Manchester,Credit Card,15633.72,83
+CUS001238,Aisha Kowalski,aisha.kowalski1238@example.com,90-30-72,54084720,London,Credit Card,-5305.36,10
+CUS001239,Mohammed Khan,mohammed.khan1239@example.com,84-27-56,98258397,Leeds,Loan,3865.36,93
+CUS001240,Mohammed Garcia,mohammed.garcia1240@example.com,68-88-79,63084310,Birmingham,Mortgage,-577.78,21
+CUS001241,Carlos Ali,carlos.ali1241@example.com,32-87-62,82924143,Birmingham,Mortgage,1352.1,57
+CUS001242,Wei Silva,wei.silva1242@example.com,23-48-44,81902484,Cardiff,Current,61.88,27
+CUS001243,Aisha Tanaka,aisha.tanaka1243@example.com,98-23-85,17363317,Manchester,Loan,16250.79,99
+CUS001244,Mohammed Andersson,mohammed.andersson1244@example.com,59-42-61,53702514,London,Loan,7507.36,14
+CUS001245,Liam Kowalski,liam.kowalski1245@example.com,52-62-80,61192171,London,Mortgage,4622.95,13
+CUS001246,Carlos Andersson,carlos.andersson1246@example.com,63-30-35,74822039,London,Credit Card,9290.99,15
+CUS001247,Wei Tanaka,wei.tanaka1247@example.com,96-79-77,77661775,Birmingham,Loan,-4393.9,46
+CUS001248,Liam Tanaka,liam.tanaka1248@example.com,88-77-25,36974093,Cardiff,Mortgage,-14696.98,70
+CUS001249,James Ali,james.ali1249@example.com,45-75-49,96999618,Bristol,Credit Card,-3548.71,41
+CUS001250,Olu Patel,olu.patel1250@example.com,47-72-30,91398607,Liverpool,Current,3976.79,71
+CUS001251,James Brown,james.brown1251@example.com,65-74-87,94599376,Liverpool,Savings,5086.82,115
+CUS001252,Mei Kowalski,mei.kowalski1252@example.com,47-34-88,96957116,Glasgow,Mortgage,8161.97,54
+CUS001253,Olu Smith,olu.smith1253@example.com,89-82-54,19463724,Bristol,Credit Card,-7640.21,86
+CUS001254,Priya Tanaka,priya.tanaka1254@example.com,46-83-46,95441428,Bristol,Credit Card,5631.92,114
+CUS001255,Olu Andersson,olu.andersson1255@example.com,25-52-67,25031949,Leeds,Credit Card,23525.47,98
+CUS001256,Priya Chen,priya.chen1256@example.com,10-72-92,67797467,Birmingham,Current,7576.14,17
+CUS001257,Olu Silva,olu.silva1257@example.com,61-40-10,77961706,Liverpool,Savings,6494.33,92
+CUS001258,Priya Khan,priya.khan1258@example.com,96-10-82,73817449,Manchester,Loan,13401.76,0
+CUS001259,Mary Kowalski,mary.kowalski1259@example.com,64-36-91,38853855,Glasgow,Savings,-6702.52,7
+CUS001260,Mary Andersson,mary.andersson1260@example.com,48-49-55,80194683,London,Loan,15388.07,26
+CUS001261,Sofia Ali,sofia.ali1261@example.com,76-44-65,85637678,London,Mortgage,12124.08,0
+CUS001262,Noah Okafor,noah.okafor1262@example.com,67-74-10,92249341,Birmingham,Current,7947.24,26
+CUS001263,Carlos Silva,carlos.silva1263@example.com,19-80-60,78263094,Glasgow,Current,21128.7,119
+CUS001264,Sofia Nguyen,sofia.nguyen1264@example.com,14-79-36,17414587,Bristol,Credit Card,2541.39,27
+CUS001265,Liam Brown,liam.brown1265@example.com,52-91-83,72722730,Liverpool,Current,-1629.04,26
+CUS001266,Priya Chen,priya.chen1266@example.com,89-90-90,60913417,London,Credit Card,800.95,80
+CUS001267,Sofia Nguyen,sofia.nguyen1267@example.com,77-56-59,75046098,Liverpool,Savings,-1467.29,70
+CUS001268,Mei Khan,mei.khan1268@example.com,55-76-66,99681698,Glasgow,Loan,6962.02,20
+CUS001269,Mei Brown,mei.brown1269@example.com,29-63-70,37299695,Manchester,Mortgage,17435.32,43
+CUS001270,Sofia Ahmed,sofia.ahmed1270@example.com,44-87-89,28853914,Glasgow,Loan,15160.55,20
+CUS001271,Liam Smith,liam.smith1271@example.com,46-28-34,34634633,Cardiff,Credit Card,6841.52,94
+CUS001272,Priya Smith,priya.smith1272@example.com,11-76-28,25245100,Glasgow,Savings,-464.25,84
+CUS001273,Ivan Patel,ivan.patel1273@example.com,67-68-60,83465976,Bristol,Savings,-1986.2,93
+CUS001274,Sofia Ali,sofia.ali1274@example.com,12-75-60,83671892,Liverpool,Loan,18854.27,71
+CUS001275,Aisha Patel,aisha.patel1275@example.com,52-28-54,19551888,Birmingham,Current,4800.34,74
+CUS001276,Ivan Khan,ivan.khan1276@example.com,91-10-71,51257730,London,Mortgage,10852.92,4
+CUS001277,Fatima Khan,fatima.khan1277@example.com,11-39-64,60201833,London,Mortgage,-3531.06,51
+CUS001278,Mohammed Okafor,mohammed.okafor1278@example.com,68-76-47,62662645,Glasgow,Credit Card,14427.62,9
+CUS001279,Priya Patel,priya.patel1279@example.com,13-81-36,88737637,Manchester,Loan,4505.75,4
+CUS001280,Fatima Smith,fatima.smith1280@example.com,89-78-75,40327545,London,Loan,18140.54,102
+CUS001281,James Ali,james.ali1281@example.com,36-96-23,13091567,Bristol,Savings,2581.67,55
+CUS001282,Liam Chen,liam.chen1282@example.com,97-54-36,36253314,Cardiff,Savings,3267.01,69
+CUS001283,Liam Ahmed,liam.ahmed1283@example.com,52-12-37,90485105,Birmingham,Savings,8651.58,90
+CUS001284,Sofia Patel,sofia.patel1284@example.com,57-54-17,68883040,Manchester,Credit Card,-1911.78,53
+CUS001285,Ivan Chen,ivan.chen1285@example.com,82-35-58,52840105,Bristol,Current,2024.35,57
+CUS001286,Wei Ahmed,wei.ahmed1286@example.com,22-89-36,12544550,Leeds,Mortgage,8706.38,58
+CUS001287,Carlos Patel,carlos.patel1287@example.com,44-54-65,93323653,Birmingham,Credit Card,-980.15,85
+CUS001288,Priya Khan,priya.khan1288@example.com,19-52-26,17748434,Birmingham,Credit Card,4660.78,95
+CUS001289,Aisha Tanaka,aisha.tanaka1289@example.com,42-98-20,64437446,Cardiff,Credit Card,13438.68,96
+CUS001290,Liam Smith,liam.smith1290@example.com,67-75-98,97644300,Glasgow,Current,-467.85,9
+CUS001291,Noah Ali,noah.ali1291@example.com,19-54-83,58163190,London,Savings,-2036.84,104
+CUS001292,Wei Rossi,wei.rossi1292@example.com,53-21-60,12282199,Leeds,Credit Card,6474.85,60
+CUS001293,Aisha Silva,aisha.silva1293@example.com,55-50-45,86356204,Glasgow,Loan,7814.15,76
+CUS001294,Liam Kowalski,liam.kowalski1294@example.com,36-96-12,33309536,Cardiff,Credit Card,15895.51,10
+CUS001295,Fatima Andersson,fatima.andersson1295@example.com,21-69-14,54896737,Bristol,Savings,11646.11,112
+CUS001296,James Andersson,james.andersson1296@example.com,68-29-24,77338171,Leeds,Loan,11768.89,89
+CUS001297,Mary Tanaka,mary.tanaka1297@example.com,59-39-56,25908684,Manchester,Current,-4558.83,0
+CUS001298,Priya Chen,priya.chen1298@example.com,43-44-51,75266581,Glasgow,Current,6339.52,80
+CUS001299,Ivan Okafor,ivan.okafor1299@example.com,60-57-12,99151286,Cardiff,Current,11536.73,30
+CUS001300,Liam Khan,liam.khan1300@example.com,24-79-40,45013801,Manchester,Savings,-80.84,32
+CUS001301,Mohammed Rossi,mohammed.rossi1301@example.com,43-87-82,88927676,Birmingham,Mortgage,25809.37,60
+CUS001302,Wei Andersson,wei.andersson1302@example.com,40-42-27,86457158,Glasgow,Loan,-10914.6,75
+CUS001303,Sofia Tanaka,sofia.tanaka1303@example.com,51-96-75,71604507,Birmingham,Loan,12834.19,85
+CUS001304,Wei Okafor,wei.okafor1304@example.com,54-76-51,98879735,Bristol,Savings,-7090.67,58
+CUS001305,Fatima Andersson,fatima.andersson1305@example.com,46-33-34,87605910,Cardiff,Current,5937.2,17
+CUS001306,Ivan Ali,ivan.ali1306@example.com,20-87-19,13205585,Liverpool,Mortgage,17222.04,56
+CUS001307,Sofia Rossi,sofia.rossi1307@example.com,20-29-38,23283927,Bristol,Loan,8441.74,70
+CUS001308,Hannah Rossi,hannah.rossi1308@example.com,46-38-29,78915248,London,Mortgage,-2467.43,74
+CUS001309,James Okafor,james.okafor1309@example.com,78-95-86,52949520,Birmingham,Credit Card,8645.04,103
+CUS001310,Priya Smith,priya.smith1310@example.com,67-96-16,74269605,Leeds,Credit Card,11451.02,78
+CUS001311,Wei Brown,wei.brown1311@example.com,88-85-17,38059222,Bristol,Credit Card,10074.25,45
+CUS001312,Liam Okafor,liam.okafor1312@example.com,50-73-24,27576098,Liverpool,Credit Card,-9585.96,17
+CUS001313,Hannah Ahmed,hannah.ahmed1313@example.com,63-61-10,33165866,Cardiff,Savings,-3187.6,51
+CUS001314,Noah Silva,noah.silva1314@example.com,77-30-26,27611618,Liverpool,Mortgage,-6506.57,53
+CUS001315,Carlos Okafor,carlos.okafor1315@example.com,43-40-35,70069798,Leeds,Savings,13746.86,77
+CUS001316,Liam Smith,liam.smith1316@example.com,66-30-52,40373966,Liverpool,Mortgage,-18021.44,59
+CUS001317,Liam Chen,liam.chen1317@example.com,84-43-20,49816827,Leeds,Credit Card,18792.92,13
+CUS001318,Fatima Silva,fatima.silva1318@example.com,87-58-80,97628781,Glasgow,Loan,6327.15,32
+CUS001319,Mei Brown,mei.brown1319@example.com,70-60-35,88168610,Bristol,Mortgage,-11694.48,57
+CUS001320,Ivan Kowalski,ivan.kowalski1320@example.com,63-27-79,26830786,London,Savings,8248.44,24
+CUS001321,Olu Andersson,olu.andersson1321@example.com,91-35-93,19012395,London,Credit Card,2897.9,86
+CUS001322,Wei Smith,wei.smith1322@example.com,38-34-98,16532115,Liverpool,Savings,4825.77,2
+CUS001323,Sofia Kowalski,sofia.kowalski1323@example.com,28-18-44,81722393,Bristol,Credit Card,8273.96,94
+CUS001324,Olu Chen,olu.chen1324@example.com,84-94-61,86205942,Birmingham,Loan,-7238.08,4
+CUS001325,Ivan Kowalski,ivan.kowalski1325@example.com,18-33-40,81169640,Liverpool,Credit Card,2594.2,43
+CUS001326,Wei Brown,wei.brown1326@example.com,54-98-84,30574312,Liverpool,Credit Card,29070.47,30
+CUS001327,Ivan Khan,ivan.khan1327@example.com,55-61-58,87474440,Cardiff,Mortgage,-4184.66,54
+CUS001328,Olu Nguyen,olu.nguyen1328@example.com,16-16-29,40002331,Glasgow,Mortgage,-105.95,21
+CUS001329,Wei Smith,wei.smith1329@example.com,87-36-37,90830416,London,Mortgage,5600.67,17
+CUS001330,James Ahmed,james.ahmed1330@example.com,38-42-27,76513355,Liverpool,Mortgage,5610.3,97
+CUS001331,Yuki Tanaka,yuki.tanaka1331@example.com,87-23-76,37573643,Leeds,Loan,2452.31,10
+CUS001332,Mary Tanaka,mary.tanaka1332@example.com,74-41-41,54740641,London,Savings,18459.13,4
+CUS001333,Fatima Kowalski,fatima.kowalski1333@example.com,16-27-52,19563041,Leeds,Current,-667.59,8
+CUS001334,Liam Nguyen,liam.nguyen1334@example.com,75-42-48,92132929,Birmingham,Loan,5405.45,110
+CUS001335,Carlos Nguyen,carlos.nguyen1335@example.com,33-73-14,47481731,London,Savings,2988.62,67
+CUS001336,Sofia Andersson,sofia.andersson1336@example.com,34-79-14,56101545,Bristol,Loan,11568.86,32
+CUS001337,Carlos Khan,carlos.khan1337@example.com,47-66-47,83871037,Leeds,Loan,20271.95,105
+CUS001338,Sofia Khan,sofia.khan1338@example.com,85-58-20,91337336,Manchester,Mortgage,13208.49,47
+CUS001339,Fatima Garcia,fatima.garcia1339@example.com,46-91-38,53105537,Manchester,Mortgage,167.04,36
+CUS001340,Priya Kowalski,priya.kowalski1340@example.com,10-15-22,75203746,Leeds,Credit Card,13166.62,57
+CUS001341,Yuki Brown,yuki.brown1341@example.com,17-61-20,74416684,Manchester,Mortgage,9791.55,22
+CUS001342,James Smith,james.smith1342@example.com,81-14-57,93040063,Birmingham,Loan,15595.71,5
+CUS001343,Fatima Andersson,fatima.andersson1343@example.com,37-15-40,15828845,Glasgow,Loan,7256.73,102
+CUS001344,Carlos Ali,carlos.ali1344@example.com,97-83-93,50589314,Manchester,Mortgage,11366.08,21
+CUS001345,Ivan Tanaka,ivan.tanaka1345@example.com,98-61-37,75346880,Birmingham,Loan,-3347.09,2
+CUS001346,Mary Rossi,mary.rossi1346@example.com,12-48-63,64424805,London,Credit Card,21891.07,52
+CUS001347,Hannah Silva,hannah.silva1347@example.com,26-27-28,79601578,Manchester,Credit Card,2492.16,45
+CUS001348,James Rossi,james.rossi1348@example.com,73-80-90,63728304,Birmingham,Loan,-8996.3,54
+CUS001349,Hannah Brown,hannah.brown1349@example.com,47-73-57,88876947,London,Credit Card,-12571.06,30
+CUS001350,Wei Khan,wei.khan1350@example.com,87-83-61,60050618,Glasgow,Loan,-3702.8,114
+CUS001351,Sofia Garcia,sofia.garcia1351@example.com,87-46-89,28259647,Manchester,Credit Card,2514.51,77
+CUS001352,Ivan Garcia,ivan.garcia1352@example.com,46-69-84,21113123,London,Loan,8947.26,53
+CUS001353,Hannah Chen,hannah.chen1353@example.com,93-50-52,88940005,Leeds,Savings,-5871.44,29
+CUS001354,James Patel,james.patel1354@example.com,65-35-93,35462677,London,Loan,10170.97,89
+CUS001355,Liam Andersson,liam.andersson1355@example.com,57-79-47,82140490,Liverpool,Current,-10776.95,12
+CUS001356,Priya Khan,priya.khan1356@example.com,85-40-37,27479916,Manchester,Credit Card,6577.29,73
+CUS001357,Carlos Ali,carlos.ali1357@example.com,29-93-32,43356211,Leeds,Credit Card,-3736.92,21
+CUS001358,Carlos Brown,carlos.brown1358@example.com,48-51-84,37980697,Liverpool,Credit Card,13650.69,45
+CUS001359,Priya Nguyen,priya.nguyen1359@example.com,83-97-27,78081154,Cardiff,Loan,5288.04,105
+CUS001360,Mary Smith,mary.smith1360@example.com,66-34-74,29667194,Manchester,Current,5954.33,53
+CUS001361,Sofia Chen,sofia.chen1361@example.com,75-92-39,69857960,Cardiff,Savings,440.94,47
+CUS001362,Liam Rossi,liam.rossi1362@example.com,27-36-98,40053940,London,Loan,5602.42,90
+CUS001363,Hannah Kowalski,hannah.kowalski1363@example.com,34-76-36,39261821,London,Credit Card,1507.73,46
+CUS001364,Carlos Silva,carlos.silva1364@example.com,60-72-78,55867906,Manchester,Mortgage,-565.29,107
+CUS001365,Ivan Andersson,ivan.andersson1365@example.com,87-29-42,28541346,Bristol,Savings,2969.96,4
+CUS001366,Hannah Ahmed,hannah.ahmed1366@example.com,52-23-61,67716726,Birmingham,Credit Card,10359.49,14
+CUS001367,Olu Silva,olu.silva1367@example.com,63-37-32,29202862,Cardiff,Mortgage,10101.14,40
+CUS001368,Liam Nguyen,liam.nguyen1368@example.com,17-16-85,18974955,Glasgow,Mortgage,-9274.16,105
+CUS001369,Noah Brown,noah.brown1369@example.com,30-11-63,40756194,London,Savings,-8249.96,97
+CUS001370,Aisha Nguyen,aisha.nguyen1370@example.com,96-12-80,81606075,Bristol,Mortgage,9811.05,71
+CUS001371,Carlos Kowalski,carlos.kowalski1371@example.com,21-87-84,43933219,Bristol,Credit Card,29317.11,38
+CUS001372,Priya Ali,priya.ali1372@example.com,75-14-59,58780737,Leeds,Mortgage,6558.53,112
+CUS001373,Mary Okafor,mary.okafor1373@example.com,55-68-51,78552162,Bristol,Loan,12653.62,64
+CUS001374,Fatima Tanaka,fatima.tanaka1374@example.com,92-97-55,23331980,Leeds,Savings,7327.89,93
+CUS001375,Mei Ali,mei.ali1375@example.com,55-71-61,20402208,Liverpool,Savings,7035.19,86
+CUS001376,Mei Brown,mei.brown1376@example.com,91-84-31,18862824,Liverpool,Mortgage,23442.83,57
+CUS001377,Liam Rossi,liam.rossi1377@example.com,11-50-58,64762188,Liverpool,Current,-7323.53,102
+CUS001378,Sofia Khan,sofia.khan1378@example.com,58-18-36,57536028,Leeds,Loan,-7642.79,23
+CUS001379,Hannah Rossi,hannah.rossi1379@example.com,56-35-49,27491801,Birmingham,Loan,8360.65,0
+CUS001380,Fatima Tanaka,fatima.tanaka1380@example.com,65-55-80,26089531,Liverpool,Credit Card,5884.12,62
+CUS001381,Mary Rossi,mary.rossi1381@example.com,39-26-87,96254426,Cardiff,Credit Card,3865.28,85
+CUS001382,Mohammed Smith,mohammed.smith1382@example.com,68-27-92,14963732,Liverpool,Mortgage,-1706.3,115
+CUS001383,Olu Brown,olu.brown1383@example.com,50-38-50,58755156,Glasgow,Savings,4545.66,43
+CUS001384,Ivan Nguyen,ivan.nguyen1384@example.com,80-81-32,69977219,Liverpool,Loan,10534.27,16
+CUS001385,Aisha Chen,aisha.chen1385@example.com,74-64-91,98433900,Glasgow,Credit Card,21045.45,44
+CUS001386,Olu Chen,olu.chen1386@example.com,86-73-60,22503591,Bristol,Loan,-5573.73,107
+CUS001387,Mary Garcia,mary.garcia1387@example.com,84-54-84,58694453,Leeds,Current,5742.2,97
+CUS001388,Mary Rossi,mary.rossi1388@example.com,34-63-67,32536514,Manchester,Credit Card,4048.82,97
+CUS001389,Wei Ali,wei.ali1389@example.com,48-58-44,91933674,Birmingham,Mortgage,2462.29,70
+CUS001390,Aisha Rossi,aisha.rossi1390@example.com,82-54-25,79005131,Cardiff,Savings,197.03,80
+CUS001391,Aisha Brown,aisha.brown1391@example.com,89-94-93,14189819,Manchester,Credit Card,8075.45,64
+CUS001392,Aisha Brown,aisha.brown1392@example.com,96-57-98,15278719,Leeds,Loan,-12429.35,66
+CUS001393,Yuki Nguyen,yuki.nguyen1393@example.com,89-18-29,50666237,Cardiff,Loan,14814.25,75
+CUS001394,Fatima Khan,fatima.khan1394@example.com,21-27-80,20435748,Leeds,Credit Card,3006.62,35
+CUS001395,Sofia Chen,sofia.chen1395@example.com,81-87-94,25784177,Liverpool,Savings,1450.52,46
+CUS001396,James Ali,james.ali1396@example.com,98-12-33,45216458,Leeds,Savings,-956.14,1
+CUS001397,James Garcia,james.garcia1397@example.com,61-62-52,81167297,Bristol,Credit Card,6313.57,15
+CUS001398,Aisha Garcia,aisha.garcia1398@example.com,13-10-44,66829193,Birmingham,Savings,13893.13,30
+CUS001399,Olu Ali,olu.ali1399@example.com,86-87-31,22647208,Leeds,Savings,3998.15,39
+CUS001400,Wei Khan,wei.khan1400@example.com,36-25-36,92217792,Cardiff,Savings,11241.23,72
+CUS001401,Hannah Smith,hannah.smith1401@example.com,96-86-90,65138152,Manchester,Loan,4218.38,46
+CUS001402,Yuki Andersson,yuki.andersson1402@example.com,34-86-70,81330554,Glasgow,Current,-3386.46,45
+CUS001403,Mary Tanaka,mary.tanaka1403@example.com,31-53-83,57623496,Glasgow,Mortgage,8726.74,27
+CUS001404,Wei Patel,wei.patel1404@example.com,84-24-27,92600603,Manchester,Savings,13743.27,11
+CUS001405,Mohammed Ali,mohammed.ali1405@example.com,16-51-19,67956616,Birmingham,Current,-1354.59,64
+CUS001406,Fatima Khan,fatima.khan1406@example.com,57-81-25,34492968,London,Savings,5691.02,43
+CUS001407,Carlos Andersson,carlos.andersson1407@example.com,45-65-91,38754355,Leeds,Loan,13177.75,68
+CUS001408,James Patel,james.patel1408@example.com,30-20-11,50714086,Liverpool,Current,7786.47,67
+CUS001409,Liam Khan,liam.khan1409@example.com,37-73-27,26011114,Glasgow,Mortgage,3286.37,70
+CUS001410,Fatima Garcia,fatima.garcia1410@example.com,57-80-42,31976060,Cardiff,Credit Card,-1844.64,68
+CUS001411,Noah Garcia,noah.garcia1411@example.com,12-48-33,48832741,Leeds,Loan,5166.8,51
+CUS001412,Mary Okafor,mary.okafor1412@example.com,92-97-74,29320971,Bristol,Current,-15708.52,94
+CUS001413,Carlos Garcia,carlos.garcia1413@example.com,40-55-81,25610895,Glasgow,Loan,-4735.42,7
+CUS001414,Mohammed Silva,mohammed.silva1414@example.com,32-87-41,96865002,London,Loan,22545.44,30
+CUS001415,Olu Okafor,olu.okafor1415@example.com,21-80-28,65018307,Bristol,Loan,-6960.13,71
+CUS001416,Yuki Ali,yuki.ali1416@example.com,12-31-91,93145655,Liverpool,Loan,16200.31,36
+CUS001417,Priya Brown,priya.brown1417@example.com,74-53-37,66653795,Liverpool,Credit Card,19132.3,53
+CUS001418,Carlos Kowalski,carlos.kowalski1418@example.com,89-75-29,61238219,Manchester,Savings,2533.81,13
+CUS001419,James Silva,james.silva1419@example.com,73-91-38,85706902,Liverpool,Credit Card,8068.76,45
+CUS001420,Mary Kowalski,mary.kowalski1420@example.com,22-77-21,56695945,Liverpool,Loan,-5829.86,94
+CUS001421,Olu Ahmed,olu.ahmed1421@example.com,87-84-49,52191533,Glasgow,Mortgage,5244.4,105
+CUS001422,Mohammed Rossi,mohammed.rossi1422@example.com,92-49-71,11443774,Cardiff,Mortgage,-2318.74,60
+CUS001423,Sofia Brown,sofia.brown1423@example.com,61-64-20,43514208,Bristol,Credit Card,-1320.74,8
+CUS001424,Olu Nguyen,olu.nguyen1424@example.com,77-72-66,74091283,Manchester,Credit Card,-3957.03,45
+CUS001425,Wei Okafor,wei.okafor1425@example.com,71-14-25,69453739,Bristol,Loan,15859.21,53
+CUS001426,Ivan Andersson,ivan.andersson1426@example.com,77-83-92,78723635,Liverpool,Credit Card,8995.38,80
+CUS001427,Carlos Khan,carlos.khan1427@example.com,85-38-17,30193123,London,Mortgage,2781.16,47
+CUS001428,Sofia Nguyen,sofia.nguyen1428@example.com,94-45-84,62312532,Bristol,Current,11045.2,22
+CUS001429,Carlos Nguyen,carlos.nguyen1429@example.com,26-28-76,72920877,Leeds,Loan,1385.42,66
+CUS001430,Olu Brown,olu.brown1430@example.com,85-85-50,17654640,Bristol,Loan,-1421.95,8
+CUS001431,Ivan Tanaka,ivan.tanaka1431@example.com,77-24-81,56154909,London,Credit Card,-6977.36,53
+CUS001432,Noah Kowalski,noah.kowalski1432@example.com,76-33-67,69757443,Leeds,Mortgage,2409.65,10
+CUS001433,Liam Andersson,liam.andersson1433@example.com,54-72-57,86320351,Birmingham,Current,9519.37,88
+CUS001434,Mei Patel,mei.patel1434@example.com,75-60-85,39745170,Bristol,Credit Card,-8896.64,93
+CUS001435,Sofia Kowalski,sofia.kowalski1435@example.com,39-55-59,51946595,Leeds,Mortgage,14950.21,113
+CUS001436,Mohammed Chen,mohammed.chen1436@example.com,96-24-89,52676973,Leeds,Credit Card,19033.3,92
+CUS001437,Hannah Chen,hannah.chen1437@example.com,73-87-30,32036997,Glasgow,Mortgage,6698.21,42
+CUS001438,James Ali,james.ali1438@example.com,96-39-53,78367327,Birmingham,Mortgage,11077.78,85
+CUS001439,Carlos Garcia,carlos.garcia1439@example.com,18-27-25,38220811,Bristol,Current,8448.31,2
+CUS001440,Mei Garcia,mei.garcia1440@example.com,44-15-81,71134325,Birmingham,Loan,9223.62,66
+CUS001441,Sofia Brown,sofia.brown1441@example.com,38-88-19,64155124,Birmingham,Mortgage,13594.18,50
+CUS001442,Olu Okafor,olu.okafor1442@example.com,96-57-30,35253054,London,Loan,7581.92,77
+CUS001443,Aisha Patel,aisha.patel1443@example.com,70-78-95,90517790,Glasgow,Current,5070.16,76
+CUS001444,Olu Silva,olu.silva1444@example.com,81-77-56,24142373,London,Savings,-4561.0,85
+CUS001445,Fatima Andersson,fatima.andersson1445@example.com,14-61-41,59230816,Bristol,Savings,4597.84,41
+CUS001446,Fatima Silva,fatima.silva1446@example.com,76-31-51,15008175,Cardiff,Savings,22339.67,99
+CUS001447,Mary Brown,mary.brown1447@example.com,65-21-83,96685213,Manchester,Savings,1291.34,56
+CUS001448,Liam Silva,liam.silva1448@example.com,94-89-33,68362711,London,Credit Card,5682.22,81
+CUS001449,James Chen,james.chen1449@example.com,44-42-50,73801285,Birmingham,Current,12014.34,61
+CUS001450,Ivan Kowalski,ivan.kowalski1450@example.com,94-44-36,32984276,Leeds,Current,6950.73,113
+CUS001451,Yuki Nguyen,yuki.nguyen1451@example.com,82-80-70,46829495,Cardiff,Current,22299.03,10
+CUS001452,Priya Garcia,priya.garcia1452@example.com,26-79-97,69496972,Leeds,Savings,5405.68,94
+CUS001453,Fatima Smith,fatima.smith1453@example.com,84-10-92,97014358,Leeds,Savings,18454.16,69
+CUS001454,Olu Ali,olu.ali1454@example.com,67-63-63,17101878,Cardiff,Mortgage,14036.74,28
+CUS001455,Liam Ali,liam.ali1455@example.com,60-93-58,23638286,Leeds,Mortgage,-1056.19,47
+CUS001456,Noah Nguyen,noah.nguyen1456@example.com,60-24-51,44493491,Liverpool,Loan,-2922.39,58
+CUS001457,James Ahmed,james.ahmed1457@example.com,57-73-11,86469435,Glasgow,Credit Card,11989.4,89
+CUS001458,Noah Silva,noah.silva1458@example.com,57-97-68,43707798,Leeds,Mortgage,3512.28,90
+CUS001459,Carlos Tanaka,carlos.tanaka1459@example.com,77-83-43,39198446,Birmingham,Current,-7009.78,1
+CUS001460,Hannah Chen,hannah.chen1460@example.com,95-61-52,32766618,Liverpool,Current,-9323.38,27
+CUS001461,Mary Brown,mary.brown1461@example.com,47-60-97,96059087,Liverpool,Credit Card,5444.29,112
+CUS001462,Ivan Chen,ivan.chen1462@example.com,93-54-38,48871918,Glasgow,Mortgage,10433.96,88
+CUS001463,Mary Nguyen,mary.nguyen1463@example.com,81-42-53,13992619,Glasgow,Credit Card,-914.73,80
+CUS001464,Wei Okafor,wei.okafor1464@example.com,32-70-86,29140129,Birmingham,Mortgage,18318.06,58
+CUS001465,Mary Patel,mary.patel1465@example.com,77-49-51,79726800,Glasgow,Savings,404.86,71
+CUS001466,Ivan Nguyen,ivan.nguyen1466@example.com,23-36-60,49232765,London,Loan,16262.77,54
+CUS001467,James Rossi,james.rossi1467@example.com,48-35-76,68112661,Liverpool,Current,715.54,58
+CUS001468,Hannah Brown,hannah.brown1468@example.com,78-29-61,80446237,Glasgow,Loan,12155.85,60
+CUS001469,James Brown,james.brown1469@example.com,53-51-50,88068031,Birmingham,Loan,6457.32,119
+CUS001470,Noah Brown,noah.brown1470@example.com,71-45-96,84195962,Bristol,Savings,10067.0,31
+CUS001471,Hannah Ahmed,hannah.ahmed1471@example.com,36-58-28,47864017,Liverpool,Mortgage,14027.55,108
+CUS001472,Olu Khan,olu.khan1472@example.com,66-86-69,49153063,Birmingham,Current,16354.1,50
+CUS001473,Mohammed Chen,mohammed.chen1473@example.com,72-18-91,58001713,Cardiff,Savings,5776.23,56
+CUS001474,Mohammed Okafor,mohammed.okafor1474@example.com,52-86-56,42376330,Cardiff,Loan,473.2,106
+CUS001475,Hannah Silva,hannah.silva1475@example.com,45-86-38,91167846,Birmingham,Credit Card,11411.75,30
+CUS001476,Mary Andersson,mary.andersson1476@example.com,71-89-19,16081224,London,Loan,692.05,83
+CUS001477,Priya Garcia,priya.garcia1477@example.com,95-39-17,44462235,Bristol,Loan,7546.9,51
+CUS001478,Sofia Ali,sofia.ali1478@example.com,64-36-27,75014774,Leeds,Savings,3430.47,64
+CUS001479,Liam Chen,liam.chen1479@example.com,84-10-47,25155211,Cardiff,Savings,18625.31,23
+CUS001480,Mei Khan,mei.khan1480@example.com,76-24-79,92165941,Bristol,Current,-11731.2,5
+CUS001481,Yuki Okafor,yuki.okafor1481@example.com,70-63-56,30721826,Birmingham,Credit Card,11499.84,43
+CUS001482,James Ahmed,james.ahmed1482@example.com,29-63-80,69236004,Leeds,Credit Card,1070.52,79
+CUS001483,Mohammed Ahmed,mohammed.ahmed1483@example.com,45-36-18,52884968,Cardiff,Credit Card,-1341.18,86
+CUS001484,Yuki Smith,yuki.smith1484@example.com,42-74-95,32721071,Leeds,Credit Card,13529.29,32
+CUS001485,Carlos Nguyen,carlos.nguyen1485@example.com,18-59-91,47940705,Leeds,Current,-497.84,93
+CUS001486,James Khan,james.khan1486@example.com,47-92-59,74179654,Bristol,Savings,15137.8,118
+CUS001487,Noah Andersson,noah.andersson1487@example.com,88-76-10,52035564,Liverpool,Savings,7138.11,29
+CUS001488,Yuki Kowalski,yuki.kowalski1488@example.com,64-66-15,96026822,Manchester,Savings,5285.63,9
+CUS001489,Mei Brown,mei.brown1489@example.com,90-91-33,50244852,Liverpool,Current,17678.81,19
+CUS001490,Hannah Ahmed,hannah.ahmed1490@example.com,63-12-26,48660944,Glasgow,Loan,4100.39,100
+CUS001491,Noah Nguyen,noah.nguyen1491@example.com,71-48-81,25560898,Glasgow,Loan,-2534.11,72
+CUS001492,Aisha Okafor,aisha.okafor1492@example.com,19-90-46,78652075,Manchester,Savings,9572.98,23
+CUS001493,Priya Patel,priya.patel1493@example.com,26-63-53,96582023,Bristol,Current,-9091.46,8
+CUS001494,Wei Okafor,wei.okafor1494@example.com,58-75-62,36196605,Leeds,Credit Card,11837.6,33
+CUS001495,Priya Silva,priya.silva1495@example.com,47-87-34,74218876,Glasgow,Current,14303.4,47
+CUS001496,Yuki Nguyen,yuki.nguyen1496@example.com,20-85-88,11764797,Manchester,Credit Card,7739.25,47
+CUS001497,Fatima Ali,fatima.ali1497@example.com,44-40-31,72176032,Bristol,Mortgage,-1008.91,73
+CUS001498,Carlos Ahmed,carlos.ahmed1498@example.com,30-87-63,36889080,Bristol,Savings,-10088.83,48
+CUS001499,Priya Silva,priya.silva1499@example.com,68-62-27,74492128,Bristol,Mortgage,13748.61,22
+CUS001500,Priya Ahmed,priya.ahmed1500@example.com,72-38-36,99469631,Manchester,Mortgage,9333.18,88
+CUS001501,Olu Rossi,olu.rossi1501@example.com,34-50-38,74729688,Leeds,Current,14357.35,78
+CUS001502,Liam Rossi,liam.rossi1502@example.com,10-76-58,84448909,Glasgow,Current,9619.94,67
+CUS001503,Fatima Rossi,fatima.rossi1503@example.com,15-21-59,10641279,Leeds,Credit Card,-5130.34,32
+CUS001504,Mohammed Rossi,mohammed.rossi1504@example.com,13-70-43,30334412,Leeds,Loan,12761.34,81
+CUS001505,Priya Ali,priya.ali1505@example.com,19-19-24,63592292,Leeds,Credit Card,16155.89,61
+CUS001506,Yuki Ahmed,yuki.ahmed1506@example.com,60-44-55,72893462,Leeds,Savings,21780.8,18
+CUS001507,Priya Silva,priya.silva1507@example.com,37-81-88,39915067,Bristol,Mortgage,9034.35,74
+CUS001508,Sofia Okafor,sofia.okafor1508@example.com,94-51-70,99341146,Glasgow,Savings,-1317.28,33
+CUS001509,Carlos Andersson,carlos.andersson1509@example.com,54-78-29,52339344,Birmingham,Loan,-529.2,82
+CUS001510,Sofia Garcia,sofia.garcia1510@example.com,92-30-64,97256942,London,Current,5128.71,54
+CUS001511,Noah Khan,noah.khan1511@example.com,89-72-77,54481416,London,Savings,8758.01,53
+CUS001512,Aisha Patel,aisha.patel1512@example.com,21-97-14,70166808,Bristol,Loan,4286.61,65
+CUS001513,Mei Nguyen,mei.nguyen1513@example.com,30-39-89,54667605,Bristol,Savings,971.86,95
+CUS001514,Mary Garcia,mary.garcia1514@example.com,43-58-91,47762365,London,Credit Card,-3330.34,72
+CUS001515,James Nguyen,james.nguyen1515@example.com,63-23-12,37937772,Liverpool,Loan,4258.59,101
+CUS001516,Fatima Ahmed,fatima.ahmed1516@example.com,15-31-69,41133220,Leeds,Loan,8272.06,40
+CUS001517,Mohammed Okafor,mohammed.okafor1517@example.com,93-82-22,72117868,Liverpool,Savings,6745.03,55
+CUS001518,Mary Brown,mary.brown1518@example.com,89-45-95,26392592,Cardiff,Credit Card,11617.91,111
+CUS001519,Mary Chen,mary.chen1519@example.com,31-76-35,96554429,Manchester,Current,6391.51,95
+CUS001520,Carlos Brown,carlos.brown1520@example.com,65-21-59,57225713,Liverpool,Mortgage,7114.41,50
+CUS001521,Noah Rossi,noah.rossi1521@example.com,60-31-54,15845802,Birmingham,Savings,9589.77,63
+CUS001522,Noah Brown,noah.brown1522@example.com,79-84-10,87267719,Cardiff,Savings,3321.75,53
+CUS001523,Olu Okafor,olu.okafor1523@example.com,16-96-84,18289669,Cardiff,Loan,4971.01,68
+CUS001524,Olu Silva,olu.silva1524@example.com,49-35-34,50846583,Birmingham,Credit Card,-4242.18,48
+CUS001525,Mohammed Tanaka,mohammed.tanaka1525@example.com,63-76-20,12131241,Bristol,Savings,15989.35,8
+CUS001526,Yuki Smith,yuki.smith1526@example.com,78-91-22,59027309,Bristol,Mortgage,578.63,109
+CUS001527,Mei Ali,mei.ali1527@example.com,13-26-16,63844236,Birmingham,Credit Card,4722.28,112
+CUS001528,Fatima Nguyen,fatima.nguyen1528@example.com,26-33-17,42893746,Cardiff,Mortgage,2398.41,71
+CUS001529,Mei Garcia,mei.garcia1529@example.com,66-69-37,88193151,Manchester,Loan,7968.98,93
+CUS001530,Hannah Nguyen,hannah.nguyen1530@example.com,57-58-64,41388767,Glasgow,Loan,16907.92,55
+CUS001531,Fatima Ahmed,fatima.ahmed1531@example.com,39-18-24,15296197,Birmingham,Loan,8093.26,71
+CUS001532,Liam Ahmed,liam.ahmed1532@example.com,91-67-30,79872598,Bristol,Savings,3058.99,34
+CUS001533,Fatima Ahmed,fatima.ahmed1533@example.com,65-46-76,74912997,Glasgow,Credit Card,9027.11,101
+CUS001534,Olu Garcia,olu.garcia1534@example.com,71-18-51,99595216,Birmingham,Loan,15308.86,20
+CUS001535,James Garcia,james.garcia1535@example.com,38-50-31,11083969,Bristol,Loan,-16457.42,28
+CUS001536,Sofia Silva,sofia.silva1536@example.com,15-77-12,72115361,Bristol,Mortgage,-1455.81,66
+CUS001537,Sofia Ahmed,sofia.ahmed1537@example.com,25-69-64,86681120,Manchester,Loan,18651.4,24
+CUS001538,Liam Nguyen,liam.nguyen1538@example.com,76-14-85,19916846,Glasgow,Loan,10371.36,28
+CUS001539,Hannah Smith,hannah.smith1539@example.com,32-94-75,22284095,Birmingham,Loan,2945.29,110
+CUS001540,Carlos Silva,carlos.silva1540@example.com,63-40-53,52142478,Leeds,Mortgage,-1954.1,34
+CUS001541,Mei Ali,mei.ali1541@example.com,96-16-73,60528966,Birmingham,Mortgage,-246.24,85
+CUS001542,Noah Tanaka,noah.tanaka1542@example.com,94-95-90,27621041,Manchester,Current,179.67,38
+CUS001543,Olu Khan,olu.khan1543@example.com,40-51-34,55535936,Leeds,Savings,-1245.58,20
+CUS001544,Wei Chen,wei.chen1544@example.com,80-94-12,73048016,Liverpool,Current,-602.48,106
+CUS001545,Olu Smith,olu.smith1545@example.com,53-63-58,82993783,Manchester,Current,2609.4,8
+CUS001546,Olu Ahmed,olu.ahmed1546@example.com,36-29-22,77244006,Glasgow,Current,7426.86,89
+CUS001547,Yuki Silva,yuki.silva1547@example.com,39-84-24,94890231,Birmingham,Loan,6223.01,101
+CUS001548,Priya Chen,priya.chen1548@example.com,76-72-46,99853150,Cardiff,Credit Card,13567.2,90
+CUS001549,Mei Brown,mei.brown1549@example.com,39-34-72,90848127,Manchester,Credit Card,20307.08,20
+CUS001550,Olu Nguyen,olu.nguyen1550@example.com,50-29-49,65201875,Leeds,Savings,12677.46,73
+CUS001551,Mei Rossi,mei.rossi1551@example.com,71-17-97,62633027,Glasgow,Loan,11059.49,98
+CUS001552,Olu Rossi,olu.rossi1552@example.com,68-46-93,68059835,Liverpool,Current,11943.95,28
+CUS001553,Aisha Patel,aisha.patel1553@example.com,54-66-30,82177529,Manchester,Mortgage,3100.82,100
+CUS001554,Hannah Smith,hannah.smith1554@example.com,52-32-53,25298822,Manchester,Savings,5586.05,19
+CUS001555,Liam Patel,liam.patel1555@example.com,34-88-39,89527545,London,Loan,4960.11,26
+CUS001556,Noah Smith,noah.smith1556@example.com,73-18-22,69819596,Cardiff,Savings,3233.03,87
+CUS001557,Yuki Silva,yuki.silva1557@example.com,30-67-72,42453796,Manchester,Loan,20334.17,51
+CUS001558,Aisha Chen,aisha.chen1558@example.com,30-34-63,48523606,Liverpool,Mortgage,2019.49,75
+CUS001559,Sofia Andersson,sofia.andersson1559@example.com,58-31-60,95039247,Liverpool,Savings,-129.72,88
+CUS001560,James Okafor,james.okafor1560@example.com,46-23-25,42403530,Birmingham,Credit Card,7331.52,9
+CUS001561,Aisha Andersson,aisha.andersson1561@example.com,27-68-94,83192500,London,Savings,13859.94,112
+CUS001562,Fatima Okafor,fatima.okafor1562@example.com,58-94-70,86655602,Manchester,Mortgage,-2485.15,48
+CUS001563,Mohammed Chen,mohammed.chen1563@example.com,15-82-17,49218826,Cardiff,Credit Card,3562.83,102
+CUS001564,Priya Chen,priya.chen1564@example.com,80-46-32,12733978,Glasgow,Current,4691.47,112
+CUS001565,Noah Kowalski,noah.kowalski1565@example.com,28-13-56,45274686,Cardiff,Loan,-2840.27,68
+CUS001566,Mei Ali,mei.ali1566@example.com,39-54-76,92930786,Leeds,Credit Card,12542.35,104
+CUS001567,Mei Okafor,mei.okafor1567@example.com,61-68-40,93529203,Liverpool,Savings,5982.81,31
+CUS001568,Carlos Ali,carlos.ali1568@example.com,46-96-26,93029997,Liverpool,Credit Card,-4811.71,58
+CUS001569,Fatima Ahmed,fatima.ahmed1569@example.com,23-66-46,93320316,Cardiff,Current,14876.51,12
+CUS001570,Priya Tanaka,priya.tanaka1570@example.com,92-52-49,45692170,Liverpool,Credit Card,14301.31,59
+CUS001571,Mei Rossi,mei.rossi1571@example.com,88-90-93,73222574,Leeds,Current,-1363.8,61
+CUS001572,Noah Brown,noah.brown1572@example.com,78-34-16,11415624,Glasgow,Credit Card,10483.76,91
+CUS001573,Fatima Ahmed,fatima.ahmed1573@example.com,77-24-31,93775117,Leeds,Current,11568.53,17
+CUS001574,Mei Andersson,mei.andersson1574@example.com,26-92-88,67378828,Liverpool,Mortgage,6557.94,18
+CUS001575,Aisha Ali,aisha.ali1575@example.com,80-21-12,97649819,Manchester,Mortgage,6001.37,110
+CUS001576,Sofia Silva,sofia.silva1576@example.com,30-14-90,38293626,Leeds,Savings,13049.27,28
+CUS001577,Sofia Andersson,sofia.andersson1577@example.com,73-58-82,55328254,Bristol,Mortgage,7594.2,83
+CUS001578,Mary Garcia,mary.garcia1578@example.com,40-92-95,87016326,Glasgow,Current,7949.85,89
+CUS001579,Liam Rossi,liam.rossi1579@example.com,34-30-84,49043863,Manchester,Loan,7861.57,58
+CUS001580,Yuki Ali,yuki.ali1580@example.com,17-52-15,91395119,Birmingham,Credit Card,7167.5,27
+CUS001581,Wei Ahmed,wei.ahmed1581@example.com,46-53-81,15434907,Bristol,Mortgage,-63.26,115
+CUS001582,Yuki Ahmed,yuki.ahmed1582@example.com,77-41-42,79113217,London,Credit Card,9070.98,111
+CUS001583,James Silva,james.silva1583@example.com,32-31-28,73893909,Glasgow,Credit Card,4791.55,1
+CUS001584,Liam Chen,liam.chen1584@example.com,77-23-60,56490454,Glasgow,Credit Card,4077.27,14
+CUS001585,Sofia Kowalski,sofia.kowalski1585@example.com,72-29-98,85928667,Cardiff,Loan,13350.78,20
+CUS001586,James Garcia,james.garcia1586@example.com,13-52-73,22788207,Bristol,Loan,12314.44,59
+CUS001587,Yuki Patel,yuki.patel1587@example.com,66-18-45,53275413,Birmingham,Current,-1823.45,85
+CUS001588,Priya Brown,priya.brown1588@example.com,15-17-61,84471428,Leeds,Loan,7762.38,46
+CUS001589,Wei Chen,wei.chen1589@example.com,72-13-19,84820386,Manchester,Current,1825.45,32
+CUS001590,Hannah Khan,hannah.khan1590@example.com,51-77-11,85850112,Cardiff,Current,6730.06,66
+CUS001591,James Silva,james.silva1591@example.com,96-58-40,95050743,Birmingham,Loan,3195.16,63
+CUS001592,Yuki Rossi,yuki.rossi1592@example.com,94-77-64,61744107,Birmingham,Loan,1684.41,26
+CUS001593,Ivan Kowalski,ivan.kowalski1593@example.com,43-77-65,31846603,London,Credit Card,19591.34,26
+CUS001594,Fatima Nguyen,fatima.nguyen1594@example.com,95-84-90,96025334,Manchester,Savings,3823.18,34
+CUS001595,Olu Garcia,olu.garcia1595@example.com,19-97-96,77761730,Birmingham,Savings,7455.71,6
+CUS001596,Olu Garcia,olu.garcia1596@example.com,57-83-66,56524560,Leeds,Savings,7885.89,90
+CUS001597,Mohammed Ali,mohammed.ali1597@example.com,21-44-90,23089463,Bristol,Current,4654.82,47
+CUS001598,Olu Nguyen,olu.nguyen1598@example.com,25-24-59,39036296,Liverpool,Mortgage,6879.91,96
+CUS001599,Noah Chen,noah.chen1599@example.com,92-31-56,16669058,Bristol,Credit Card,-2267.74,79
+CUS001600,Mei Andersson,mei.andersson1600@example.com,90-80-49,27846051,Bristol,Loan,7085.95,36
+CUS001601,Ivan Silva,ivan.silva1601@example.com,84-23-51,92427572,Cardiff,Loan,13347.59,90
+CUS001602,Carlos Rossi,carlos.rossi1602@example.com,64-64-35,85174115,Cardiff,Loan,3476.66,82
+CUS001603,Mohammed Okafor,mohammed.okafor1603@example.com,90-84-66,45156936,London,Savings,9734.46,98
+CUS001604,Sofia Brown,sofia.brown1604@example.com,35-41-42,30098129,Manchester,Current,17491.65,18
+CUS001605,James Ali,james.ali1605@example.com,27-11-41,50006711,Cardiff,Mortgage,-3119.73,17
+CUS001606,Aisha Andersson,aisha.andersson1606@example.com,82-38-45,36510659,Manchester,Savings,12923.75,114
+CUS001607,Mohammed Ali,mohammed.ali1607@example.com,64-17-78,94214988,Manchester,Loan,-793.67,61
+CUS001608,Yuki Brown,yuki.brown1608@example.com,33-67-32,27588928,Leeds,Savings,508.11,6
+CUS001609,Fatima Ahmed,fatima.ahmed1609@example.com,24-57-88,87988028,Leeds,Current,8899.51,9
+CUS001610,Liam Chen,liam.chen1610@example.com,60-54-46,90706891,Liverpool,Loan,9961.83,42
+CUS001611,James Andersson,james.andersson1611@example.com,70-15-76,11493435,Liverpool,Savings,-7437.48,75
+CUS001612,Mei Patel,mei.patel1612@example.com,16-81-19,88603484,Manchester,Savings,11025.07,102
+CUS001613,Aisha Silva,aisha.silva1613@example.com,11-84-25,10999715,Glasgow,Credit Card,10672.36,96
+CUS001614,James Smith,james.smith1614@example.com,69-96-49,83828166,Glasgow,Savings,2693.89,29
+CUS001615,Priya Rossi,priya.rossi1615@example.com,28-52-12,75215373,London,Savings,3627.86,14
+CUS001616,Yuki Garcia,yuki.garcia1616@example.com,96-67-21,46570763,Liverpool,Mortgage,1264.38,4
+CUS001617,Mary Andersson,mary.andersson1617@example.com,40-50-46,21951552,Bristol,Credit Card,4011.22,21
+CUS001618,Priya Okafor,priya.okafor1618@example.com,13-84-29,23066616,Manchester,Savings,7526.22,56
+CUS001619,Wei Patel,wei.patel1619@example.com,92-56-93,74137583,Birmingham,Loan,-3758.34,40
+CUS001620,Priya Kowalski,priya.kowalski1620@example.com,35-30-98,10780859,London,Savings,5913.14,93
+CUS001621,Mohammed Rossi,mohammed.rossi1621@example.com,71-52-63,86396373,Liverpool,Savings,6756.99,85
+CUS001622,Sofia Nguyen,sofia.nguyen1622@example.com,45-39-83,42206636,Birmingham,Current,12662.08,17
+CUS001623,Carlos Ahmed,carlos.ahmed1623@example.com,12-49-10,29456577,Bristol,Loan,4563.34,93
+CUS001624,James Tanaka,james.tanaka1624@example.com,64-78-98,35721723,Glasgow,Mortgage,1227.1,40
+CUS001625,Liam Ali,liam.ali1625@example.com,74-84-80,30440838,Cardiff,Mortgage,10173.09,73
+CUS001626,Hannah Nguyen,hannah.nguyen1626@example.com,67-71-92,98254152,Glasgow,Current,-4774.05,88
+CUS001627,Priya Kowalski,priya.kowalski1627@example.com,73-73-41,65793334,Manchester,Loan,18456.68,82
+CUS001628,Liam Garcia,liam.garcia1628@example.com,68-95-58,55036915,London,Current,7042.51,30
+CUS001629,Aisha Smith,aisha.smith1629@example.com,83-83-28,93060588,Glasgow,Credit Card,2319.35,19
+CUS001630,James Chen,james.chen1630@example.com,79-61-74,33427377,Manchester,Loan,15601.93,27
+CUS001631,Mohammed Khan,mohammed.khan1631@example.com,58-62-67,32555668,Glasgow,Loan,15448.88,66
+CUS001632,Mary Patel,mary.patel1632@example.com,57-14-50,20549696,Birmingham,Current,3499.43,35
+CUS001633,Aisha Andersson,aisha.andersson1633@example.com,31-89-98,90831003,Glasgow,Savings,4231.31,12
+CUS001634,Noah Patel,noah.patel1634@example.com,81-77-98,49765911,London,Current,-8613.02,43
+CUS001635,Yuki Kowalski,yuki.kowalski1635@example.com,75-21-65,49689031,Manchester,Current,2071.55,48
+CUS001636,Noah Ahmed,noah.ahmed1636@example.com,79-95-47,14471384,Glasgow,Savings,8224.81,68
+CUS001637,Fatima Kowalski,fatima.kowalski1637@example.com,90-92-93,57399368,Cardiff,Credit Card,10978.21,79
+CUS001638,Ivan Rossi,ivan.rossi1638@example.com,57-52-47,88556990,Liverpool,Savings,5882.0,11
+CUS001639,Mary Garcia,mary.garcia1639@example.com,41-10-48,34639280,Leeds,Savings,10253.96,68
+CUS001640,Liam Silva,liam.silva1640@example.com,39-38-30,39555978,Cardiff,Mortgage,-459.95,23
+CUS001641,Yuki Smith,yuki.smith1641@example.com,34-75-44,50774198,Manchester,Loan,-5589.75,4
+CUS001642,Noah Ali,noah.ali1642@example.com,47-70-51,12992875,Glasgow,Current,9281.95,15
+CUS001643,Noah Ahmed,noah.ahmed1643@example.com,66-84-34,93198058,Glasgow,Savings,12042.58,105
+CUS001644,Noah Tanaka,noah.tanaka1644@example.com,28-23-80,67790520,Leeds,Loan,23321.39,107
+CUS001645,Carlos Okafor,carlos.okafor1645@example.com,75-72-95,33231294,Glasgow,Current,7400.0,44
+CUS001646,Mohammed Patel,mohammed.patel1646@example.com,28-31-51,90028152,Glasgow,Credit Card,8786.6,68
+CUS001647,Aisha Andersson,aisha.andersson1647@example.com,46-22-32,31843246,Cardiff,Loan,-6257.21,78
+CUS001648,Sofia Chen,sofia.chen1648@example.com,81-21-89,31536034,Manchester,Credit Card,6414.56,118
+CUS001649,Priya Brown,priya.brown1649@example.com,57-56-43,98784572,London,Credit Card,3902.68,10
+CUS001650,Carlos Andersson,carlos.andersson1650@example.com,67-61-59,90890301,Leeds,Loan,4463.92,15
+CUS001651,Ivan Nguyen,ivan.nguyen1651@example.com,21-20-49,50441843,Liverpool,Savings,13488.33,0
+CUS001652,Liam Ali,liam.ali1652@example.com,10-11-80,82250446,Leeds,Savings,13300.02,72
+CUS001653,Hannah Andersson,hannah.andersson1653@example.com,40-35-92,96627530,Glasgow,Credit Card,12895.03,33
+CUS001654,Carlos Chen,carlos.chen1654@example.com,58-26-28,86511827,Glasgow,Mortgage,6190.66,29
+CUS001655,Mary Smith,mary.smith1655@example.com,27-13-77,54235692,Leeds,Credit Card,-1921.65,46
+CUS001656,Mei Smith,mei.smith1656@example.com,71-46-52,12249616,Cardiff,Mortgage,10022.71,7
+CUS001657,Fatima Kowalski,fatima.kowalski1657@example.com,53-39-16,43304971,Cardiff,Loan,8280.3,66
+CUS001658,Liam Khan,liam.khan1658@example.com,79-33-34,57190129,Birmingham,Loan,9329.02,65
+CUS001659,Carlos Patel,carlos.patel1659@example.com,95-84-49,20433280,Birmingham,Credit Card,13842.4,32
+CUS001660,Carlos Patel,carlos.patel1660@example.com,62-82-94,58313332,Glasgow,Savings,31532.96,67
+CUS001661,Mei Okafor,mei.okafor1661@example.com,83-89-16,45846174,Birmingham,Loan,12137.39,94
+CUS001662,Mei Garcia,mei.garcia1662@example.com,81-73-96,22278482,Glasgow,Mortgage,-6007.93,110
+CUS001663,Mei Kowalski,mei.kowalski1663@example.com,77-26-31,52907925,Glasgow,Current,4320.26,58
+CUS001664,Olu Smith,olu.smith1664@example.com,12-14-33,83073903,Cardiff,Mortgage,-6453.68,82
+CUS001665,Yuki Khan,yuki.khan1665@example.com,64-37-10,56480118,Manchester,Mortgage,-6507.39,22
+CUS001666,Noah Garcia,noah.garcia1666@example.com,90-55-12,54099542,Bristol,Current,1278.61,89
+CUS001667,Mary Chen,mary.chen1667@example.com,13-27-29,25670610,Leeds,Current,14288.42,113
+CUS001668,Aisha Okafor,aisha.okafor1668@example.com,78-54-28,98424684,Cardiff,Savings,354.38,9
+CUS001669,Mei Patel,mei.patel1669@example.com,45-27-43,18832376,Cardiff,Loan,4424.5,34
+CUS001670,Noah Andersson,noah.andersson1670@example.com,29-29-53,58968214,Liverpool,Current,12078.07,44
+CUS001671,Ivan Okafor,ivan.okafor1671@example.com,53-10-16,79313227,Cardiff,Loan,17082.0,75
+CUS001672,James Smith,james.smith1672@example.com,31-90-55,16316277,Bristol,Current,-30.81,109
+CUS001673,Noah Ali,noah.ali1673@example.com,79-96-86,80478109,Liverpool,Credit Card,27160.59,88
+CUS001674,Hannah Silva,hannah.silva1674@example.com,83-26-92,67424427,Glasgow,Current,2491.63,22
+CUS001675,James Brown,james.brown1675@example.com,75-57-47,67553749,Bristol,Credit Card,5924.65,16
+CUS001676,Fatima Patel,fatima.patel1676@example.com,57-83-83,38128573,London,Savings,19636.87,52
+CUS001677,Ivan Brown,ivan.brown1677@example.com,71-57-94,86259362,Bristol,Savings,10674.2,17
+CUS001678,Noah Ahmed,noah.ahmed1678@example.com,82-34-25,71202129,Manchester,Savings,24214.72,52
+CUS001679,Fatima Okafor,fatima.okafor1679@example.com,13-83-44,82950721,Liverpool,Credit Card,2215.03,49
+CUS001680,James Okafor,james.okafor1680@example.com,56-44-54,22237754,Bristol,Loan,8881.41,29
+CUS001681,Olu Okafor,olu.okafor1681@example.com,48-91-44,42366122,Birmingham,Loan,369.68,118
+CUS001682,Noah Rossi,noah.rossi1682@example.com,37-78-46,54935532,Bristol,Loan,2068.1,93
+CUS001683,Yuki Ahmed,yuki.ahmed1683@example.com,90-63-36,71302874,Leeds,Loan,7688.55,43
+CUS001684,Noah Khan,noah.khan1684@example.com,19-70-29,29612482,Liverpool,Credit Card,3505.95,99
+CUS001685,Noah Nguyen,noah.nguyen1685@example.com,62-96-44,30214992,Leeds,Loan,29877.77,61
+CUS001686,Wei Brown,wei.brown1686@example.com,98-53-20,84837084,Bristol,Loan,3406.92,88
+CUS001687,Aisha Andersson,aisha.andersson1687@example.com,62-17-30,91159870,Liverpool,Loan,-716.23,90
+CUS001688,Carlos Andersson,carlos.andersson1688@example.com,37-27-84,69975839,London,Savings,12880.72,98
+CUS001689,Aisha Silva,aisha.silva1689@example.com,30-20-85,79855621,Liverpool,Loan,-4541.81,20
+CUS001690,James Brown,james.brown1690@example.com,61-63-59,96175515,Cardiff,Mortgage,18677.24,84
+CUS001691,Yuki Chen,yuki.chen1691@example.com,66-44-91,97759348,Cardiff,Credit Card,-1567.29,57
+CUS001692,Wei Patel,wei.patel1692@example.com,70-14-30,56526485,Manchester,Mortgage,18090.77,29
+CUS001693,Mary Rossi,mary.rossi1693@example.com,26-39-50,45329529,Cardiff,Mortgage,14019.34,106
+CUS001694,Sofia Ahmed,sofia.ahmed1694@example.com,48-39-98,58623063,Liverpool,Loan,2907.38,55
+CUS001695,Mohammed Ali,mohammed.ali1695@example.com,47-83-33,14593289,Birmingham,Current,15490.39,113
+CUS001696,James Andersson,james.andersson1696@example.com,61-57-81,47222763,Leeds,Mortgage,1028.72,111
+CUS001697,Wei Andersson,wei.andersson1697@example.com,22-91-51,79817673,Bristol,Current,-13665.09,16
+CUS001698,Yuki Andersson,yuki.andersson1698@example.com,91-54-92,10856945,Cardiff,Loan,11645.14,1
+CUS001699,Noah Tanaka,noah.tanaka1699@example.com,39-18-79,35915324,Bristol,Loan,-7366.53,18
+CUS001700,Olu Andersson,olu.andersson1700@example.com,11-24-57,64317980,Leeds,Mortgage,-4282.1,99
+CUS001701,Priya Silva,priya.silva1701@example.com,66-65-93,28340381,Leeds,Savings,17575.37,39
+CUS001702,Olu Rossi,olu.rossi1702@example.com,50-21-26,38534858,London,Savings,-4235.03,19
+CUS001703,Hannah Garcia,hannah.garcia1703@example.com,76-83-77,72014145,Cardiff,Savings,-3183.53,45
+CUS001704,Mohammed Brown,mohammed.brown1704@example.com,74-48-17,86544212,Liverpool,Savings,2646.04,98
+CUS001705,Mei Andersson,mei.andersson1705@example.com,87-77-92,70342574,Birmingham,Loan,9373.23,68
+CUS001706,Mohammed Garcia,mohammed.garcia1706@example.com,27-47-21,25030017,Glasgow,Savings,17572.42,19
+CUS001707,Aisha Silva,aisha.silva1707@example.com,58-22-39,84895192,London,Savings,480.77,89
+CUS001708,Liam Ahmed,liam.ahmed1708@example.com,76-58-51,43637935,Liverpool,Savings,4917.76,99
+CUS001709,Olu Khan,olu.khan1709@example.com,67-77-17,98668610,London,Savings,2800.63,50
+CUS001710,Carlos Ali,carlos.ali1710@example.com,74-73-32,87514379,Birmingham,Mortgage,3885.71,62
+CUS001711,Sofia Rossi,sofia.rossi1711@example.com,14-34-88,17654056,London,Current,144.86,23
+CUS001712,Liam Patel,liam.patel1712@example.com,58-84-65,18305076,Leeds,Savings,1878.42,114
+CUS001713,Aisha Chen,aisha.chen1713@example.com,92-89-11,53319926,Cardiff,Credit Card,9360.77,20
+CUS001714,Mary Andersson,mary.andersson1714@example.com,40-72-88,51706984,Liverpool,Savings,-4476.4,93
+CUS001715,James Nguyen,james.nguyen1715@example.com,15-19-95,86501599,Manchester,Mortgage,4546.46,76
+CUS001716,Priya Smith,priya.smith1716@example.com,10-25-70,45323581,London,Savings,-2624.58,76
+CUS001717,Carlos Kowalski,carlos.kowalski1717@example.com,58-88-26,53681718,Birmingham,Credit Card,-9038.12,93
+CUS001718,Wei Nguyen,wei.nguyen1718@example.com,77-74-94,38808302,Cardiff,Loan,9245.19,39
+CUS001719,James Andersson,james.andersson1719@example.com,47-27-58,35399226,London,Credit Card,3899.88,110
+CUS001720,Mary Kowalski,mary.kowalski1720@example.com,84-82-96,31242450,Manchester,Credit Card,-953.12,17
+CUS001721,Priya Nguyen,priya.nguyen1721@example.com,78-52-58,72159062,Manchester,Current,18152.76,116
+CUS001722,Priya Chen,priya.chen1722@example.com,80-68-86,37638821,Bristol,Mortgage,-910.03,56
+CUS001723,Priya Patel,priya.patel1723@example.com,49-65-49,78048680,Liverpool,Mortgage,3359.39,96
+CUS001724,Mary Silva,mary.silva1724@example.com,36-98-65,29890506,Liverpool,Current,-5439.11,0
+CUS001725,Olu Kowalski,olu.kowalski1725@example.com,72-27-59,55543388,Liverpool,Mortgage,13463.43,64
+CUS001726,Mary Andersson,mary.andersson1726@example.com,60-72-57,52335326,Manchester,Credit Card,2281.78,76
+CUS001727,Fatima Kowalski,fatima.kowalski1727@example.com,57-94-18,99171387,Birmingham,Loan,9000.0,52
+CUS001728,Fatima Patel,fatima.patel1728@example.com,23-47-39,68228117,Birmingham,Loan,18532.21,60
+CUS001729,Priya Patel,priya.patel1729@example.com,59-50-60,80259612,Liverpool,Current,1244.92,64
+CUS001730,Noah Garcia,noah.garcia1730@example.com,83-72-19,22978271,Birmingham,Credit Card,486.11,12
+CUS001731,Priya Nguyen,priya.nguyen1731@example.com,40-75-15,55882044,London,Current,13821.08,102
+CUS001732,Wei Chen,wei.chen1732@example.com,52-88-72,61380433,Manchester,Current,5400.03,57
+CUS001733,Olu Ali,olu.ali1733@example.com,28-50-18,66274436,Manchester,Credit Card,-2322.71,7
+CUS001734,Liam Tanaka,liam.tanaka1734@example.com,60-60-64,12526373,Birmingham,Current,8712.13,69
+CUS001735,Aisha Chen,aisha.chen1735@example.com,65-41-81,66675713,Manchester,Current,-8875.86,79
+CUS001736,Priya Kowalski,priya.kowalski1736@example.com,64-69-39,16156124,Glasgow,Current,9523.09,49
+CUS001737,Mohammed Ali,mohammed.ali1737@example.com,33-74-82,56192206,Birmingham,Current,-3865.88,23
+CUS001738,Olu Garcia,olu.garcia1738@example.com,10-29-34,94938780,Liverpool,Savings,7260.05,67
+CUS001739,Olu Tanaka,olu.tanaka1739@example.com,90-88-91,86643537,Manchester,Mortgage,2007.97,19
+CUS001740,Noah Rossi,noah.rossi1740@example.com,26-84-53,74715285,Liverpool,Savings,-680.32,61
+CUS001741,Mohammed Patel,mohammed.patel1741@example.com,56-20-59,21446528,Bristol,Current,-987.94,62
+CUS001742,Hannah Ahmed,hannah.ahmed1742@example.com,41-74-43,77723961,London,Credit Card,2670.85,38
+CUS001743,Wei Andersson,wei.andersson1743@example.com,78-82-60,81264122,London,Loan,-1272.63,62
+CUS001744,Sofia Ali,sofia.ali1744@example.com,12-19-87,50770222,London,Credit Card,-6028.47,69
+CUS001745,Liam Chen,liam.chen1745@example.com,58-49-26,70989708,Glasgow,Current,-5306.73,81
+CUS001746,Wei Kowalski,wei.kowalski1746@example.com,84-55-53,49193125,Manchester,Loan,3698.03,42
+CUS001747,Noah Kowalski,noah.kowalski1747@example.com,56-84-15,69900973,Bristol,Mortgage,-10892.72,46
+CUS001748,Yuki Ali,yuki.ali1748@example.com,25-91-26,26454481,Birmingham,Credit Card,2397.76,90
+CUS001749,Liam Okafor,liam.okafor1749@example.com,48-29-71,39662402,Manchester,Current,2856.47,110
+CUS001750,Mei Kowalski,mei.kowalski1750@example.com,14-97-84,38999352,London,Current,-5046.75,87
+CUS001751,Priya Garcia,priya.garcia1751@example.com,52-77-56,53067585,Leeds,Credit Card,10171.0,27
+CUS001752,Priya Andersson,priya.andersson1752@example.com,23-34-12,26170817,Liverpool,Current,7441.73,61
+CUS001753,Aisha Nguyen,aisha.nguyen1753@example.com,42-17-75,47265968,Glasgow,Mortgage,3398.44,78
+CUS001754,Aisha Smith,aisha.smith1754@example.com,87-24-93,20600725,Birmingham,Mortgage,21611.05,111
+CUS001755,Aisha Silva,aisha.silva1755@example.com,22-67-61,90715560,Bristol,Credit Card,3068.19,119
+CUS001756,Olu Garcia,olu.garcia1756@example.com,47-40-32,76915174,Manchester,Credit Card,6401.34,37
+CUS001757,Carlos Rossi,carlos.rossi1757@example.com,37-28-34,95509234,Bristol,Loan,5982.06,114
+CUS001758,Noah Garcia,noah.garcia1758@example.com,64-37-50,18829675,London,Loan,2494.95,114
+CUS001759,Olu Smith,olu.smith1759@example.com,61-88-21,97703546,Manchester,Savings,7088.53,77
+CUS001760,James Garcia,james.garcia1760@example.com,66-47-13,28575339,Manchester,Loan,2587.28,29
+CUS001761,Mary Nguyen,mary.nguyen1761@example.com,15-87-94,44377017,Leeds,Loan,18122.89,73
+CUS001762,Mei Garcia,mei.garcia1762@example.com,65-34-75,74245135,London,Savings,103.98,22
+CUS001763,Hannah Brown,hannah.brown1763@example.com,69-88-65,69716071,Glasgow,Savings,-3184.88,44
+CUS001764,Olu Nguyen,olu.nguyen1764@example.com,37-26-37,76420839,Glasgow,Credit Card,5434.47,66
+CUS001765,Yuki Rossi,yuki.rossi1765@example.com,51-47-65,73899780,Manchester,Loan,4915.9,59
+CUS001766,Mei Chen,mei.chen1766@example.com,21-51-57,38914009,Cardiff,Savings,15132.71,0
+CUS001767,Priya Nguyen,priya.nguyen1767@example.com,31-40-68,46807325,Liverpool,Loan,8038.48,18
+CUS001768,Hannah Okafor,hannah.okafor1768@example.com,90-41-62,64392344,Cardiff,Savings,6493.45,57
+CUS001769,Sofia Nguyen,sofia.nguyen1769@example.com,95-16-77,37597184,Manchester,Loan,-4455.25,25
+CUS001770,Yuki Garcia,yuki.garcia1770@example.com,97-67-91,65184590,Liverpool,Savings,9804.2,109
+CUS001771,Ivan Brown,ivan.brown1771@example.com,21-31-58,36081820,London,Current,4093.95,110
+CUS001772,Hannah Andersson,hannah.andersson1772@example.com,15-52-31,24746197,Birmingham,Current,-3697.86,50
+CUS001773,Hannah Brown,hannah.brown1773@example.com,44-33-57,24365955,Glasgow,Credit Card,8990.59,46
+CUS001774,Priya Rossi,priya.rossi1774@example.com,28-28-17,12193035,Manchester,Savings,10562.8,15
+CUS001775,James Tanaka,james.tanaka1775@example.com,52-10-27,82145990,Bristol,Savings,-10382.71,44
+CUS001776,Fatima Rossi,fatima.rossi1776@example.com,86-50-74,67173466,Bristol,Current,7693.02,78
+CUS001777,Priya Smith,priya.smith1777@example.com,55-11-65,98659110,Liverpool,Loan,9912.98,47
+CUS001778,Noah Garcia,noah.garcia1778@example.com,28-18-30,75442038,Liverpool,Current,5933.5,94
+CUS001779,Priya Brown,priya.brown1779@example.com,27-57-16,17528557,Leeds,Mortgage,-2265.33,46
+CUS001780,Aisha Chen,aisha.chen1780@example.com,33-82-39,29379087,Leeds,Current,3703.95,110
+CUS001781,Wei Garcia,wei.garcia1781@example.com,11-91-63,74761452,Birmingham,Savings,14890.23,46
+CUS001782,Carlos Nguyen,carlos.nguyen1782@example.com,96-21-97,17555313,Cardiff,Credit Card,5546.27,84
+CUS001783,Mei Garcia,mei.garcia1783@example.com,18-91-46,25515934,Bristol,Mortgage,9284.26,68
+CUS001784,Fatima Ali,fatima.ali1784@example.com,92-43-70,71306102,London,Savings,5568.26,99
+CUS001785,Liam Rossi,liam.rossi1785@example.com,30-39-90,51204577,Cardiff,Savings,4888.79,86
+CUS001786,James Tanaka,james.tanaka1786@example.com,92-51-25,89354697,Cardiff,Mortgage,13124.09,40
+CUS001787,Fatima Ali,fatima.ali1787@example.com,26-39-54,99334094,London,Loan,-16938.36,73
+CUS001788,Fatima Rossi,fatima.rossi1788@example.com,61-72-81,14671172,Leeds,Mortgage,-115.37,29
+CUS001789,Fatima Tanaka,fatima.tanaka1789@example.com,66-35-19,30501757,Leeds,Savings,10171.59,78
+CUS001790,Priya Nguyen,priya.nguyen1790@example.com,58-85-96,38732907,London,Loan,11371.9,98
+CUS001791,Mohammed Kowalski,mohammed.kowalski1791@example.com,39-75-11,92993160,Bristol,Savings,4254.23,115
+CUS001792,Sofia Nguyen,sofia.nguyen1792@example.com,81-26-85,82045711,Bristol,Savings,1601.41,24
+CUS001793,Yuki Khan,yuki.khan1793@example.com,56-11-96,17027599,London,Credit Card,5580.27,25
+CUS001794,Mohammed Nguyen,mohammed.nguyen1794@example.com,67-20-68,31076192,Liverpool,Current,-2344.36,30
+CUS001795,Mary Silva,mary.silva1795@example.com,97-98-49,50559059,Leeds,Loan,-3285.75,104
+CUS001796,Olu Brown,olu.brown1796@example.com,40-26-78,71953403,Liverpool,Credit Card,1858.95,40
+CUS001797,Olu Ali,olu.ali1797@example.com,56-32-40,53073636,Birmingham,Credit Card,19313.31,88
+CUS001798,Liam Silva,liam.silva1798@example.com,73-17-84,64435518,Birmingham,Credit Card,5955.8,91
+CUS001799,Liam Rossi,liam.rossi1799@example.com,95-28-39,41805033,Glasgow,Current,7009.93,53
+CUS001800,Mohammed Silva,mohammed.silva1800@example.com,23-67-56,54014553,Manchester,Current,-2247.26,5
+CUS001801,Mary Ahmed,mary.ahmed1801@example.com,87-87-78,95370824,Cardiff,Credit Card,-3669.1,3
+CUS001802,Carlos Okafor,carlos.okafor1802@example.com,28-93-53,25781262,Glasgow,Loan,526.1,64
+CUS001803,Mary Ahmed,mary.ahmed1803@example.com,24-73-55,41191585,Manchester,Credit Card,10440.51,19
+CUS001804,Yuki Kowalski,yuki.kowalski1804@example.com,36-71-78,90364614,Cardiff,Savings,-3842.27,95
+CUS001805,Carlos Garcia,carlos.garcia1805@example.com,48-94-16,36779649,Cardiff,Credit Card,15123.06,26
+CUS001806,Ivan Chen,ivan.chen1806@example.com,87-46-59,14275851,Liverpool,Current,-5768.28,111
+CUS001807,Mei Andersson,mei.andersson1807@example.com,65-91-93,69412067,Glasgow,Mortgage,10377.25,112
+CUS001808,Aisha Brown,aisha.brown1808@example.com,56-23-28,86045050,Liverpool,Savings,-6943.47,11
+CUS001809,Wei Kowalski,wei.kowalski1809@example.com,79-71-47,29250313,Bristol,Savings,3248.51,12
+CUS001810,Yuki Patel,yuki.patel1810@example.com,79-66-83,69655367,London,Mortgage,-14236.42,112
+CUS001811,Sofia Chen,sofia.chen1811@example.com,64-33-64,13173801,Manchester,Loan,70.96,3
+CUS001812,Mary Nguyen,mary.nguyen1812@example.com,51-84-86,63924051,Cardiff,Credit Card,14182.73,74
+CUS001813,Noah Rossi,noah.rossi1813@example.com,26-13-64,66025767,Bristol,Mortgage,-33.72,58
+CUS001814,Olu Brown,olu.brown1814@example.com,25-94-82,68082205,London,Loan,6490.82,12
+CUS001815,Carlos Smith,carlos.smith1815@example.com,29-11-10,65700347,Cardiff,Savings,18104.05,44
+CUS001816,James Nguyen,james.nguyen1816@example.com,75-42-47,98713943,Cardiff,Current,-4326.96,9
+CUS001817,Mei Ali,mei.ali1817@example.com,74-79-85,44599097,Leeds,Mortgage,16377.05,30
+CUS001818,James Kowalski,james.kowalski1818@example.com,47-21-18,89093692,Leeds,Loan,-1346.05,84
+CUS001819,Ivan Garcia,ivan.garcia1819@example.com,70-73-53,41468532,Glasgow,Credit Card,10749.53,59
+CUS001820,Liam Tanaka,liam.tanaka1820@example.com,63-32-90,92996008,Cardiff,Credit Card,1876.14,3
+CUS001821,James Brown,james.brown1821@example.com,86-84-20,74648400,Liverpool,Loan,6313.94,17
+CUS001822,Carlos Tanaka,carlos.tanaka1822@example.com,39-36-25,82720751,Glasgow,Loan,3225.27,104
+CUS001823,Priya Ali,priya.ali1823@example.com,52-33-20,64045664,Birmingham,Savings,7665.59,19
+CUS001824,Ivan Ali,ivan.ali1824@example.com,98-76-32,76792627,Cardiff,Savings,-11087.6,22
+CUS001825,Liam Nguyen,liam.nguyen1825@example.com,59-34-97,91188441,Manchester,Credit Card,1706.46,49
+CUS001826,Mary Garcia,mary.garcia1826@example.com,87-81-30,55754287,Cardiff,Credit Card,-1271.26,43
+CUS001827,Hannah Brown,hannah.brown1827@example.com,62-79-44,49253203,Manchester,Current,-4218.39,66
+CUS001828,Olu Ahmed,olu.ahmed1828@example.com,34-22-61,73314823,London,Current,-5233.1,56
+CUS001829,Noah Tanaka,noah.tanaka1829@example.com,50-96-83,84159487,Birmingham,Savings,15281.64,22
+CUS001830,Carlos Okafor,carlos.okafor1830@example.com,80-14-74,92703129,Cardiff,Mortgage,-2361.75,0
+CUS001831,Noah Okafor,noah.okafor1831@example.com,93-95-50,88373182,Birmingham,Credit Card,4668.57,30
+CUS001832,Carlos Chen,carlos.chen1832@example.com,52-18-90,18316983,Manchester,Mortgage,5688.95,75
+CUS001833,Sofia Kowalski,sofia.kowalski1833@example.com,93-86-91,51046370,Bristol,Current,-3953.07,33
+CUS001834,Olu Kowalski,olu.kowalski1834@example.com,56-93-42,94184221,Cardiff,Mortgage,3356.59,59
+CUS001835,Mohammed Tanaka,mohammed.tanaka1835@example.com,15-49-70,15647793,Bristol,Credit Card,-1381.11,85
+CUS001836,Mei Patel,mei.patel1836@example.com,14-81-56,73356565,London,Savings,5895.24,6
+CUS001837,Fatima Rossi,fatima.rossi1837@example.com,88-89-52,58391998,Bristol,Savings,-8144.0,37
+CUS001838,Priya Nguyen,priya.nguyen1838@example.com,10-61-59,27649004,Glasgow,Credit Card,14096.78,101
+CUS001839,Fatima Ahmed,fatima.ahmed1839@example.com,23-28-27,67661178,Manchester,Credit Card,283.45,54
+CUS001840,Priya Khan,priya.khan1840@example.com,58-54-94,12529344,Birmingham,Credit Card,-1331.83,6
+CUS001841,Hannah Okafor,hannah.okafor1841@example.com,98-97-75,46627401,Liverpool,Savings,8166.8,67
+CUS001842,Wei Rossi,wei.rossi1842@example.com,74-43-68,96222207,Cardiff,Savings,4207.1,47
+CUS001843,Ivan Chen,ivan.chen1843@example.com,44-54-39,29115719,Liverpool,Current,-1798.3,42
+CUS001844,Ivan Smith,ivan.smith1844@example.com,76-97-65,55090257,Liverpool,Mortgage,8225.92,83
+CUS001845,Mary Silva,mary.silva1845@example.com,27-22-94,74808665,Birmingham,Loan,435.61,86
+CUS001846,Priya Khan,priya.khan1846@example.com,75-11-84,40378898,Bristol,Current,5258.51,104
+CUS001847,Liam Garcia,liam.garcia1847@example.com,21-93-40,24373740,Manchester,Mortgage,11447.51,45
+CUS001848,Mei Tanaka,mei.tanaka1848@example.com,46-79-63,31819437,Bristol,Current,1597.51,85
+CUS001849,Olu Okafor,olu.okafor1849@example.com,55-45-32,98841470,Manchester,Mortgage,10254.15,118
+CUS001850,Priya Patel,priya.patel1850@example.com,15-88-28,50671166,Birmingham,Mortgage,-888.61,110
+CUS001851,Liam Nguyen,liam.nguyen1851@example.com,89-15-62,97447673,Manchester,Savings,-7493.52,92
+CUS001852,Yuki Brown,yuki.brown1852@example.com,26-42-25,55462875,Cardiff,Savings,4730.86,32
+CUS001853,Ivan Patel,ivan.patel1853@example.com,71-10-24,91867021,Leeds,Current,5323.91,12
+CUS001854,Priya Smith,priya.smith1854@example.com,50-21-31,52392864,Liverpool,Loan,3110.38,42
+CUS001855,Hannah Kowalski,hannah.kowalski1855@example.com,50-76-72,41533476,Liverpool,Loan,-1079.74,79
+CUS001856,Liam Rossi,liam.rossi1856@example.com,35-10-44,66124346,Leeds,Loan,7917.41,73
+CUS001857,Sofia Smith,sofia.smith1857@example.com,17-29-97,26577053,Leeds,Savings,5727.28,16
+CUS001858,Mei Khan,mei.khan1858@example.com,22-40-47,46061888,Liverpool,Mortgage,9459.58,110
+CUS001859,Priya Khan,priya.khan1859@example.com,56-70-32,35655841,Manchester,Current,2544.28,32
+CUS001860,Wei Khan,wei.khan1860@example.com,60-51-78,58999050,Leeds,Current,10093.16,38
+CUS001861,Priya Garcia,priya.garcia1861@example.com,20-93-98,47503878,Bristol,Loan,-1738.9,27
+CUS001862,Mei Khan,mei.khan1862@example.com,80-46-16,30108547,Leeds,Current,7327.47,65
+CUS001863,Mohammed Okafor,mohammed.okafor1863@example.com,49-75-54,20435531,Bristol,Savings,-13409.96,61
+CUS001864,Fatima Ahmed,fatima.ahmed1864@example.com,84-68-34,19810907,Cardiff,Loan,21662.64,115
+CUS001865,Carlos Tanaka,carlos.tanaka1865@example.com,77-60-33,80370507,Leeds,Savings,7213.63,109
+CUS001866,James Ahmed,james.ahmed1866@example.com,56-88-67,76013535,Manchester,Loan,4148.35,13
+CUS001867,Yuki Andersson,yuki.andersson1867@example.com,60-48-34,54330614,Glasgow,Loan,2213.52,103
+CUS001868,Noah Chen,noah.chen1868@example.com,47-93-40,67867924,Birmingham,Savings,5822.26,77
+CUS001869,Liam Ahmed,liam.ahmed1869@example.com,64-71-38,77422166,Cardiff,Savings,-1572.62,43
+CUS001870,Fatima Nguyen,fatima.nguyen1870@example.com,73-98-79,60383965,Glasgow,Current,6364.74,109
+CUS001871,Aisha Brown,aisha.brown1871@example.com,27-29-11,27082688,Birmingham,Current,18435.85,53
+CUS001872,Mary Andersson,mary.andersson1872@example.com,76-21-37,28880569,Glasgow,Loan,-16653.58,25
+CUS001873,Mei Patel,mei.patel1873@example.com,12-59-26,58619682,Birmingham,Credit Card,8124.47,76
+CUS001874,Wei Ali,wei.ali1874@example.com,95-67-75,74071746,London,Loan,5539.88,97
+CUS001875,Aisha Okafor,aisha.okafor1875@example.com,37-26-48,90968910,Cardiff,Savings,9645.13,75
+CUS001876,Mei Garcia,mei.garcia1876@example.com,15-27-35,85621493,Cardiff,Loan,9880.99,71
+CUS001877,Sofia Ahmed,sofia.ahmed1877@example.com,76-64-27,52218538,Bristol,Loan,378.46,87
+CUS001878,Sofia Chen,sofia.chen1878@example.com,84-88-54,86745362,Glasgow,Loan,2973.08,32
+CUS001879,Mohammed Ali,mohammed.ali1879@example.com,73-19-15,45330090,Liverpool,Loan,9500.66,18
+CUS001880,Fatima Smith,fatima.smith1880@example.com,19-10-50,75207161,Birmingham,Current,8868.12,83
+CUS001881,Olu Patel,olu.patel1881@example.com,63-31-16,73410663,Manchester,Credit Card,13095.81,37
+CUS001882,James Kowalski,james.kowalski1882@example.com,11-95-90,37648570,Manchester,Current,7373.3,88
+CUS001883,Hannah Andersson,hannah.andersson1883@example.com,73-49-11,87304916,Manchester,Savings,1338.21,84
+CUS001884,Mary Rossi,mary.rossi1884@example.com,71-59-18,15318759,Birmingham,Savings,-5162.04,5
+CUS001885,Ivan Okafor,ivan.okafor1885@example.com,15-66-26,39591604,Birmingham,Loan,16739.3,79
+CUS001886,Sofia Nguyen,sofia.nguyen1886@example.com,54-88-33,75112971,Birmingham,Loan,930.98,114
+CUS001887,Mohammed Garcia,mohammed.garcia1887@example.com,83-98-45,51398600,Leeds,Current,3277.77,31
+CUS001888,Carlos Smith,carlos.smith1888@example.com,67-40-82,50413895,Leeds,Mortgage,3152.11,80
+CUS001889,Ivan Andersson,ivan.andersson1889@example.com,85-42-55,61358901,Birmingham,Current,2465.21,102
+CUS001890,Wei Ali,wei.ali1890@example.com,35-45-63,39277384,London,Mortgage,-281.06,77
+CUS001891,Aisha Smith,aisha.smith1891@example.com,30-45-93,76207574,London,Loan,1785.09,116
+CUS001892,Ivan Rossi,ivan.rossi1892@example.com,41-50-16,89109979,Liverpool,Current,-5965.29,9
+CUS001893,James Khan,james.khan1893@example.com,36-86-30,19923946,Leeds,Current,10559.36,82
+CUS001894,Mary Nguyen,mary.nguyen1894@example.com,47-95-73,63701960,Leeds,Current,-8363.25,46
+CUS001895,Ivan Kowalski,ivan.kowalski1895@example.com,60-64-50,79728047,Manchester,Current,-7671.67,39
+CUS001896,Carlos Silva,carlos.silva1896@example.com,39-89-26,37204775,Glasgow,Loan,-1443.75,104
+CUS001897,Olu Chen,olu.chen1897@example.com,83-71-50,30042110,Bristol,Mortgage,2447.21,31
+CUS001898,Mei Andersson,mei.andersson1898@example.com,12-91-82,92682472,Manchester,Current,-2578.56,83
+CUS001899,Priya Chen,priya.chen1899@example.com,56-77-62,86105433,Birmingham,Mortgage,14076.33,99
+CUS001900,Aisha Brown,aisha.brown1900@example.com,32-68-95,10722437,Cardiff,Mortgage,-614.58,86
+CUS001901,Priya Kowalski,priya.kowalski1901@example.com,33-95-16,43669204,Bristol,Current,14648.87,55
+CUS001902,Olu Ali,olu.ali1902@example.com,62-66-42,49991015,Glasgow,Savings,1759.45,53
+CUS001903,Aisha Nguyen,aisha.nguyen1903@example.com,93-19-97,65866676,Manchester,Current,921.78,0
+CUS001904,Wei Brown,wei.brown1904@example.com,50-71-59,47622890,Cardiff,Credit Card,7796.13,5
+CUS001905,Aisha Garcia,aisha.garcia1905@example.com,38-74-53,58657936,Glasgow,Loan,1914.64,22
+CUS001906,Noah Khan,noah.khan1906@example.com,28-59-97,19766866,Birmingham,Loan,8391.96,56
+CUS001907,Noah Smith,noah.smith1907@example.com,92-25-22,30929632,Liverpool,Savings,8517.01,46
+CUS001908,Yuki Rossi,yuki.rossi1908@example.com,79-22-10,86466962,Liverpool,Savings,9067.21,29
+CUS001909,Olu Smith,olu.smith1909@example.com,24-53-84,84302100,Birmingham,Mortgage,18232.74,39
+CUS001910,Fatima Chen,fatima.chen1910@example.com,77-87-54,56926255,Liverpool,Mortgage,8604.13,73
+CUS001911,Ivan Ali,ivan.ali1911@example.com,85-11-28,69718587,Liverpool,Credit Card,-5780.87,18
+CUS001912,Priya Patel,priya.patel1912@example.com,95-23-70,51240385,Birmingham,Current,7299.69,14
+CUS001913,Liam Brown,liam.brown1913@example.com,35-65-64,46193375,Birmingham,Loan,14719.7,86
+CUS001914,Ivan Tanaka,ivan.tanaka1914@example.com,84-17-34,57596166,Leeds,Savings,19546.06,39
+CUS001915,Hannah Rossi,hannah.rossi1915@example.com,30-27-55,26153319,Glasgow,Loan,6833.58,78
+CUS001916,Liam Rossi,liam.rossi1916@example.com,75-34-18,61185651,Birmingham,Current,341.2,116
+CUS001917,Olu Nguyen,olu.nguyen1917@example.com,69-80-31,30348384,London,Loan,11003.36,49
+CUS001918,Hannah Andersson,hannah.andersson1918@example.com,46-43-25,16309397,Bristol,Loan,5050.67,94
+CUS001919,Yuki Nguyen,yuki.nguyen1919@example.com,33-59-70,42855813,Liverpool,Credit Card,12512.32,118
+CUS001920,Olu Nguyen,olu.nguyen1920@example.com,52-51-89,68270989,Manchester,Savings,-7328.77,114
+CUS001921,Mary Chen,mary.chen1921@example.com,68-26-39,31684159,Liverpool,Loan,533.33,68
+CUS001922,Wei Chen,wei.chen1922@example.com,22-61-44,41355748,Birmingham,Mortgage,10377.67,117
+CUS001923,Mei Patel,mei.patel1923@example.com,53-43-91,27709538,Cardiff,Credit Card,6224.78,89
+CUS001924,Mei Khan,mei.khan1924@example.com,56-58-25,57323038,Manchester,Savings,-3074.95,80
+CUS001925,Hannah Brown,hannah.brown1925@example.com,19-46-84,96485660,Manchester,Current,21114.03,62
+CUS001926,Aisha Rossi,aisha.rossi1926@example.com,86-20-71,69401183,Leeds,Savings,17396.13,25
+CUS001927,Mary Smith,mary.smith1927@example.com,69-73-62,12388808,Glasgow,Credit Card,12216.6,70
+CUS001928,Wei Ali,wei.ali1928@example.com,66-65-11,40209541,Bristol,Mortgage,5322.11,7
+CUS001929,Yuki Brown,yuki.brown1929@example.com,90-48-62,41238928,Leeds,Savings,894.63,102
+CUS001930,Fatima Smith,fatima.smith1930@example.com,10-79-26,31034675,Bristol,Mortgage,10309.71,114
+CUS001931,Sofia Patel,sofia.patel1931@example.com,90-94-19,58592723,Glasgow,Savings,3026.62,48
+CUS001932,Hannah Andersson,hannah.andersson1932@example.com,34-30-96,88624596,Cardiff,Mortgage,12152.39,58
+CUS001933,Olu Tanaka,olu.tanaka1933@example.com,34-92-46,88202912,Birmingham,Mortgage,-2192.27,86
+CUS001934,Mohammed Khan,mohammed.khan1934@example.com,41-19-56,39540167,Bristol,Savings,3999.39,74
+CUS001935,Ivan Andersson,ivan.andersson1935@example.com,51-49-70,79608391,Manchester,Credit Card,357.04,44
+CUS001936,Mei Patel,mei.patel1936@example.com,44-10-55,75870502,Glasgow,Loan,12162.01,59
+CUS001937,Priya Ali,priya.ali1937@example.com,90-67-82,90797237,Cardiff,Current,270.68,6
+CUS001938,Wei Patel,wei.patel1938@example.com,48-86-87,74124054,Birmingham,Savings,23309.53,42
+CUS001939,Sofia Garcia,sofia.garcia1939@example.com,27-90-19,66384151,Birmingham,Current,14276.8,83
+CUS001940,James Silva,james.silva1940@example.com,78-33-57,74106350,Birmingham,Savings,1824.58,108
+CUS001941,Olu Chen,olu.chen1941@example.com,23-24-76,24094480,Liverpool,Savings,10633.69,76
+CUS001942,Yuki Ali,yuki.ali1942@example.com,66-42-57,58913312,Glasgow,Savings,6988.02,3
+CUS001943,Sofia Smith,sofia.smith1943@example.com,15-30-36,82227409,Bristol,Credit Card,6617.88,55
+CUS001944,Ivan Rossi,ivan.rossi1944@example.com,76-89-10,56303211,Glasgow,Mortgage,15013.67,17
+CUS001945,Liam Chen,liam.chen1945@example.com,43-19-73,35077090,Bristol,Mortgage,15110.53,19
+CUS001946,Liam Garcia,liam.garcia1946@example.com,94-92-47,91322729,London,Credit Card,4530.37,59
+CUS001947,Mei Khan,mei.khan1947@example.com,85-22-83,83171294,Cardiff,Savings,6163.99,57
+CUS001948,Ivan Brown,ivan.brown1948@example.com,24-57-32,15563458,Liverpool,Mortgage,10080.03,113
+CUS001949,Mei Brown,mei.brown1949@example.com,12-81-64,73516151,Cardiff,Credit Card,16165.52,99
+CUS001950,James Khan,james.khan1950@example.com,15-64-48,17980843,Glasgow,Savings,-5971.84,45
+CUS001951,Yuki Smith,yuki.smith1951@example.com,28-78-64,94263462,Cardiff,Current,8760.81,34
+CUS001952,Liam Ahmed,liam.ahmed1952@example.com,68-78-15,52044220,Birmingham,Mortgage,6115.49,33
+CUS001953,Mei Ali,mei.ali1953@example.com,45-56-65,67508892,Bristol,Loan,-4240.69,1
+CUS001954,Fatima Andersson,fatima.andersson1954@example.com,43-89-51,97393089,London,Mortgage,-2661.87,7
+CUS001955,Olu Andersson,olu.andersson1955@example.com,67-95-60,83742527,Liverpool,Current,2139.37,77
+CUS001956,Priya Patel,priya.patel1956@example.com,17-86-15,51074416,Liverpool,Loan,7437.24,101
+CUS001957,Carlos Ali,carlos.ali1957@example.com,47-64-34,95481581,London,Mortgage,-10494.21,57
+CUS001958,Sofia Garcia,sofia.garcia1958@example.com,27-72-82,75324230,Liverpool,Credit Card,569.6,17
+CUS001959,Sofia Brown,sofia.brown1959@example.com,98-61-40,28928986,Birmingham,Savings,7221.38,110
+CUS001960,Mary Chen,mary.chen1960@example.com,27-71-27,29172699,London,Mortgage,5382.95,85
+CUS001961,Wei Tanaka,wei.tanaka1961@example.com,98-49-94,35131108,Cardiff,Current,-4121.11,95
+CUS001962,Yuki Okafor,yuki.okafor1962@example.com,25-42-29,71135731,Manchester,Loan,15175.69,38
+CUS001963,Olu Garcia,olu.garcia1963@example.com,72-41-78,29432239,Cardiff,Savings,9124.96,8
+CUS001964,Mary Ahmed,mary.ahmed1964@example.com,69-81-86,49137386,Bristol,Current,5109.26,106
+CUS001965,Wei Rossi,wei.rossi1965@example.com,59-73-18,36581573,Manchester,Credit Card,7404.5,37
+CUS001966,Yuki Okafor,yuki.okafor1966@example.com,91-75-96,58141949,Liverpool,Mortgage,10863.14,115
+CUS001967,Yuki Rossi,yuki.rossi1967@example.com,38-73-28,54440534,Cardiff,Credit Card,7802.24,11
+CUS001968,Wei Ali,wei.ali1968@example.com,59-67-61,69277649,Liverpool,Mortgage,10938.93,67
+CUS001969,Fatima Garcia,fatima.garcia1969@example.com,40-56-60,18931534,Bristol,Current,2521.31,101
+CUS001970,Mei Patel,mei.patel1970@example.com,78-89-41,83102156,Bristol,Mortgage,16949.99,93
+CUS001971,Mei Ahmed,mei.ahmed1971@example.com,46-11-64,63370165,Liverpool,Current,9404.29,50
+CUS001972,Hannah Tanaka,hannah.tanaka1972@example.com,45-78-62,44719338,Liverpool,Savings,6936.45,13
+CUS001973,Carlos Ahmed,carlos.ahmed1973@example.com,72-43-52,36050355,London,Current,-1133.52,61
+CUS001974,Olu Brown,olu.brown1974@example.com,48-14-61,54486941,Cardiff,Current,6375.1,12
+CUS001975,James Smith,james.smith1975@example.com,17-58-75,48626468,Leeds,Loan,5343.83,97
+CUS001976,Fatima Okafor,fatima.okafor1976@example.com,13-39-62,80529128,Cardiff,Credit Card,-1114.48,62
+CUS001977,Wei Nguyen,wei.nguyen1977@example.com,25-71-12,29910648,Cardiff,Credit Card,6499.5,30
+CUS001978,Liam Smith,liam.smith1978@example.com,25-33-97,79092145,Birmingham,Loan,7167.3,21
+CUS001979,Mary Brown,mary.brown1979@example.com,31-84-37,55666498,London,Current,11510.59,58
+CUS001980,Aisha Ali,aisha.ali1980@example.com,14-77-76,58191561,Birmingham,Loan,1457.97,29
+CUS001981,Hannah Rossi,hannah.rossi1981@example.com,21-15-85,82217998,Glasgow,Savings,-6693.58,107
+CUS001982,Priya Smith,priya.smith1982@example.com,24-39-53,38646784,Cardiff,Current,-14521.07,116
+CUS001983,Mary Ali,mary.ali1983@example.com,94-44-41,34841912,Bristol,Credit Card,5139.26,116
+CUS001984,Liam Rossi,liam.rossi1984@example.com,97-19-86,57069843,Birmingham,Mortgage,12895.96,4
+CUS001985,James Nguyen,james.nguyen1985@example.com,85-42-87,10626355,London,Savings,11590.32,14
+CUS001986,Hannah Smith,hannah.smith1986@example.com,89-62-41,59329490,Liverpool,Credit Card,-364.42,43
+CUS001987,James Khan,james.khan1987@example.com,33-31-16,79263134,London,Current,27406.98,106
+CUS001988,Mary Rossi,mary.rossi1988@example.com,33-67-12,31748468,Bristol,Loan,9507.38,89
+CUS001989,Noah Silva,noah.silva1989@example.com,87-23-33,23432528,Manchester,Loan,-1676.28,64
+CUS001990,Aisha Chen,aisha.chen1990@example.com,21-90-21,10635236,Bristol,Credit Card,9316.75,14
+CUS001991,Wei Kowalski,wei.kowalski1991@example.com,98-50-55,97822957,Leeds,Loan,7177.23,10
+CUS001992,Olu Brown,olu.brown1992@example.com,52-17-96,22245041,Leeds,Credit Card,6950.06,1
+CUS001993,Aisha Patel,aisha.patel1993@example.com,88-53-42,56755222,Birmingham,Mortgage,4853.59,90
+CUS001994,Noah Nguyen,noah.nguyen1994@example.com,63-26-36,56950920,Birmingham,Current,31131.93,62
+CUS001995,Liam Andersson,liam.andersson1995@example.com,33-97-84,98240053,Glasgow,Credit Card,8261.14,74
+CUS001996,Liam Brown,liam.brown1996@example.com,98-71-25,99181198,Glasgow,Mortgage,1557.89,11
+CUS001997,James Kowalski,james.kowalski1997@example.com,78-78-63,64810603,London,Current,2307.05,118
+CUS001998,Mohammed Patel,mohammed.patel1998@example.com,23-74-39,45748377,Liverpool,Loan,7816.97,20
+CUS001999,Mohammed Khan,mohammed.khan1999@example.com,53-35-17,38695037,Glasgow,Mortgage,3767.95,45
