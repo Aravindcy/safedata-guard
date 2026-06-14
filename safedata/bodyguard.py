@@ -56,7 +56,10 @@ def _is_frame(obj):
     return _HAS_POLARS and isinstance(obj, pl.DataFrame)
 
 
-class SafetyError(Exception):
+from .exceptions import SafedataError
+
+
+class SafetyError(SafedataError):
     """Raised when code is blocked. Message is meant to be fed back to the AI."""
 
 

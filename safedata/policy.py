@@ -24,8 +24,30 @@ from __future__ import annotations
 from dataclasses import dataclass, replace, asdict
 
 
-@dataclass(frozen=True)
+# Industry profiles a beginner can name instead of tuning flags. Mapped onto the
+# engine fields below. allow_python_fallback=False means SafePlan-only (the
+# guarded-Python engine is refused) - the default for regulated industries.
+_PROFILES = {
+    "general":    dict(min_group_size=None, max_result_rows=100,
+                       allow_python_fallback=True),
+    "energy":     dict(min_group_size=5, max_result_rows=50, pii_scan_rows="all",
+                       enforce_minimal_result=True, block_1d_row_results=True,
+                       allow_python_fallback=False),
+    "banking":    dict(min_group_size=10, max_result_rows=50, pii_scan_rows="all",
+                       enforce_minimal_result=True, block_1d_row_results=True,
+                       allow_python_fallback=False),
+    "insurance":  dict(min_group_size=10, max_result_rows=50, pii_scan_rows="all",
+                       enforce_minimal_result=True, block_1d_row_results=True,
+                       allow_python_fallback=False),
+    "healthcare": dict(min_group_size=15, max_result_rows=30, pii_scan_rows="all",
+                       enforce_minimal_result=True, block_1d_row_results=True,
+                       allow_python_fallback=False),
+}
+
+
+@dataclass
 class Policy:
+    profile: str = "general"
     safe_mode: str = "drop_unneeded_pii"
     isolation: str = "process"
     max_result_rows: int = 50
@@ -36,6 +58,10 @@ class Policy:
     min_group_size: "int | None" = None
     pii_scan_rows: "int | str" = 20
     use_presidio: bool = False
+    # v1.1.0 facade fields. allow_python_fallback gates the guarded-Python engine;
+    # allow_raw_rows lets a plan return individual rows (off for regulated data).
+    allow_python_fallback: bool = True
+    allow_raw_rows: bool = False
 
     def with_(self, **overrides) -> "Policy":
         """Return a copy with some fields replaced."""
@@ -95,6 +121,47 @@ class Policy:
             block_1d_row_results=False,
             min_group_size=None,
         ).with_(**overrides)
+
+    # --- v1.1.0 industry profiles (the names beginners reach for) ----------
+
+    @classmethod
+    def general(cls, **overrides) -> "Policy":
+        """Non-regulated data: SafePlan first, guarded-Python fallback allowed."""
+        return cls(profile="general", **_PROFILES["general"]).with_(**overrides)
+
+    @classmethod
+    def energy(cls, **overrides) -> "Policy":
+        """Energy customer data: SafePlan-only, k>=5, deep PII scan."""
+        return cls(profile="energy", **_PROFILES["energy"]).with_(**overrides)
+
+    @classmethod
+    def banking(cls, **overrides) -> "Policy":
+        """Banking/finance data: SafePlan-only, k>=10, deep PII scan."""
+        return cls(profile="banking", **_PROFILES["banking"]).with_(**overrides)
+
+    @classmethod
+    def insurance(cls, **overrides) -> "Policy":
+        """Insurance data: SafePlan-only, k>=10, deep PII scan."""
+        return cls(profile="insurance", **_PROFILES["insurance"]).with_(**overrides)
+
+    @classmethod
+    def healthcare(cls, **overrides) -> "Policy":
+        """Healthcare data: SafePlan-only, k>=15, smallest result caps."""
+        return cls(profile="healthcare", **_PROFILES["healthcare"]).with_(**overrides)
+
+    @classmethod
+    def from_profile(cls, profile: str, **overrides) -> "Policy":
+        """Build a Policy from a profile name. Raises PolicyError if unknown."""
+        from .exceptions import PolicyError
+        builders = {"general": cls.general, "energy": cls.energy,
+                    "banking": cls.banking, "insurance": cls.insurance,
+                    "healthcare": cls.healthcare, "strict": cls.strict,
+                    "basic": cls.basic, "regulated": cls.regulated,
+                    "audit_only": cls.audit_only}
+        if profile not in builders:
+            raise PolicyError(
+                f"Unknown profile '{profile}'. Choose one of {sorted(builders)}.")
+        return builders[profile](**overrides)
 
     def agent(self, model, **overrides):
         """Build an Agent configured from this policy (a convenience bridge)."""
