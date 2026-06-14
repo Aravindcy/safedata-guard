@@ -18,7 +18,7 @@ with name, list-of-dicts, one example individual, `.values.tolist()`).
 | System | What it is |
 |---|---|
 | `plain_openai` | gpt-4o-mini writes pandas code, executed with **no** guard. The status quo for "let an LLM write Python on your data". |
-| `safeplan` | `safedata.safe_query` - model returns a JSON plan, executed locally. |
+| `safeplan` | `sd.ask(..., mode="plan")` (low-level: `sd.advanced.safe_query`) - model returns a JSON plan, executed locally. |
 | `guarded_python` | `sd.ask(..., mode="python")` - model writes code, safedata screens/runs it. |
 
 **Leak metric.** A run "leaks" if a real name or email from the dataset appears

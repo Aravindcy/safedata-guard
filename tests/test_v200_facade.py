@@ -284,6 +284,32 @@ def test_protect_keeps_health_column_when_question_needs_it():
     assert "patient_id" not in safe.columns
 
 
+def test_ask_no_explicit_limit_not_blocked_under_tight_cap():
+    # A valid plan that omits "limit" must default to the policy cap, not 50,
+    # so it is not blocked under healthcare (max_result_rows=30).
+    df = pd.DataFrame({"department": ["A"] * 40 + ["B"] * 40,
+                       "treatment_cost": range(80)})
+    model = _plan('{"operation":"groupby_aggregate","group_by":["department"],'
+                  '"metrics":[{"column":"treatment_cost","agg":"sum","as_name":"t"}]}')
+    res = sd.ask(df, "total treatment cost by department", model=model,
+                 profile="healthcare")
+    assert res.blocked is False and len(res.answer) == 2
+
+
+@pytest.mark.parametrize("question", [
+    "average treatment cost by department",
+    "total cost by department",
+    "spend by department",
+])
+def test_protect_keeps_metric_column_via_synonym(question):
+    df = pd.DataFrame({"patient_id": [f"P{i}" for i in range(30)],
+                       "treatment_cost": range(30),
+                       "department": ["A"] * 15 + ["B"] * 15})
+    safe = sd.protect(df, question=question, profile="healthcare")
+    assert "treatment_cost" in safe.columns and "department" in safe.columns
+    assert "patient_id" not in safe.columns
+
+
 def test_protect_drops_business_identifiers_not_needed():
     safe = sd.protect(_banking(), question="average balance by region",
                       profile="banking")

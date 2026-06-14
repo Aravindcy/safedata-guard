@@ -68,8 +68,8 @@ library validates and executes itself, with privacy rules applied.
 | Get a privacy-filtered view | `sd.protect(df, question, profile)` |
 | Reuse a configured setup | `sd.Guard(profile, model)` |
 
-The everyday API is nine names (`sd.Policy` controls the behaviour). Power-user
-tools live under `sd.advanced.*`.
+The everyday API is intentionally small (`sd.Policy` controls the behaviour).
+Power-user tools live under `sd.advanced.*`.
 
 ### Ask safely
 

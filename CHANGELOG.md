@@ -26,7 +26,12 @@ internally). Upgraders from 1.x must migrate - see the mapping below.
   `record_id`, `person_id`, `driver_id`, `quote_id`, `*_id`), matched on name
   segments so look-alikes like `build`/`fluid`/`grid` are not flagged.
 - **`sd.protect(df, question, profile)`** - privacy-filtered safe view (drops
-  un-needed PII and sensitive identifiers; keeps analytical columns).
+  un-needed PII, business identifiers, health, quasi-identifier, and free-text
+  columns; keeps analytical columns). Question matching understands name
+  segments and synonyms, so "total cost by department" keeps `treatment_cost`.
+- A SafePlan that omits `limit` now defaults to the policy's `max_result_rows`
+  (was a fixed 50), so a valid query is not blocked under a tighter cap (e.g.
+  healthcare's 30).
 - **`sd.Guard(profile, model)`** - reusable object with `ask/scan/protect/session`.
 - **Industry `Policy` profiles** - general/energy/banking/insurance/healthcare/
   strict; regulated profiles are SafePlan-only (`allow_python_fallback=False`).

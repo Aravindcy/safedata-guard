@@ -46,7 +46,7 @@ class SafePlan:
     metrics: List[MetricSpec] = field(default_factory=list)
     filters: List[dict] = field(default_factory=list)
     include_count: bool = True
-    limit: int = 50
+    limit: Optional[int] = None    # None -> use the policy's max_result_rows
     sort_by: Optional[str] = None
     ascending: bool = False
 
@@ -97,8 +97,11 @@ def parse_safeplan(obj: dict) -> SafePlan:
     for key in ("group_by", "metrics", "filters"):
         if key in obj and obj[key] is not None and not isinstance(obj[key], list):
             raise SafetyError(f"Plan field '{key}' must be a list.")
-    raw_limit = obj.get("limit", 50)
-    if not isinstance(raw_limit, int) or isinstance(raw_limit, bool):
+    # Omitted limit -> None, meaning "use the policy's max_result_rows" (so a
+    # valid plan is not blocked just for not echoing the cap).
+    raw_limit = obj.get("limit", None)
+    if raw_limit is not None and (not isinstance(raw_limit, int)
+                                  or isinstance(raw_limit, bool)):
         raise SafetyError("Plan field 'limit' must be an integer.")
     limit = raw_limit
 
@@ -219,14 +222,16 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
             f"Blocked: operation '{plan.operation}' is not allowed. Use one of "
             f"{sorted(ALLOWED_OPERATIONS)}.")
 
-    if not isinstance(plan.limit, int) or isinstance(plan.limit, bool):
-        raise SafetyError("Blocked: limit must be an integer.")
-    if plan.limit < 1:
-        raise SafetyError("Blocked: limit must be at least 1.")
-    if plan.limit > policy.max_result_rows:
-        raise SafetyError(
-            f"Blocked: limit {plan.limit} exceeds max_result_rows "
-            f"{policy.max_result_rows}.")
+    # limit=None means "use the policy cap"; only validate an explicit limit.
+    if plan.limit is not None:
+        if not isinstance(plan.limit, int) or isinstance(plan.limit, bool):
+            raise SafetyError("Blocked: limit must be an integer.")
+        if plan.limit < 1:
+            raise SafetyError("Blocked: limit must be at least 1.")
+        if plan.limit > policy.max_result_rows:
+            raise SafetyError(
+                f"Blocked: limit {plan.limit} exceeds max_result_rows "
+                f"{policy.max_result_rows}.")
 
     for col in plan.group_by:
         if not isinstance(col, str):
@@ -317,7 +322,8 @@ def execute_safeplan(plan: SafePlan, df, policy: Policy):
     df = _as_pandas(df)
     validate_safeplan(plan, df, policy)
     df = _apply_filters(df, plan.filters)
-    limit = min(plan.limit, policy.max_result_rows)
+    effective = plan.limit if plan.limit is not None else policy.max_result_rows
+    limit = min(effective, policy.max_result_rows)
 
     if plan.operation == "count_rows":
         count = int(len(df))

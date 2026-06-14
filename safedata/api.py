@@ -95,6 +95,53 @@ def _looks_like_id(name_norm: str) -> bool:
     return False
 
 
+# Light synonym map so a natural question keeps the column it means even when it
+# does not use the exact column name ("total cost" -> *_cost; "revenue" -> CGM).
+_SYNONYMS = {
+    "cost": ("cost", "spend", "charge"),
+    "spend": ("spend", "cost", "amount"),
+    "revenue": ("revenue", "amount", "cgm", "sales", "turnover"),
+    "sales": ("sales", "revenue", "amount"),
+    "usage": ("usage", "kwh", "consumption", "volume"),
+    "consumption": ("consumption", "kwh", "usage", "volume"),
+    "balance": ("balance", "amount"),
+    "premium": ("premium", "price"),
+    "price": ("price", "premium", "amount", "cost"),
+    "claims": ("claim", "claims"),
+    "renewal": ("renewal", "renew"),
+}
+_GENERIC_SEG = {"id", "ids", "no", "num", "number", "code", "ref", "the", "of",
+                "a", "an", "per", "by", "total", "value", "amount"}
+
+
+def _question_words(question):
+    import re
+    return set(re.findall(r"[a-z0-9]+", (question or "").lower()))
+
+
+def _needed_by_question(question, col) -> bool:
+    """True if the question plausibly references `col` - by name (existing
+    matcher), by a meaningful name segment, or by a domain synonym. Keeps a
+    sensitive column the user actually asked about even with loose wording."""
+    from .analysis import _question_mentions_column
+    if _question_mentions_column(question or "", col):
+        return True
+    qwords = _question_words(question)
+    if not qwords:
+        return False
+    import re
+    segs = {s for s in re.split(r"[ _\-]+", str(col).lower())
+            if len(s) >= 3 and s not in _GENERIC_SEG}
+    if segs & qwords:
+        return True
+    col_norm = str(col).lower()
+    for qw in qwords:
+        for syn in _SYNONYMS.get(qw, ()):
+            if syn in col_norm:
+                return True
+    return False
+
+
 def _is_stringlike(series) -> bool:
     import pandas as pd
     dt = series.dtype
@@ -197,7 +244,6 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
     dropped, retained sensitive fields masked, analytical columns kept. If
     `question` is given, columns it needs are preserved."""
     from .firewall import create_privacy_plan, make_safe_view
-    from .analysis import _question_mentions_column
     pdf = _require_df(df)
     policy = _resolve_policy(profile, policy)
     plan = create_privacy_plan(
@@ -216,7 +262,7 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
                           + cats["health"] + cats["quasi_identifier"])
     if not policy.allow_raw_rows:
         to_drop = [c for c in safe_df.columns if c in extra_sensitive
-                   and not _question_mentions_column(question or "", c)]
+                   and not _needed_by_question(question, c)]
         if to_drop:
             safe_df = safe_df.drop(columns=to_drop)
 
