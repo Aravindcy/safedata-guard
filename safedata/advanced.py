@@ -49,7 +49,7 @@ from .integrations import to_pandera_schema, to_great_expectations_suite
 from .analysis import (privacy_report, ai_readiness, ai_risk_score,
                        quality_score, validate, Issue, infer_columns,
                        detect_ai_traps, create_contract, build_safe_prompt,
-                       enable_presidio, shadow)
+                       enable_presidio, shadow, suggest_fixes, explain_issue)
 
 __all__ = [
     # red-team / synthetic / sessions
@@ -73,5 +73,6 @@ __all__ = [
     # analysis
     "privacy_report", "ai_readiness", "ai_risk_score", "quality_score",
     "validate", "Issue", "infer_columns", "detect_ai_traps", "create_contract",
-    "build_safe_prompt", "enable_presidio", "shadow",
+    "build_safe_prompt", "enable_presidio", "shadow", "suggest_fixes",
+    "explain_issue",
 ]

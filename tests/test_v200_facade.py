@@ -248,6 +248,42 @@ def test_classifier_handles_spaced_and_hyphenated_names():
     assert "Sub-Team" in safe.columns
 
 
+def test_protect_drops_health_and_quasi_identifiers():
+    # Healthcare: a "revenue by region" question must not keep patient_id /
+    # diagnosis / condition / claim_id / notes in the safe view.
+    df = pd.DataFrame({
+        "patient_id": [f"P{i}" for i in range(30)],
+        "diagnosis": ["flu"] * 30, "condition": ["stable"] * 30,
+        "age": range(30), "claim_id": [f"C{i}" for i in range(30)],
+        "notes": ["note"] * 30,
+        "region": ["N"] * 15 + ["S"] * 15, "revenue": range(30)})
+    safe = sd.protect(df, question="total revenue by region", profile="healthcare")
+    for col in ("patient_id", "diagnosis", "condition", "age", "claim_id", "notes"):
+        assert col not in safe.columns, col
+    assert "region" in safe.columns and "revenue" in safe.columns
+
+
+@pytest.mark.parametrize("col", ["mrn", "hospital_number",
+                                 "medical_record_number", "patient_number"])
+def test_scan_detects_healthcare_identifiers(col):
+    rep = sd.scan(pd.DataFrame({col: range(20), "region": ["N"] * 20}),
+                  profile="healthcare")
+    assert col in rep.business_identifier_columns
+
+
+def test_advanced_exposes_suggest_fixes_and_explain_issue():
+    assert hasattr(sd.advanced, "suggest_fixes")
+    assert hasattr(sd.advanced, "explain_issue")
+
+
+def test_protect_keeps_health_column_when_question_needs_it():
+    # Question-aware: "count by diagnosis" must KEEP diagnosis.
+    df = pd.DataFrame({"diagnosis": ["a", "b"] * 15, "patient_id": range(30)})
+    safe = sd.protect(df, question="count by diagnosis", profile="healthcare")
+    assert "diagnosis" in safe.columns
+    assert "patient_id" not in safe.columns
+
+
 def test_protect_drops_business_identifiers_not_needed():
     safe = sd.protect(_banking(), question="average balance by region",
                       profile="banking")

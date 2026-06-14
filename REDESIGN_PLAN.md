@@ -1,4 +1,4 @@
-# safedata-guard v1.1.0 redesign plan
+# safedata-guard v2.0.0 redesign plan
 
 Goal: one front door, simple outside, powerful inside. Old public API removed;
 only nine names are public.

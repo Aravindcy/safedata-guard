@@ -1,4 +1,4 @@
-"""Phase 1 of the v1.1.0 redesign: exceptions, typed results, industry profiles.
+"""Phase 1 of the v2.0.0 redesign: exceptions, typed results, industry profiles.
 
 These are additive and do not touch the public API surface yet (that hard cut
 lands with the api.py/guard.py facade in a later phase).

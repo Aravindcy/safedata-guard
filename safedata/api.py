@@ -58,7 +58,10 @@ _BUSINESS_ID = ("customer_id", "account_id", "account_number", "policy_number",
                 "policy_id", "claim_id", "claim_number", "sort_code", "iban",
                 "mpan", "mprn", "meter_id", "meter_number", "contract_id",
                 "case_id", "invoice_id", "txn_id", "order_id", "subscriber_id",
-                "member_id", "reference", "ref_no", "offer_id")
+                "member_id", "reference", "ref_no", "offer_id",
+                # healthcare identifiers
+                "patient_id", "patient_number", "medical_record_number", "mrn",
+                "hospital_number", "nhs_number")
 _FINANCIAL = ("balance", "salary", "income", "credit_score", "debt", "arrears",
               "amount", "revenue", "arr", "sort_code", "iban", "loan",
               "payment", "price", "cgm", "premium", "fee", "charge")
@@ -203,11 +206,14 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
         use_presidio=policy.use_presidio)
     safe_df = make_safe_view(pdf, plan)
 
-    # Also drop business identifiers / free-text the question does not need:
-    # these are re-identifying or leak-prone but the PII firewall keeps them.
+    # Also drop business identifiers / free-text / health / quasi-identifier
+    # columns the question does not need: re-identifying or leak-prone fields the
+    # PII firewall keeps. Question-aware, so anything the question references is
+    # preserved (e.g. "count by diagnosis" keeps diagnosis).
     pii = set(getattr(plan, "pii_columns", []))
     cats = _classify_columns(pdf, pii)
-    extra_sensitive = set(cats["business_identifier"] + cats["free_text"])
+    extra_sensitive = set(cats["business_identifier"] + cats["free_text"]
+                          + cats["health"] + cats["quasi_identifier"])
     if not policy.allow_raw_rows:
         to_drop = [c for c in safe_df.columns if c in extra_sensitive
                    and not _question_mentions_column(question or "", c)]
