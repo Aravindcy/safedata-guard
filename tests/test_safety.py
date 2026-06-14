@@ -3,6 +3,7 @@ Tests for the safety engine and the self-correction loop.
 Run with: pytest -q
 """
 
+import json
 import pandas as pd
 import pytest
 import safedata
@@ -802,27 +803,28 @@ def _write_csv(tmp_path):
     return str(p)
 
 
-def test_cli_check_runs_and_masks(tmp_path, capsys):
-    rc = _cli.main(["check", _write_csv(tmp_path)])
+def test_cli_scan_runs(tmp_path, capsys):
+    rc = _cli.main(["scan", _write_csv(tmp_path), "--profile", "banking"])
     out = capsys.readouterr().out
     assert rc == 0
-    assert "Dataset: 2 rows" in out
-    # 'email' is a PII column, now fully withheld by default (not just regex-
-    # masked), so the raw value never appears.
-    assert "a@x.com" not in out
-    assert "[REDACTED]" in out
-    assert "tokens" in out                                 # token line printed
+    assert "Risk level" in out and "email" in out          # PII column reported
+    assert "a@x.com" not in out                             # raw value not printed
 
 
-def test_cli_no_redact_shows_raw(tmp_path, capsys):
-    rc = _cli.main(["check", _write_csv(tmp_path), "--no-redact"])
+def test_cli_scan_json(tmp_path, capsys):
+    rc = _cli.main(["scan", _write_csv(tmp_path), "--json"])
     out = capsys.readouterr().out
     assert rc == 0
-    assert "a@x.com" in out                                # raw shown
+    data = json.loads(out)
+    assert "risk_level" in data and "email" in data["pii_columns"]
+
+
+def test_cli_scan_fail_on_pii(tmp_path):
+    assert _cli.main(["scan", _write_csv(tmp_path), "--fail-on", "pii"]) == 2
 
 
 def test_cli_missing_file_errors(tmp_path, capsys):
-    rc = _cli.main(["check", str(tmp_path / "nope.csv")])
+    rc = _cli.main(["scan", str(tmp_path / "nope.csv")])
     assert rc == 1
     assert "No such file" in capsys.readouterr().err
 
@@ -830,17 +832,33 @@ def test_cli_missing_file_errors(tmp_path, capsys):
 def test_cli_unsupported_type_errors(tmp_path, capsys):
     bad = tmp_path / "f.bin"
     bad.write_text("x")
-    rc = _cli.main(["check", str(bad)])
+    rc = _cli.main(["scan", str(bad)])
     assert rc == 1
     assert "Unsupported file type" in capsys.readouterr().err
 
 
-def test_cli_report_flag_writes_html(tmp_path, capsys):
-    out_html = tmp_path / "r.html"
-    rc = _cli.main(["check", _write_csv(tmp_path), "--report", str(out_html)])
+def test_cli_protect_outfile(tmp_path, capsys):
+    out_csv = tmp_path / "safe.csv"
+    rc = _cli.main(["protect", _write_csv(tmp_path), "--profile", "banking",
+                    "--question", "total amount by region", "--out", str(out_csv)])
+    assert rc == 0 and out_csv.exists()
+    safe = pd.read_csv(out_csv)
+    assert "email" not in safe.columns and "region" in safe.columns
+
+
+def test_cli_advanced_inspect_policy(capsys):
+    rc = _cli.main(["advanced", "inspect-policy", "banking"])
+    out = capsys.readouterr().out
     assert rc == 0
-    assert out_html.exists()
-    assert "<html" in out_html.read_text().lower()
+    data = json.loads(out)
+    assert data["profile"] == "banking" and data["allow_python_fallback"] is False
+
+
+def test_cli_advanced_shadow(tmp_path, capsys):
+    rc = _cli.main(["advanced", "shadow", _write_csv(tmp_path), "--rows", "4"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "a@x.com" not in out                             # synthetic only
 
 
 def test_cli_no_command_shows_help(capsys):
@@ -949,15 +967,15 @@ def test_python_dash_m_entrypoint_exists():
 
 
 def test_cli_runs_via_subprocess_module(tmp_path):
-    # Exercise the actual `python -m safedata check <file>` path.
+    # Exercise the actual `python -m safedata scan <file>` path.
     import subprocess, sys
     csv = tmp_path / "d.csv"
     pd.DataFrame({"a": [1, 2]}).to_csv(csv, index=False)
     out = subprocess.run(
-        [sys.executable, "-m", "safedata", "check", str(csv)],
+        [sys.executable, "-m", "safedata", "scan", str(csv)],
         capture_output=True, text=True)
     assert out.returncode == 0
-    assert "Dataset: 2 rows" in out.stdout
+    assert "Risk level" in out.stdout
 
 
 def test_summarize_handles_duplicate_columns():
@@ -1292,29 +1310,28 @@ def test_build_safe_prompt_withholds_name_columns():
     assert "Order value" in p
 
 
-def test_cli_json_output(tmp_path, capsys):
+def test_cli_scan_json_output(tmp_path, capsys):
     csv = tmp_path / "d.csv"
     _messy_df().to_csv(csv, index=False)
-    rc = _cli.main(["check", str(csv), "--json"])
+    rc = _cli.main(["scan", str(csv), "--json"])
     out = capsys.readouterr().out
-    import json
-    data = json.loads(out)                    # must be valid JSON
-    for key in ("quality_score", "privacy_report", "ai_readiness",
-                "issues", "pii_columns", "tokens"):
+    data = json.loads(out)                     # must be valid JSON
+    for key in ("rows", "columns", "risk_level", "pii_columns",
+                "quality_issues", "ai_readiness_score"):
         assert key in data, key
     assert "email" in data["pii_columns"]
     assert rc == 0
 
 
-def test_cli_fail_on_pii_exits_nonzero(tmp_path, capsys):
+def test_cli_scan_fail_on_pii_exits_nonzero(tmp_path, capsys):
     csv = tmp_path / "d.csv"
     _messy_df().to_csv(csv, index=False)
-    rc = _cli.main(["check", str(csv), "--fail-on", "pii", "--json"])
+    rc = _cli.main(["scan", str(csv), "--fail-on", "pii"])
     assert rc == 2                             # PII present -> non-zero
     # a clean file passes the gate
     clean = tmp_path / "clean.csv"
     pd.DataFrame({"a": [1, 2, 3]}).to_csv(clean, index=False)
-    assert _cli.main(["check", str(clean), "--fail-on", "high", "--json"]) == 0
+    assert _cli.main(["scan", str(clean), "--fail-on", "pii"]) == 0
 
 
 def test_validate_handles_polars_if_present():
@@ -1655,17 +1672,15 @@ def test_summarize_mask_pii_flag():
 
 # --- 1.0.8: CLI privacy default, scan_rows threading, strict 1-D guard -------
 
-def test_cli_check_masks_name_columns(tmp_path, capsys):
+def test_cli_scan_never_prints_raw_values(tmp_path, capsys):
     import safedata.cli as _cli
     csv = tmp_path / "p.csv"
     pd.DataFrame({"customer_name": ["Alice Smith", "Bob Jones"],
                   "email": ["a@b.com", "c@d.com"], "v": [1, 2]}).to_csv(csv, index=False)
-    _cli.main(["check", str(csv)])
+    _cli.main(["scan", str(csv), "--profile", "banking"])
     out = capsys.readouterr().out
-    assert "Alice Smith" not in out          # name column withheld by default
-    # --no-redact shows raw
-    _cli.main(["check", str(csv), "--no-redact"])
-    assert "Alice Smith" in capsys.readouterr().out
+    assert "Alice Smith" not in out and "a@b.com" not in out  # values never printed
+    assert "customer_name" in out                             # column name reported
 
 
 def test_scan_rows_threaded_into_risk_contract_prompt():
@@ -1951,18 +1966,19 @@ def test_plan_reports_original_and_safe_view_risk():
     assert plan.risk_level == plan.original_risk_level   # kept for clarity
 
 
-def test_cli_plan_command(tmp_path, capsys):
+def test_cli_protect_command(tmp_path, capsys):
     import safedata.cli as _cli
     csv = tmp_path / "p.csv"
     pd.DataFrame({"customer_name": ["A"], "email": ["a@b.com"],
                   "region": ["N"], "revenue": [10]}).to_csv(csv, index=False)
-    assert _cli.main(["plan", str(csv), "total revenue by region"]) == 0
+    assert _cli.main(["protect", str(csv), "--profile", "banking",
+                      "--question", "total revenue by region"]) == 0
     out = capsys.readouterr().out
-    assert "Dropped PII" in out and "customer_name" in out
-    rc = _cli.main(["plan", str(csv), "total revenue by region", "--json"])
-    import json
+    assert "Dropped" in out and "Kept" in out
+    rc = _cli.main(["protect", str(csv), "--profile", "banking",
+                    "--question", "total revenue by region", "--json"])
     data = json.loads(capsys.readouterr().out)
-    assert "safe_view_risk_level" in data and "dropped_pii_columns" in data
+    assert "dropped" in data and "kept" in data
     assert rc == 0
 
 

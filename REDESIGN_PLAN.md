@@ -55,9 +55,11 @@ Python. Receipt after every ask().
   high); protect() also drops un-needed business identifiers / free text; ask()
   warns when k-anonymity suppresses all groups. Live-validated on real energy/
   insurance datasets (15/15), which caught the "Offer ID" separator bug.
-- **Phase 4:** CLI redesign - `scan` / `protect` / `ask` top-level, advanced
-  subgroup (`leak-test` / `shadow` / `inspect-policy`), `--json/--out/--profile/`
-  `--mode/--fail-on/--receipt-out`.
+- **Phase 4 (done):** CLI redesign - `scan` / `protect` / `ask` top-level, plus
+  `advanced` subgroup (`inspect-policy` / `shadow` / `leak-test`), with
+  `--json/--out/--profile/--mode/--fail-on/--receipt-out`. `ask`/`leak-test` use
+  `--model openai` (OPENAI_API_KEY). CLI tests migrated; live-validated on the
+  real energy dataset (scan/protect/inspect-policy/ask).
 - **Phase 5:** docs rewrite - README order per spec, `SECURITY_MODEL.md`,
   `THREAT_MODEL.md`, `examples/` scripts + synthetic `examples/data/` with a
   "synthetic, no real data" note. Rewrite all tests around the new API.
