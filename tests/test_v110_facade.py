@@ -66,6 +66,20 @@ def test_ask_summary_mode_no_execution():
     assert isinstance(res.data, sd.ScanReport)
 
 
+def test_ask_warns_or_blocks_when_k_anonymity_suppresses_all_rows():
+    # Many tiny groups under banking (k=10): every group is suppressed, so the
+    # answer is empty - the Result must warn clearly, not look like "no data".
+    df = pd.DataFrame({"region": [f"R{i}" for i in range(30)],   # 1 row per group
+                       "revenue": range(30)})
+    model = _plan('{"operation":"groupby_aggregate","group_by":["region"],'
+                  '"metrics":[{"column":"revenue","agg":"sum","as_name":"tot"}]}')
+    res = sd.ask(df, "total revenue by region", model=model, profile="banking")
+    assert len(res.answer) == 0
+    assert res.warnings and "suppressed" in res.warnings[0].lower()
+    assert "min_group_size" in res.warnings[0]
+    assert res.receipt.warnings == res.warnings
+
+
 def test_ask_blocked_plan_surfaces_blocked_result():
     res = sd.ask(_banking(), "dump it", model=_plan('{"operation":"export"}'),
                  profile="banking")

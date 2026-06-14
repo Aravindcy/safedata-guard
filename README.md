@@ -5,197 +5,170 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/safedata-guard.svg)](https://pypi.org/project/safedata-guard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A lightweight framework for safely letting LLMs analyze pandas/Polars data
-without exposing raw rows or blindly running the code they generate.
+**A safety layer for asking AI questions over sensitive tabular data.**
 
-Most "chat with your data" tools send the whole table to the model and run
-whatever code it writes, unchecked. safedata-guard fixes both halves: it sends a
-compact, **quality-aware summary** instead of raw rows, and runs the model's code
-behind **guardrails on a copy** of your data.
+safedata-guard scans your DataFrame, removes unnecessary sensitive fields,
+executes the analysis through a safe engine (the model returns a validated JSON
+plan, not raw Python), and returns an answer with an audit receipt.
 
-> **Status: beta.** Useful and tested, but treat it as a defense-in-depth safety
-> *layer*, not a hardened sandbox. It is **not** a "fully secure sandbox",
-> "compliance-grade PII protection", or "guaranteed safe execution" - PII
-> detection and code screening are best-effort heuristics (see *Scope* below).
-> For untrusted code, run it inside OS-level isolation (`isolation="docker"` or
-> your own container/VM).
+> **Status: beta. A safety layer, not a compliance guarantee.** It reduces the
+> exposure of sensitive data; it does not certify GDPR/HIPAA/PCI compliance and
+> cannot promise nothing will ever leak. PII detection and code screening are
+> best-effort heuristics. See [SECURITY.md](SECURITY.md).
 
-## Documentation
-
-- **This README** - the pitch, the two execution modes, and a quick start.
-- **[docs/guide.md](docs/guide.md)** - full feature reference: isolation, result guards, firewall, k-anonymity, Pandera/GX export, CLI, and the function reference.
-- **[SECURITY.md](SECURITY.md)** - threat model, what it defends against, and the
-  known limitations (read before relying on it).
-- **[docs/examples.md](docs/examples.md)** - worked examples across banking,
-  insurance, energy, healthcare, sales, and complaints data.
-- **[BENCHMARKS.md](BENCHMARKS.md)** - measured privacy-leak rates vs plain
-  LLM-generated code, with methodology and honest caveats.
-- **[CHANGELOG.md](CHANGELOG.md)** - what changed in each release.
-
-## The recommended path
-
-Pick a **policy** for your data and use `safe_query` (SafePlan mode) for normal
-analysis: the model returns a restricted JSON plan that safedata validates and
-executes itself, so no generated Python runs.
+## 30-second example
 
 ```python
 import safedata as sd
 
-policy = sd.Policy.regulated()   # PII firewall + redaction + k-anonymity + caps
+def my_model(prompt):            # plug in any LLM (callable, or an object with .generate)
+    ...                          # returns the model's text reply
 
-res = sd.safe_query(df, "What is total revenue by region?",
-                    model=my_llm, policy=policy)
-print(res.answer)
-print(res.receipt)               # Data Safety Receipt: no Python run, PII dropped
+result = sd.ask(df, "What is total revenue by region?",
+                model=my_model, profile="banking")
+
+print(result.answer)             # safe, aggregated answer
+print(result.receipt.summary())  # audit trail: PII dropped, no Python run, ...
 ```
 
-Use `safe_answer` (guarded-Python mode) only when the analysis cannot be
-expressed as a SafePlan operation. It builds the minimum safe view, runs the
-model's code behind the guardrails, and returns the answer plus an audit:
+## Why this exists
+
+Most "chat with your data" tools send the whole table to the model and run
+whatever Python it writes, unchecked. In a measured benchmark, plain
+LLM-generated code leaked real PII on ~79% of attack prompts (see
+[BENCHMARKS.md](BENCHMARKS.md)). safedata-guard's default engine never runs
+generated Python: the model returns a restricted JSON analysis plan that the
+library validates and executes itself, with privacy rules applied.
+
+## The four doors
+
+| You want to... | Use |
+|---|---|
+| Ask a question safely | `sd.ask(df, question, model, profile)` |
+| Assess a dataset's risk | `sd.scan(df, profile)` |
+| Get a privacy-filtered view | `sd.protect(df, question, profile)` |
+| Reuse a configured setup | `sd.Guard(profile, model)` |
+
+`sd.Policy` controls the behaviour; advanced/power-user tools live under
+`sd.advanced.*`. That is the entire public surface - nine names.
+
+### Ask safely
 
 ```python
-out = sd.safe_answer(df, "What is total revenue by region?",
-                     model=my_llm, policy=policy)
-print(out["answer"], out["audit"])
+result = sd.ask(df, "average balance by region", model=my_model, profile="banking")
+print(result.answer)             # None if blocked; check result.ok / result.blocked
+print(result.warnings)           # e.g. "all groups suppressed by k-anonymity"
 ```
 
-Profiles: `Policy.basic()`, `Policy.regulated()` (customer/PII data),
-`Policy.strict()` (container isolation + Presidio), `Policy.audit_only()`. Any
-field can be overridden: `Policy.regulated(min_group_size=10)`.
+`ask` uses the SafePlan engine by default. Guarded Python is only used when the
+policy allows it (regulated profiles disable it). `mode=` can force `plan`,
+`summary` (explain risk, no data execution), or `python`.
 
-> **`Policy.strict()` needs Docker** (`isolation="docker"`, a prebuilt runner
-> image) **and the optional Presidio install** (`use_presidio=True`). Both
-> degrade gracefully if absent - Presidio is skipped, and Docker raises a clear
-> error - but if you want strong defaults **without** Docker, use
-> `Policy.regulated()` (process isolation, k-anonymity, deep PII scan).
+### Scan data risk
 
-`safe_query` + `Policy` is the recommended entry point for normal analysis, with
-`safe_answer` as the guarded-Python fallback. The pieces below (`Agent`,
-`run_safely`, `create_contract`, `privacy_report`, ...) are the lower-level
-building blocks they are composed from, for when you need finer control.
+```python
+report = sd.scan(df, profile="banking")
+print(report.risk_level)                    # low | medium | high
+print(report.pii_columns)                   # e.g. ["full_name", "email"]
+print(report.business_identifier_columns)   # e.g. ["account_number", "sort_code"]
+print(report.financial_columns, report.health_columns, report.free_text_columns)
+print(report.quality_issues, report.recommendations)
+```
 
-## Two execution modes
+### Protect data before AI
 
-safedata-guard can run AI analysis two ways:
+```python
+safe_df = sd.protect(df, question="average balance by region", profile="banking")
+# unneeded PII / sensitive identifiers dropped; analytical columns kept.
+safe_df, report = sd.protect(df, question="...", profile="banking",
+                             return_report=True)
+```
 
-1. **SafePlan mode (`safe_query`, safest).** The model never writes Python. It
-   returns a restricted **JSON analysis plan** (operation + group-by + metrics +
-   filters), which safedata validates and **executes itself** with a fixed
-   interpreter. There is no generated code to escape, so the whole class of
-   code-injection/exfiltration risk does not apply. Covers aggregate, group-by,
-   counts, value_counts, and describe. k-anonymity is built in (we control the
-   execution, so the group count always exists).
+### Reuse settings with Guard
 
-   ```python
-   res = safedata.safe_query(df, "total revenue by region",
-                             model=my_llm, policy=safedata.Policy.regulated())
-   print(res.answer)
-   print(res.receipt)        # Data Safety Receipt: PII dropped, no Python run, ...
-   ```
+```python
+guard = sd.Guard(profile="banking", model=my_model)
+guard.ask(df, "average balance by region")
+guard.scan(df)
+guard.protect(df, question="average balance by region")
+session = guard.session(df)                 # multi-turn, privacy-budgeted
+```
 
-2. **Guarded Python mode (`safe_answer` / `Agent`).** For richer/custom analysis
-   the model *does* write Python, and safedata screens it (AST checks, isolation,
-   result guards). Use this when SafePlan's operations aren't enough.
+## Industry profiles
 
-Every answer can carry a **Data Safety Receipt** (`res.receipt`,
-`safedata.format_receipt`): an audit id, the mode, whether any Python ran, which
-PII was detected/dropped, the policy in force, and the answer's shape.
+`profile=` (or `sd.Policy.from_profile(name)`) picks safe defaults:
 
-## Privacy tooling around the query
+| Profile | min group size | Python fallback | Notes |
+|---|---|---|---|
+| `general` | none | allowed | non-regulated data |
+| `energy` | 5 | disabled | SafePlan only |
+| `banking` | 10 | disabled | SafePlan only |
+| `insurance` | 10 | disabled | SafePlan only |
+| `healthcare` | 15 | disabled | smallest result caps |
+| `strict` | 20 | disabled | Docker isolation + Presidio |
 
-Three optional helpers harden the SafePlan flow. Each is honestly a best-effort
-heuristic, not a guarantee:
+Override any field: `sd.Policy.banking(min_group_size=25)`.
 
-- **ShadowFrame** (`safedata.create_shadowframe`) builds a fully synthetic,
-  same-shape stand-in (matching dtypes, ranges, cardinality, missingness, and PII
-  flags). `safe_query` uses it by default (`use_shadow=True`) so the model sees a
-  synthetic sample, not real cell values. The schema and aggregate stats are still
-  real, so this de-identifies the prompt rather than hiding the data's structure.
+## Audit receipts
 
-- **LeakScore** (`safedata.leak_test`) runs a battery of attack prompts and scores
-  0-100 by checking whether real PII values appear in the answers. A cooperative
-  LLM through SafePlan usually scores ~100 (the defences hold by construction), so
-  its discriminating value is with a simulated malicious model or the Python path.
+Every `sd.ask()` returns a `Result` carrying a `Receipt`:
 
-  ```python
-  report = safedata.leak_test(df, model=my_llm, policy=safedata.Policy.strict())
-  print(report.score, report.risk_level)
-  ```
+```python
+r = result.receipt
+print(r.audit_id, r.profile, r.engine, r.mode)
+print(r.pii_columns, r.dropped_columns, r.min_group_size)
+print(r.python_fallback_used, r.raw_rows_exposed, r.warnings)
+print(r.summary())              # human-readable; r.to_dict() for JSON
+```
 
-- **SafeSession** (`safedata.SafeSession`) guards a whole conversation: it blocks
-  reusing the same aggregate with a tightened filter (a differencing attack) and
-  enforces a configurable per-question privacy budget. It is a practical heuristic,
-  **not** differential privacy - for formal guarantees use a DP library.
+## Advanced tools
 
-  ```python
-  s = safedata.SafeSession(df, model=my_llm, policy=safedata.Policy.regulated())
-  s.ask("average order value in London")          # allowed
-  s.ask("average order value in London below 500")  # blocked: differencing
-  ```
+The everyday API stays small; power-user tools are one level deeper under
+`sd.advanced`:
+
+```python
+sd.advanced.leak_test(df, model=my_model)        # privacy red-team score
+sd.advanced.create_shadowframe(df)               # synthetic same-shape stand-in
+sd.advanced.run_safely(code, df)                 # guarded Python on a copy
+sd.advanced.SafeSession(df, model=my_model)      # differencing/budget guard
+```
 
 ## Install
 
 ```bash
 pip install safedata-guard
-pip install "safedata-guard[polars]"   # optional, for Polars support
+pip install "safedata-guard[polars]"     # optional Polars support
+pip install "safedata-guard[presidio]"   # optional international PII detection
 ```
 
-Core APIs (summarize, run_safely, Agent, validate, tokens) support pandas and
-Polars; the library detects the type. The HTML `report()` currently supports
-pandas (pass a Polars frame through `df.to_pandas()` first).
-
-## Quick start
-
-```python
-import safedata, pandas as pd
-
-df = pd.DataFrame({"date": ["2025-01-01", "2024-05-01", "2025-08-01"],
-                   "amount": [100.0, 50.0, 200.0]})
-
-def my_model(prompt):          # plug in any LLM: text in, code out
-    return "result = df[df['date'].str.startswith('2025')]['amount'].sum()"
-
-agent = safedata.Agent(model=my_model)
-out = agent.ask(df, "What were total sales in 2025?")
-print(out.answer)              # 300.0
-print(out.blocked, out.attempts, out.tokens)
-```
-
-### Connecting a real model
-
-Real models return messy text (Markdown fences, chatter, occasional failures).
-`safedata.wrap()` takes any text-in/text-out function, extracts the bare code,
-and raises a clear `ModelError` on failure, so you're not tied to one provider.
-
-```python
-def my_call(prompt):
-    return some_model_that_takes_and_returns_text(prompt)   # OpenAI, local, ...
-
-agent = safedata.Agent(model=safedata.wrap(my_call))
-out = agent.ask(df, "What were total sales in 2025?")
-```
-
-A stronger model just means good code on the first try and fewer retries; the
-safety guarantees do not depend on it.
-
-## Full feature guide
-
-The detailed reference - hardened Docker isolation, result guards, the question-aware firewall, k-anonymity, Pandera/Great Expectations export, international PII, the CLI, and the full function reference - lives in **[docs/guide.md](docs/guide.md)**.
-
-## Development
-
-Run the test suite with the dev extras installed (they include `pytest-timeout`,
-`polars`, and `openpyxl` so the full suite and its config apply):
+## CLI
 
 ```bash
-pip install -e ".[dev]"
-pytest -q
+safedata scan data.csv --profile banking
+safedata risk data.csv
+safedata plan data.csv "revenue by region"
 ```
 
-Running a bare `pytest` without the dev extras still works, but prints a harmless
-`Unknown config option: timeout` warning because the optional `pytest-timeout`
-plugin isn't present.
+> The CLI is being realigned to `scan` / `protect` / `ask` / `advanced` to match
+> the Python API (tracked in [REDESIGN_PLAN.md](REDESIGN_PLAN.md)).
+
+## Documentation
+
+- **[SECURITY.md](SECURITY.md)** - threat model, what it defends against, and the
+  known limitations (read before relying on it).
+- **[BENCHMARKS.md](BENCHMARKS.md)** - measured leak rates vs plain LLM-generated
+  code, with methodology and honest caveats.
+- **[docs/examples.md](docs/examples.md)** - worked examples across domains.
+- **[CHANGELOG.md](CHANGELOG.md)** - what changed in each release.
+
+## Limitations
+
+- This is a safety layer, **not** a compliance guarantee.
+- PII detection is best-effort; names and free text are especially hard.
+- k-anonymity here is a practical heuristic, not differential privacy.
+- The recommended SafePlan engine is far safer than generated Python, but
+  policies must be configured correctly. Review high-risk outputs yourself.
 
 ## License
 
-MIT
+MIT - see [LICENSE](LICENSE).

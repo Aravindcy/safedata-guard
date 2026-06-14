@@ -7,16 +7,19 @@ profile so callers pick an intent instead of remembering flags:
 
     import safedata as sd
 
-    policy = sd.Policy.regulated()
-    out = sd.safe_answer(df, "total revenue by region", model=my_llm, policy=policy)
+    policy = sd.Policy.banking()
+    result = sd.ask(df, "total revenue by region", model=my_llm, policy=policy)
 
-Profiles:
-    Policy.basic()      - sensible defaults for non-sensitive data
-    Policy.regulated()  - for customer/PII data (k-anonymity, deep PII scan)
-    Policy.strict()     - maximum lockdown (container isolation, Presidio)
-    Policy.audit_only()  - permissive run + full audit, for trying things out
+Industry profiles (the names beginners reach for):
+    Policy.general()    - non-regulated data, Python fallback allowed
+    Policy.energy()     - SafePlan only, k>=5
+    Policy.banking()    - SafePlan only, k>=10
+    Policy.insurance()  - SafePlan only, k>=10
+    Policy.healthcare() - SafePlan only, k>=15
+    Policy.strict()     - maximum lockdown (container isolation, Presidio, k>=20)
 
-Any field can be overridden: Policy.regulated(min_group_size=10).
+Legacy profiles (still used internally): basic/regulated/audit_only.
+Any field can be overridden: Policy.banking(min_group_size=25).
 """
 
 from __future__ import annotations

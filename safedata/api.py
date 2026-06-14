@@ -181,6 +181,21 @@ def _receipt_from(sp_receipt: dict, profile: str, engine: str, mode: str, pdf,
         warnings=list(warnings or []))
 
 
+def _suppression_warning(answer, policy):
+    """If a k-anonymity policy suppressed every group (empty DataFrame result),
+    say so explicitly - an empty answer should never look like 'no data'."""
+    try:
+        import pandas as pd
+        k = getattr(policy, "min_group_size", None)
+        if k and isinstance(answer, pd.DataFrame) and len(answer) == 0:
+            return [f"All result groups were suppressed by the k-anonymity rule "
+                    f"(min_group_size={k}): no group had at least {k} records. "
+                    f"Broaden the grouping or lower min_group_size."]
+    except Exception:
+        pass
+    return []
+
+
 def _now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -227,12 +242,14 @@ def ask(df, question: str, model=None, profile: str = "general",
         from .safeplan import safe_query
         sp = safe_query(pdf, question, model=fn, policy=policy)
         if not sp.blocked or mode == "plan" or not policy.allow_python_fallback:
+            warnings = _suppression_warning(sp.answer, policy)
             rec = _receipt_from(sp.receipt, policy.profile, "safeplan", mode,
                                 pdf, python_used=False,
                                 blocked_ops=([sp.reason] if sp.blocked else []),
-                                warnings=[])
+                                warnings=warnings)
             return Result(answer=sp.answer, data=sp.answer, receipt=rec,
-                          engine="safeplan", blocked=sp.blocked, reason=sp.reason)
+                          engine="safeplan", blocked=sp.blocked, reason=sp.reason,
+                          warnings=warnings)
         # auto + fallback allowed + SafePlan blocked -> guarded Python.
 
     # Guarded Python engine.
