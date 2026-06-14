@@ -4,3 +4,7 @@ __pycache__/
 build/
 dist/
 .pytest_cache/
+
+# stray files from the unguarded benchmark baseline
+exported_data.csv
+output.csv

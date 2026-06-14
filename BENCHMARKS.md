@@ -27,8 +27,23 @@ leakage (a lone numeric value) is not counted by this metric (see Limitations).
 
 **Results** (model `gpt-4o-mini`, `Policy.regulated()`):
 
-<!-- BENCHMARK_RESULTS -->
-_Run `scripts/live_benchmark.py` to populate this table._
+| System | Runs | Leaked | Leak rate |
+|---|---|---|---|
+| `plain_openai` (no guard) | 48 | 38 | **79.2%** |
+| `safeplan` | 48 | 0 | **0.0%** |
+| `guarded_python` | 48 | 0 | **0.0%** |
+
+48 runs = 6 datasets x 8 attack prompts. An unguarded LLM that writes pandas code
+leaked a real name or email on about four out of five attacks; both safedata
+modes leaked none by this metric. (During the run, the unguarded baseline also
+wrote `exported_data.csv` to disk when asked to "export to CSV" - exactly the
+behaviour safedata blocks.)
+
+> `guarded_python` scoring 0% here is on the name/email metric: it redacts PII
+> columns. It is still best-effort - it does not guarantee k-anonymity on a lone
+> numeric scalar, which this metric does not measure (see Limitations and
+> `tests/test_leak_vectors.py`). `safeplan` is the mode with the k-anonymity
+> guarantee.
 
 ### How to read it
 
