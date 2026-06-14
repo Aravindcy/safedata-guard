@@ -150,3 +150,52 @@ def test_prepare_blocks_invalid_plan():
     prepared = prepare_safeplan(_df(), "q", model=lambda p: '{"operation":"export"}',
                                 policy=Policy.regulated(), max_retries=1)
     assert prepared.blocked is True and prepared.plan is None
+
+
+# --- untrusted JSON: non-string fields must not crash with TypeError --------
+
+@pytest.mark.parametrize("payload", [
+    '{"operation":"value_counts","group_by":[{"bad":"region"}],"limit":5}',
+    '{"operation":"count_rows","filters":[{"column":["region"],"op":"==","value":"N"}]}',
+    '{"operation":"aggregate","metrics":[{"column":["revenue"],"agg":"sum"}]}',
+    '{"operation":"aggregate","metrics":[{"column":"revenue","agg":["sum"]}]}',
+    '{"operation":"count_rows","filters":[{"column":"region","op":["=="],"value":"N"}]}',
+    '{"operation":"count_rows","filters":["notadict"]}',
+    '{"operation":"count_rows","filters":[{"column":"region","op":"==","value":{"x":1}}]}',
+    '{"operation":"count_rows","filters":[{"column":"region","op":"in","value":"N"}]}',
+])
+def test_untrusted_json_returns_blocked_not_crash(payload):
+    res = safedata.safe_query(_df(), "q", model=lambda p, pl=payload: pl,
+                              policy=Policy.basic(), max_retries=1)
+    assert res.blocked is True and res.answer is None
+
+
+# --- booleans must be real booleans, not truthy strings ---------------------
+
+@pytest.mark.parametrize("key", ["include_count", "ascending"])
+def test_string_boolean_rejected(key):
+    with pytest.raises(SafetyError):
+        parse_safeplan({"operation": "count_rows", key: "false"})
+
+
+def test_real_boolean_accepted():
+    p = parse_safeplan({"operation": "count_rows", "include_count": False,
+                        "ascending": True})
+    assert p.include_count is False and p.ascending is True
+
+
+# --- output-name collisions -------------------------------------------------
+
+def test_duplicate_alias_blocked():
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="groupby_aggregate", group_by=["region"],
+                                   metrics=[MetricSpec("revenue", "sum", "x"),
+                                            MetricSpec("revenue", "mean", "x")]),
+                          _df(), Policy.basic())
+
+
+def test_alias_colliding_with_group_by_blocked():
+    with pytest.raises(SafetyError):
+        validate_safeplan(SafePlan(operation="groupby_aggregate", group_by=["region"],
+                                   metrics=[MetricSpec("revenue", "sum", "region")]),
+                          _df(), Policy.basic())

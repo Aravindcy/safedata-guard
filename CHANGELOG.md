@@ -45,6 +45,14 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is not a simple name or collides with the reserved `count`; a `sort_by` column
   not present in the result; and `sum`/`mean`/`median`/`std` on a non-numeric
   column (which would otherwise silently concatenate strings).
+- **Untrusted JSON is fully type-checked.** Non-string `group_by`/metric `column`/
+  metric `agg`/filter `column`/filter `op` values (e.g. a list or dict) now return
+  a blocked result instead of raising a raw `TypeError`; filter values must be
+  JSON scalars (or a scalar list for `in`); `include_count`/`ascending` must be
+  real booleans (so `"false"` is rejected, not silently treated as `True`).
+- **Output column collisions blocked.** Duplicate metric aliases, or a metric
+  alias that collides with a group_by column, are rejected instead of silently
+  overwriting a result column.
 - **`count_rows` suppresses small filtered counts.** A filtered count below
   `min_group_size` (e.g. "how many customers in postcode X" -> 1) is blocked, so a
   count cannot reveal whether an individual is present.

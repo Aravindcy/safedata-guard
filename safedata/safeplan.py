@@ -82,6 +82,13 @@ def extract_json_plan(model_output) -> dict:
     return obj
 
 
+def _parse_bool(obj, key, default):
+    value = obj.get(key, default)
+    if not isinstance(value, bool):
+        raise SafetyError(f"Plan field '{key}' must be a boolean.")
+    return value
+
+
 def parse_safeplan(obj: dict) -> SafePlan:
     if "operation" not in obj:
         raise SafetyError("Plan is missing the required 'operation' field.")
@@ -110,10 +117,10 @@ def parse_safeplan(obj: dict) -> SafePlan:
         group_by=list(obj.get("group_by", []) or []),
         metrics=metrics,
         filters=list(obj.get("filters", []) or []),
-        include_count=bool(obj.get("include_count", True)),
+        include_count=_parse_bool(obj, "include_count", True),
         limit=limit,
         sort_by=sort_by,
-        ascending=bool(obj.get("ascending", False)),
+        ascending=_parse_bool(obj, "ascending", False),
     )
 
 
@@ -143,6 +150,33 @@ def _output_columns(plan):
     return set(names)
 
 
+def _is_json_scalar(x):
+    return x is None or isinstance(x, (str, int, float, bool))
+
+
+def _validate_filter_value(op, value):
+    if op == "in":
+        if not isinstance(value, list):
+            raise SafetyError("Blocked: 'in' filter value must be a list.")
+        if not all(_is_json_scalar(v) for v in value):
+            raise SafetyError("Blocked: 'in' filter values must be simple scalars.")
+    elif not _is_json_scalar(value):
+        raise SafetyError("Blocked: filter value must be a simple scalar.")
+
+
+def _validate_output_names(plan):
+    """Reject duplicate output column names or a metric alias that collides with
+    a group_by column - either would silently overwrite a result column."""
+    names = set(plan.group_by)
+    for m in plan.metrics:
+        out_name = m.as_name or f"{m.agg}_{m.column}"
+        if out_name in names:
+            raise SafetyError(
+                f"Blocked: output column name '{out_name}' is duplicated or "
+                f"collides with a group_by column.")
+        names.add(out_name)
+
+
 def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
     import pandas as pd
     df = _as_pandas(df)
@@ -167,9 +201,15 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
             f"{policy.max_result_rows}.")
 
     for col in plan.group_by:
+        if not isinstance(col, str):
+            raise SafetyError("Blocked: every group_by column must be a string.")
         if col not in cols:
             raise SafetyError(f"Blocked: group_by column '{col}' does not exist.")
     for m in plan.metrics:
+        if not isinstance(m.column, str):
+            raise SafetyError("Blocked: metric column must be a string.")
+        if not isinstance(m.agg, str):
+            raise SafetyError("Blocked: metric aggregation must be a string.")
         if m.column not in cols:
             raise SafetyError(f"Blocked: metric column '{m.column}' does not exist.")
         if m.agg not in ALLOWED_AGGS:
@@ -179,13 +219,21 @@ def validate_safeplan(plan: SafePlan, df, policy: Policy) -> None:
                 f"Blocked: aggregation '{m.agg}' requires a numeric column, but "
                 f"'{m.column}' is not numeric.")
         _validate_alias(m.as_name)
+    _validate_output_names(plan)
     for f in plan.filters:
-        if not isinstance(f, dict) or set(f.keys()) - {"column", "op", "value"}:
+        if not isinstance(f, dict):
+            raise SafetyError("Blocked: each filter must be an object.")
+        if set(f.keys()) - {"column", "op", "value"}:
             raise SafetyError("Blocked: each filter must have only column/op/value.")
-        if f.get("column") not in cols:
-            raise SafetyError(f"Blocked: filter column '{f.get('column')}' does not exist.")
-        if f.get("op") not in ALLOWED_FILTER_OPS:
-            raise SafetyError(f"Blocked: filter operator '{f.get('op')}' is not allowed.")
+        if not isinstance(f.get("column"), str):
+            raise SafetyError("Blocked: filter column must be a string.")
+        if not isinstance(f.get("op"), str):
+            raise SafetyError("Blocked: filter operator must be a string.")
+        if f["column"] not in cols:
+            raise SafetyError(f"Blocked: filter column '{f['column']}' does not exist.")
+        if f["op"] not in ALLOWED_FILTER_OPS:
+            raise SafetyError(f"Blocked: filter operator '{f['op']}' is not allowed.")
+        _validate_filter_value(f["op"], f.get("value"))
 
     # Operation-specific shape checks (pre-execution, so SafeSession can inspect
     # a fully-validated plan before any data is touched).
