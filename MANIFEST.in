@@ -1,13 +1,15 @@
 include README.md LICENSE CHANGELOG.md Dockerfile
-include SECURITY.md SECURITY_MODEL.md THREAT_MODEL.md BENCHMARKS.md REDESIGN_PLAN.md
+include SECURITY.md SECURITY_MODEL.md THREAT_MODEL.md BENCHMARKS.md
 recursive-include tests *.py
 recursive-include examples *.py *.md
+recursive-include docs *.md
 
-# Keep build artifacts, caches, and local outputs out of the source distribution.
+# Keep build artifacts, caches, internal notes, and local outputs out of the sdist.
 global-exclude *.pyc
 global-exclude *.pyo
 prune **/__pycache__
 prune .pytest_cache
 prune build
 prune dist
+prune docs/internal
 exclude exported_data.csv output.csv customer_data.csv .env

@@ -34,11 +34,30 @@ print(result.receipt.summary())  # audit trail: PII dropped, no Python run, ...
 ## Why this exists
 
 Most "chat with your data" tools send the whole table to the model and run
-whatever Python it writes, unchecked. In a measured benchmark, plain
-LLM-generated code leaked real PII on ~79% of attack prompts (see
-[BENCHMARKS.md](BENCHMARKS.md)). safedata-guard's default engine never runs
+whatever Python it writes, unchecked. In a measured benchmark (gpt-4o-mini, 6
+synthetic datasets, 48 attack prompts), plain LLM-generated code leaked real PII
+on ~85% of attacks while SafePlan leaked none (see [BENCHMARKS.md](BENCHMARKS.md)
+for the full method and limitations). safedata-guard's default engine never runs
 generated Python: the model returns a restricted JSON analysis plan that the
 library validates and executes itself, with privacy rules applied.
+
+## How it works
+
+```text
+       your DataFrame
+             |
+        sd.scan()            assess risk (PII, sensitive categories, quality)
+             |
+        sd.protect()         drop un-needed PII / sensitive / business-id columns
+             |
+   schema + synthetic sample only  ->  LLM returns a JSON plan (no raw rows)
+             |
+     validate the plan                 (allow-list, k-anonymity, caps)
+             |
+   execute it locally (no generated Python)
+             |
+       answer + audit Receipt
+```
 
 ## The four doors
 
@@ -49,8 +68,8 @@ library validates and executes itself, with privacy rules applied.
 | Get a privacy-filtered view | `sd.protect(df, question, profile)` |
 | Reuse a configured setup | `sd.Guard(profile, model)` |
 
-`sd.Policy` controls the behaviour; advanced/power-user tools live under
-`sd.advanced.*`. That is the entire public surface - nine names.
+The everyday API is nine names (`sd.Policy` controls the behaviour). Power-user
+tools live under `sd.advanced.*`.
 
 ### Ask safely
 
