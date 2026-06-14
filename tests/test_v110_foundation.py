@@ -82,8 +82,17 @@ def test_regulated_profiles_disable_python_and_set_k(name, k):
     assert p.min_group_size == k
 
 
+def test_strict_profile_is_safeplan_only():
+    s = Policy.strict()
+    assert s.profile == "strict"
+    assert s.allow_python_fallback is False and s.allow_raw_rows is False
+    assert s.min_group_size == 20 and s.max_result_rows == 25
+    assert s.isolation == "docker" and s.use_presidio is True
+
+
 def test_from_profile_known_and_unknown():
     assert Policy.from_profile("banking").profile == "banking"
+    assert Policy.from_profile("strict").profile == "strict"
     with pytest.raises(PolicyError):
         Policy.from_profile("does_not_exist")
 

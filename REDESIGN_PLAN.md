@@ -38,9 +38,15 @@ Python. Receipt after every ask().
   now subclasses it), `results.py` (Result/ScanReport/Receipt/ProtectReport),
   `Policy` industry profiles (general/energy/banking/insurance/healthcare +
   from_profile), Policy made non-frozen. Additive; public API untouched.
-- **Phase 2:** `api.py` (ask/scan/protect) + `guard.py` as a thin facade over the
-  existing engine; build a Receipt for every ask(); `model` adapter (callable or
-  `.generate`). Hard-cut `__init__` to the nine names.
+- **Phase 2a (done):** `api.py` (ask/scan/protect with a light column classifier
+  + model adapter accepting a callable or `.generate`), `guard.py` (Guard with
+  ask/scan/protect/session), Receipt built for every ask(), typed Result/
+  ScanReport returned. New names exposed ADDITIVELY (old names still present) so
+  the suite stays green. `Policy.strict()` corrected to profile="strict",
+  allow_python_fallback=False, k=20.
+- **Phase 2b (next):** hard-cut `__init__` to the nine public names and migrate
+  the existing test suite off the old public names (repoint to internal modules,
+  preserving coverage). This is the breaking step and lands atomically.
 - **Phase 3:** privacy detector categories (business_identifier / financial /
   health / free_text) feeding scan() and protect(); question-aware protect();
   mode router (auto/plan/summary/python) honoring `allow_python_fallback`.

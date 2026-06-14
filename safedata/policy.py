@@ -101,14 +101,17 @@ class Policy:
         both degrade gracefully if absent (Presidio is skipped, Docker raises a
         clear error telling you to set it up or drop to isolation='process')."""
         return cls(
+            profile="strict",
             isolation="docker",
             max_result_rows=25,
             redact_result_pii=True,
             enforce_minimal_result=True,
             block_1d_row_results=True,
-            min_group_size=10,
+            min_group_size=20,
             pii_scan_rows="all",
             use_presidio=True,
+            allow_python_fallback=False,
+            allow_raw_rows=False,
         ).with_(**overrides)
 
     @classmethod

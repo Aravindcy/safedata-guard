@@ -42,6 +42,13 @@ from .shadowframe import create_shadowframe, profile_dataframe, ShadowFrameResul
 from .leaktest import (leak_test, LeakTestResult, LeakAttempt, detect_leak,
                        collect_sensitive_values)
 from .session import SafeSession, SessionEvent, estimate_question_cost
+# v1.1.0 public facade (the nine names that will be the ONLY public API after
+# the Phase 2 hard cut). Added additively for now so the existing suite stays
+# green while the facade is validated.
+from .api import ask, scan, protect
+from .guard import Guard
+from .results import Result, ScanReport, Receipt
+from .exceptions import SafedataError
 
 __version__ = "1.1.0"
 __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
@@ -69,4 +76,7 @@ __all__ = ["Agent", "AgentResult", "summarize", "run_safely",
            "leak_test", "LeakTestResult", "LeakAttempt", "detect_leak",
            "collect_sensitive_values",
            # SafeSession (per-conversation privacy budget + differencing guard)
-           "SafeSession", "SessionEvent", "estimate_question_cost"]
+           "SafeSession", "SessionEvent", "estimate_question_cost",
+           # v1.1.0 public facade (will become the ONLY public names in Phase 2)
+           "ask", "scan", "protect", "Guard", "Result", "ScanReport", "Receipt",
+           "SafedataError"]
