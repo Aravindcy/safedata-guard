@@ -63,9 +63,26 @@ Python. Receipt after every ask().
 - **Phase 5:** docs rewrite - README order per spec, `SECURITY_MODEL.md`,
   `THREAT_MODEL.md`, `examples/` scripts + synthetic `examples/data/` with a
   "synthetic, no real data" note. Rewrite all tests around the new API.
-- **Phase 6:** packaging hygiene (`MANIFEST.in`, strengthened `.gitignore`),
-  CI gates (pytest/ruff/build/twine/wheel-smoke; mypy non-blocking initially),
-  rebuild dist, live re-benchmark, final acceptance check.
+- **Phase 6 (done):** strengthened `MANIFEST.in` + `.gitignore` (caches/build/
+  local outputs excluded; new docs included); CI `package` job (build +
+  twine check + clean-env wheel install + public-API assertion + sdist hygiene
+  check); rebuilt dist (wheel has api/guard/results/exceptions/advanced, sdist
+  clean); benchmark scripts ported to `sd.ask`; live re-benchmark; acceptance
+  check below.
+
+## Acceptance criteria (status)
+
+- [x] Top-level public API has fewer than 10 names (exactly 9 + `advanced`).
+- [x] README starts with `sd.ask()`.
+- [x] `sd.scan()` / `sd.protect()` / `sd.ask()` / `sd.Guard()` work.
+- [x] Policy industry profiles work; banking/insurance/healthcare disable Python.
+- [x] SafePlan is the default engine; a Receipt is returned for every ask().
+- [x] CLI has scan/protect/ask (+ advanced).
+- [x] Security / prompt-injection / differencing tests pass.
+- [x] Package builds and the wheel installs cleanly; no cache/build files in sdist.
+- [x] Docs state the limitations plainly (SECURITY_MODEL.md / THREAT_MODEL.md).
+- [ ] Internal folder reorg (core/privacy/quality/...) - deliberately deferred;
+      it is invisible to users and can be a later internal pass.
 
 ## Acceptance criteria (from the spec)
 

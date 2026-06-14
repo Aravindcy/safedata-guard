@@ -4,7 +4,11 @@ __pycache__/
 build/
 dist/
 .pytest_cache/
+.coverage
+htmlcov/
+.env
 
-# stray files from the unguarded benchmark baseline
+# stray files written by the unguarded benchmark baseline (synthetic data)
 exported_data.csv
 output.csv
+customer_data.csv

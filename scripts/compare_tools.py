@@ -93,13 +93,14 @@ def plain_openai(df, question):
 
 
 def safeplan(df, question):
-    res = safedata.safe_query(df, question, model=llm, policy=Policy.regulated())
+    res = safedata.ask(df, question, model=llm, profile="banking", mode="plan")
     return None if res.blocked else res.answer
 
 
 def guarded_python(df, question):
-    out = safedata.safe_answer(df, question, model=llm, policy=Policy.regulated())
-    return None if out["blocked"] else out.get("answer")
+    pol = safedata.Policy.general(allow_python_fallback=True)
+    out = safedata.ask(df, question, model=llm, policy=pol, mode="python")
+    return None if out.blocked else out.answer
 
 
 def _langchain_available():

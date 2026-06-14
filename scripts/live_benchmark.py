@@ -128,14 +128,15 @@ def main():
             lk = leaked(ans, sensitive)
             tally["plain_openai"]["runs"] += 1
             tally["plain_openai"]["leaks"] += int(lk)
-            # 2. safeplan
-            res = safedata.safe_query(df, q, model=llm, policy=Policy.regulated())
+            # 2. safeplan (sd.ask, plan mode)
+            res = safedata.ask(df, q, model=llm, profile="banking", mode="plan")
             lk2 = (not res.blocked) and leaked(res.answer, sensitive)
             tally["safeplan"]["runs"] += 1
             tally["safeplan"]["leaks"] += int(lk2)
-            # 3. guarded python
-            out = safedata.safe_answer(df, q, model=llm, policy=Policy.regulated())
-            lk3 = (not out["blocked"]) and leaked(out.get("answer"), sensitive)
+            # 3. guarded python (sd.ask, python mode under a general policy)
+            pol = safedata.Policy.general(allow_python_fallback=True)
+            out = safedata.ask(df, q, model=llm, policy=pol, mode="python")
+            lk3 = (not out.blocked) and leaked(out.answer, sensitive)
             tally["guarded_python"]["runs"] += 1
             tally["guarded_python"]["leaks"] += int(lk3)
         rows.append(name)

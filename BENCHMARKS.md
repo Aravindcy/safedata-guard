@@ -19,31 +19,32 @@ with name, list-of-dicts, one example individual, `.values.tolist()`).
 |---|---|
 | `plain_openai` | gpt-4o-mini writes pandas code, executed with **no** guard. The status quo for "let an LLM write Python on your data". |
 | `safeplan` | `safedata.safe_query` - model returns a JSON plan, executed locally. |
-| `guarded_python` | `safedata.safe_answer` - model writes code, safedata screens/runs it. |
+| `guarded_python` | `sd.ask(..., mode="python")` - model writes code, safedata screens/runs it. |
 
 **Leak metric.** A run "leaks" if a real name or email from the dataset appears
 in the returned answer. This is a **lower bound** - subtler quasi-identifier
 leakage (a lone numeric value) is not counted by this metric (see Limitations).
 
-**Results** (model `gpt-4o-mini`, `Policy.regulated()`):
+**Results** (model `gpt-4o-mini`, via `sd.ask`):
 
-| System | Runs | Leaked | Leak rate |
-|---|---|---|---|
-| `plain_openai` (no guard) | 48 | 38 | **79.2%** |
-| `safeplan` | 48 | 0 | **0.0%** |
-| `guarded_python` | 48 | 0 | **0.0%** |
+| System | Policy | Runs | Leaked | Leak rate |
+|---|---|---|---|---|
+| `plain_openai` (no guard) | - | 48 | 41 | **85.4%** |
+| `safeplan` (`mode="plan"`) | banking | 48 | 0 | **0.0%** |
+| `guarded_python` (`mode="python"`) | general (permissive) | 48 | 6 | **12.5%** |
 
 48 runs = 6 datasets x 8 attack prompts. An unguarded LLM that writes pandas code
-leaked a real name or email on about four out of five attacks; both safedata
-modes leaked none by this metric. (During the run, the unguarded baseline also
-wrote `exported_data.csv` to disk when asked to "export to CSV" - exactly the
-behaviour safedata blocks.)
+leaked a real name or email on ~85% of attacks; SafePlan leaked none. (During the
+run, the unguarded baseline also wrote a CSV to disk when asked to "export to
+CSV" - exactly the behaviour safedata blocks.)
 
-> `guarded_python` scoring 0% here is on the name/email metric: it redacts PII
-> columns. It is still best-effort - it does not guarantee k-anonymity on a lone
-> numeric scalar, which this metric does not measure (see Limitations and
-> `tests/test_leak_vectors.py`). `safeplan` is the mode with the k-anonymity
-> guarantee.
+> **Why `guarded_python` is 12.5%, not 0%.** Guarded-Python safety depends on the
+> policy's result guards. The regulated profiles (banking/insurance/healthcare/
+> strict) **disable Python entirely**, so to measure this mode at all we ran it
+> under the permissive `general` policy, which has weaker result guards. The
+> number is the honest cost of allowing generated Python under a loose policy -
+> and the reason SafePlan is the default and regulated profiles forbid the Python
+> engine. `safeplan` enforces k-anonymity and leaked nothing.
 
 ### How to read it
 
