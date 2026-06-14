@@ -49,9 +49,12 @@ Python. Receipt after every ask().
   `safedata.advanced.*` (leak_test, create_shadowframe, run_safely, check_code,
   SafeSession, ...). Migrated the entire existing test suite off the old public
   names to internal-module imports (no shim) - coverage preserved.
-- **Phase 3:** privacy detector categories (business_identifier / financial /
-  health / free_text) feeding scan() and protect(); question-aware protect();
-  mode router (auto/plan/summary/python) honoring `allow_python_fallback`.
+- **Phase 3 (done):** richer privacy detector (business_identifier / financial /
+  health / location / free_text / quasi_identifier), separator-normalized name
+  matching; scan() risk-level tuning (name-heavy data is now >= medium, health is
+  high); protect() also drops un-needed business identifiers / free text; ask()
+  warns when k-anonymity suppresses all groups. Live-validated on real energy/
+  insurance datasets (15/15), which caught the "Offer ID" separator bug.
 - **Phase 4:** CLI redesign - `scan` / `protect` / `ask` top-level, advanced
   subgroup (`leak-test` / `shadow` / `inspect-policy`), `--json/--out/--profile/`
   `--mode/--fail-on/--receipt-out`.

@@ -115,6 +115,44 @@ def test_scan_returns_scanreport_with_categories():
 
 # --- protect ----------------------------------------------------------------
 
+def test_scan_risk_level_not_low_for_pii_heavy_data():
+    # A table full of customer names must not be rated 'low' (the live-test gap).
+    df = pd.DataFrame({"full_name": [f"Person {i}" for i in range(50)],
+                       "region": ["N"] * 25 + ["S"] * 25,
+                       "spend": range(50)})
+    rep = sd.scan(df, profile="banking")
+    assert rep.risk_level in ("medium", "high")
+
+
+def test_scan_health_data_is_high_risk():
+    df = pd.DataFrame({"patient_name": ["A", "B"], "diagnosis": ["x", "y"],
+                       "age": [40, 50]})
+    rep = sd.scan(df, profile="healthcare")
+    assert rep.risk_level == "high"
+    assert "diagnosis" in rep.health_columns
+    assert "age" in rep.quasi_identifier_columns
+
+
+def test_classifier_handles_spaced_and_hyphenated_names():
+    # Real columns like "Offer ID" / "Sub-Team" must classify (separators differ
+    # from the underscore tokens). Regression for a live-found bug.
+    df = pd.DataFrame({"Customer Name": ["A"], "Offer ID": ["O1"],
+                       "Sub-Team": ["x"], "Annual CGM": [5]})
+    rep = sd.scan(df, profile="energy")
+    assert "Offer ID" in rep.business_identifier_columns
+    safe = sd.protect(df, question="total CGM by Sub-Team", profile="energy")
+    assert "Offer ID" not in safe.columns and "Customer Name" not in safe.columns
+    assert "Sub-Team" in safe.columns
+
+
+def test_protect_drops_business_identifiers_not_needed():
+    safe = sd.protect(_banking(), question="average balance by region",
+                      profile="banking")
+    # account_number is a business identifier the question does not need.
+    assert "account_number" not in safe.columns
+    assert "region" in safe.columns and "balance" in safe.columns
+
+
 def test_protect_drops_pii_keeps_analytic():
     safe = sd.protect(_banking(), question="average balance by region",
                       profile="banking")

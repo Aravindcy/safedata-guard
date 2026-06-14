@@ -92,6 +92,7 @@ class ScanReport:
     risk_level: str
     pii_columns: List[str] = field(default_factory=list)
     sensitive_columns: List[str] = field(default_factory=list)
+    quasi_identifier_columns: List[str] = field(default_factory=list)
     business_identifier_columns: List[str] = field(default_factory=list)
     financial_columns: List[str] = field(default_factory=list)
     health_columns: List[str] = field(default_factory=list)

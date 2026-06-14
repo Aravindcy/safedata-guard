@@ -52,21 +52,27 @@ def _require_df(df):
     return pdf
 
 
-# Light keyword classifier for scan/protect. Phase 3 deepens this; it is honest
-# about being best-effort, keyword-based detection.
+# Keyword classifier for scan/protect. Best-effort, keyword-based detection -
+# names hint the category; it never guarantees completeness.
 _BUSINESS_ID = ("customer_id", "account_id", "account_number", "policy_number",
                 "policy_id", "claim_id", "claim_number", "sort_code", "iban",
                 "mpan", "mprn", "meter_id", "meter_number", "contract_id",
-                "case_id", "invoice_id", "txn_id", "order_id", "nhs_number")
+                "case_id", "invoice_id", "txn_id", "order_id", "subscriber_id",
+                "member_id", "reference", "ref_no", "offer_id")
 _FINANCIAL = ("balance", "salary", "income", "credit_score", "debt", "arrears",
               "amount", "revenue", "arr", "sort_code", "iban", "loan",
-              "payment", "price")
+              "payment", "price", "cgm", "premium", "fee", "charge")
 _HEALTH = ("diagnosis", "condition", "medication", "treatment", "nhs_number",
-           "department", "icd", "symptom")
+           "icd", "symptom", "disease", "prescription", "ward", "los_days")
 _LOCATION = ("postcode", "post_code", "zip", "zipcode", "city", "address",
-             "region", "country", "lat", "lon", "longitude", "latitude")
+             "region", "country", "lat", "lon", "longitude", "latitude",
+             "county", "district")
 _FREE_TEXT = ("notes", "note", "comment", "comments", "complaint", "description",
-              "feedback", "message", "remarks", "case_description")
+              "feedback", "message", "remarks", "case_description", "summary")
+# Quasi-identifiers: not directly identifying, but re-identifying in combination.
+_QUASI = ("age", "gender", "sex", "dob", "date_of_birth", "birth", "postcode",
+          "post_code", "zip", "job_title", "occupation", "nationality",
+          "ethnicity", "marital")
 
 
 def _is_stringlike(series) -> bool:
@@ -79,10 +85,11 @@ def _is_stringlike(series) -> bool:
 
 def _classify_columns(df, pii_cols) -> dict:
     cats = {"business_identifier": [], "financial": [], "health": [],
-            "location": [], "free_text": []}
+            "location": [], "free_text": [], "quasi_identifier": []}
     pii = set(pii_cols)
     for col in df.columns:
-        name = str(col).lower()
+        # normalize separators so "Offer ID"/"offer-id" match the "offer_id" token
+        name = str(col).lower().replace(" ", "_").replace("-", "_")
         if any(tok in name for tok in _BUSINESS_ID):
             cats["business_identifier"].append(col)
         if any(tok in name for tok in _FINANCIAL):
@@ -91,11 +98,30 @@ def _classify_columns(df, pii_cols) -> dict:
             cats["health"].append(col)
         if any(tok in name for tok in _LOCATION):
             cats["location"].append(col)
+        if col not in pii and any(tok in name for tok in _QUASI):
+            cats["quasi_identifier"].append(col)
         # free text: string-like column named like prose, not already PII
         if (col not in pii and any(tok in name for tok in _FREE_TEXT)
                 and _is_stringlike(df[col])):
             cats["free_text"].append(col)
     return cats
+
+
+def _scan_risk_level(base_level, pii_cols, cats) -> str:
+    """Combine the engine's risk score with category presence. Fixes the case
+    where a table full of customer names was rated 'low' just because names are
+    medium-sensitivity: any direct PII or sensitive identifier is at least
+    'medium', and health data (or financial tied to an identifier) is 'high'."""
+    order = {"low": 0, "medium": 1, "high": 2}
+    level = base_level
+    if cats["health"]:
+        level = "high"
+    elif cats["financial"] and (cats["business_identifier"] or pii_cols):
+        level = "high"
+    if order[level] < 1 and (pii_cols or cats["business_identifier"]
+                             or cats["free_text"]):
+        level = "medium"
+    return level
 
 
 # --- scan -------------------------------------------------------------------
@@ -117,12 +143,21 @@ def scan(df, profile: str = "general", policy: Optional[Policy] = None,
     sensitive = sorted(set(cats["business_identifier"] + cats["financial"]
                            + cats["health"] + cats["free_text"]))
     readiness = max(0, 100 - int(risk["score"]))
+    risk_level = _scan_risk_level(risk["risk_level"], pii_cols, cats)
+    recs = list(risk["reasons"])
+    if cats["business_identifier"]:
+        recs.append("Business identifiers present (e.g. "
+                    f"{cats['business_identifier'][:3]}); drop or mask before AI.")
+    if cats["free_text"]:
+        recs.append(f"Free-text columns ({cats['free_text'][:3]}) can leak "
+                    "sensitive details; exclude them from prompts.")
 
     return ScanReport(
         rows=int(len(pdf)), columns=int(len(pdf.columns)),
-        risk_level=risk["risk_level"],
+        risk_level=risk_level,
         pii_columns=pii_cols,
         sensitive_columns=sensitive,
+        quasi_identifier_columns=cats["quasi_identifier"],
         business_identifier_columns=cats["business_identifier"],
         financial_columns=cats["financial"],
         health_columns=cats["health"],
@@ -130,7 +165,7 @@ def scan(df, profile: str = "general", policy: Optional[Policy] = None,
         free_text_columns=cats["free_text"],
         quality_issues=issues,
         ai_readiness_score=readiness,
-        recommendations=list(risk["reasons"]))
+        recommendations=recs)
 
 
 # --- protect ----------------------------------------------------------------
@@ -142,6 +177,7 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
     dropped, retained sensitive fields masked, analytical columns kept. If
     `question` is given, columns it needs are preserved."""
     from .firewall import create_privacy_plan, make_safe_view
+    from .analysis import _question_mentions_column
     pdf = _require_df(df)
     policy = _resolve_policy(profile, policy)
     plan = create_privacy_plan(
@@ -150,11 +186,25 @@ def protect(df, question: Optional[str] = None, profile: str = "general",
         use_presidio=policy.use_presidio)
     safe_df = make_safe_view(pdf, plan)
 
+    # Also drop business identifiers / free-text the question does not need:
+    # these are re-identifying or leak-prone but the PII firewall keeps them.
+    pii = set(getattr(plan, "pii_columns", []))
+    cats = _classify_columns(pdf, pii)
+    extra_sensitive = set(cats["business_identifier"] + cats["free_text"])
+    if not policy.allow_raw_rows:
+        to_drop = [c for c in safe_df.columns if c in extra_sensitive
+                   and not _question_mentions_column(question or "", c)]
+        if to_drop:
+            safe_df = safe_df.drop(columns=to_drop)
+
     if not return_report:
         return safe_df
+    dropped = list(getattr(plan, "dropped_columns", []))
+    dropped += [c for c in extra_sensitive if c not in safe_df.columns
+                and c not in dropped]
     report = ProtectReport(
-        kept_columns=list(getattr(plan, "allowed_columns", list(safe_df.columns))),
-        dropped_columns=list(getattr(plan, "dropped_columns", [])),
+        kept_columns=list(safe_df.columns),
+        dropped_columns=dropped,
         masked_columns=list(getattr(plan, "retained_pii_columns", [])))
     return safe_df, report
 
