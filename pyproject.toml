@@ -59,4 +59,5 @@ safedata = ["py.typed"]
 timeout = 60
 markers = [
     "slow: tests that spawn subprocesses or containers (slower, may need isolation)",
+    "timeout: per-test timeout in seconds (provided by pytest-timeout, in the dev extra)",
 ]
