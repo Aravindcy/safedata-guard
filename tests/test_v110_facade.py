@@ -59,6 +59,22 @@ def test_ask_unknown_mode_raises_policyerror():
         sd.ask(_banking(), "q", model=_plan("{}"), mode="bogus")
 
 
+def test_ask_without_model_raises_clearly():
+    # ask needs a model in any non-summary mode; it must not silently return None.
+    with pytest.raises(ModelAdapterError):
+        sd.ask(_banking(), "total balance", profile="general")
+    with pytest.raises(ModelAdapterError):
+        sd.ask(_banking(), "total balance", profile="banking", mode="plan")
+
+
+def test_advanced_exposes_power_tools():
+    for name in ("safe_query", "safe_answer", "summarize", "token_stats",
+                 "token_savings", "to_pandera_schema", "to_great_expectations_suite",
+                 "redact_text", "report", "wrap", "run_safely", "check_code",
+                 "leak_test", "create_shadowframe", "Agent", "privacy_report"):
+        assert hasattr(sd.advanced, name), name
+
+
 def test_ask_summary_mode_no_execution():
     res = sd.ask(_banking(), "is this safe?", model=None, profile="banking",
                  mode="summary")

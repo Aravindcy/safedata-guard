@@ -143,6 +143,11 @@ def _cmd_ask(args) -> int:
     if err:
         return err
     model = _resolve_model(args)
+    if model is None and args.mode != "summary":
+        print("error: `ask` needs a model. Pass --model openai (with "
+              "OPENAI_API_KEY set), or use --mode summary for a no-model risk "
+              "summary.", file=sys.stderr)
+        return 2
     result = ask(df, args.question, model=model, profile=args.profile,
                  mode=args.mode)
     if args.receipt_out:
@@ -283,8 +288,16 @@ def main(argv=None) -> int:
         return 0
     try:
         return args.func(args)
+    except SystemExit:
+        raise
     except KeyboardInterrupt:
         return 130
+    except Exception as e:
+        from .exceptions import SafedataError
+        if isinstance(e, SafedataError):
+            print(f"error: {e}", file=sys.stderr)
+            return 2
+        raise
     except BrokenPipeError:
         try:
             sys.stdout.close()

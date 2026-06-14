@@ -131,7 +131,16 @@ sd.advanced.leak_test(df, model=my_model)        # privacy red-team score
 sd.advanced.create_shadowframe(df)               # synthetic same-shape stand-in
 sd.advanced.run_safely(code, df)                 # guarded Python on a copy
 sd.advanced.SafeSession(df, model=my_model)      # differencing/budget guard
+sd.advanced.safe_query(df, q, model=my_model)    # low-level SafePlan call
+sd.advanced.safe_answer(df, q, model=my_model)   # guarded-Python answer (dict)
+sd.advanced.summarize(df)                         # quality-aware text summary
+sd.advanced.token_stats(df)                       # token-saving estimate
+sd.advanced.to_pandera_schema(df)                 # Pandera / Great Expectations
+sd.advanced.redact_text("call +44 ...")          # best-effort PII masking
 ```
+
+Everything from earlier versions is still here under `sd.advanced` (run
+`dir(sd.advanced)` to see all of it) - the top level just stays small.
 
 ## Install
 

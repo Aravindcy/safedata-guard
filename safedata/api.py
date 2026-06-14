@@ -299,6 +299,12 @@ def ask(df, question: str, model=None, profile: str = "general",
         return Result(answer=report.recommendations, data=report, receipt=rec,
                       engine="summary")
 
+    # A real analysis needs a model. Only summary mode works without one.
+    if fn is None and mode != "summary":
+        raise ModelAdapterError(
+            "ask() needs a model (a callable, or an object with .generate). "
+            "Use mode='summary' for a no-model risk summary.")
+
     if mode == "python" and not policy.allow_python_fallback:
         raise UnsafeRequestError(
             f"Guarded-Python mode is disabled for profile '{policy.profile}'. "
