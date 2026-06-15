@@ -33,13 +33,15 @@ print(result.receipt.summary())  # audit trail: PII dropped, no Python run, ...
 
 ## Why this exists
 
-Most "chat with your data" tools send the whole table to the model and run
-whatever Python it writes, unchecked. In a measured benchmark (gpt-4o-mini, 6
+Many simple "chat with your data" workflows send rich table context to the model
+or execute model-generated Python. Without careful controls, that can expose
+sensitive data or run unsafe code. In a measured benchmark (gpt-4o-mini, 6
 synthetic datasets, 48 attack prompts), plain LLM-generated code leaked real PII
-on ~85% of attacks while SafePlan leaked none (see [BENCHMARKS.md](BENCHMARKS.md)
-for the full method and limitations). safedata-guard's default engine never runs
-generated Python: the model returns a restricted JSON analysis plan that the
-library validates and executes itself, with privacy rules applied.
+on ~85% of attacks, while SafePlan showed 0 literal name/email leaks in this
+benchmark (see [BENCHMARKS.md](BENCHMARKS.md) for the full method and
+limitations). safedata-guard's default engine never runs generated Python: the
+model returns a restricted JSON analysis plan that the library validates and
+executes itself, with privacy rules applied.
 
 ## How it works
 
@@ -124,7 +126,7 @@ session = guard.session(df)                 # multi-turn, privacy-budgeted
 | `banking` | 10 | disabled | SafePlan only |
 | `insurance` | 10 | disabled | SafePlan only |
 | `healthcare` | 15 | disabled | smallest result caps |
-| `strict` | 20 | disabled | Docker isolation + Presidio |
+| `strict` | 20 | disabled | strongest defaults; Docker/Presidio when installed and configured |
 
 Override any field: `sd.Policy.banking(min_group_size=25)`.
 
@@ -158,8 +160,10 @@ sd.advanced.to_pandera_schema(df)                 # Pandera / Great Expectations
 sd.advanced.redact_text("call +44 ...")          # best-effort PII masking
 ```
 
-Everything from earlier versions is still here under `sd.advanced` (run
-`dir(sd.advanced)` to see all of it) - the top level just stays small.
+ShadowFrame creates a schema-compatible synthetic stand-in; it is not a formal
+anonymization guarantee. Most low-level and advanced tools from earlier versions
+are available under `sd.advanced` (run `dir(sd.advanced)` to see them) - the top
+level just stays small.
 
 ## Upgrading from v1.x
 
@@ -176,6 +180,7 @@ on v1 for now: `pip install "safedata-guard<2"`.
 
 ```bash
 pip install safedata-guard
+pip install "safedata-guard[openai]"     # OpenAI support for the CLI's --model openai
 pip install "safedata-guard[polars]"     # optional Polars support
 pip install "safedata-guard[presidio]"   # optional international PII detection
 ```

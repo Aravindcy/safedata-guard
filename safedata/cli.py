@@ -66,7 +66,7 @@ def _openai_model():
     try:
         from openai import OpenAI
     except ImportError:
-        raise SystemExit("error: install with: pip install safedata-guard[benchmark]")
+        raise SystemExit("error: install OpenAI support: pip install safedata-guard[openai]")
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     model_name = os.environ.get("SAFEDATA_MODEL", "gpt-4o-mini")
 
