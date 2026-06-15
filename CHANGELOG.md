@@ -8,7 +8,15 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **Breaking redesign.** The public API is now four verbs plus a small set of
 types; the old top-level functions are removed (their logic is unchanged
-internally). Upgraders from 1.x must migrate - see the mapping below.
+internally). Upgraders from 1.x must migrate - see **[MIGRATION.md](MIGRATION.md)**
+for the full old-name -> new-location mapping and examples.
+
+### Breaking changes
+- Not backward compatible with several v1.x top-level imports/usage patterns
+  (`safe_answer`, `Agent`, `summarize`, `run_safely`, `privacy_report`, ...).
+  They are no longer at the top level; use the new API or `sd.advanced.*`.
+- High-level functions return typed objects (`Result`/`ScanReport`/`Receipt`)
+  instead of dicts. To stay on v1: `pip install "safedata-guard<2"`.
 
 ### Added
 - **One front door.** The only public names are `ask`, `scan`, `protect`,

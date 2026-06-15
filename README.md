@@ -161,6 +161,17 @@ sd.advanced.redact_text("call +44 ...")          # best-effort PII masking
 Everything from earlier versions is still here under `sd.advanced` (run
 `dir(sd.advanced)` to see all of it) - the top level just stays small.
 
+## Upgrading from v1.x
+
+Version `2.0.0` is a redesign with a smaller public surface and includes
+**breaking changes**. Some v1.x top-level imports and usage patterns no longer
+work the same way - old tools now power the new high-level API or live under
+`sd.advanced` (e.g. `sd.advanced.safe_query`, `sd.advanced.safe_answer`,
+`sd.advanced.summarize`, `sd.advanced.run_safely`).
+
+See **[MIGRATION.md](MIGRATION.md)** for the full mapping and examples. To stay
+on v1 for now: `pip install "safedata-guard<2"`.
+
 ## Install
 
 ```bash
