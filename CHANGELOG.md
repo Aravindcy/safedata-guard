@@ -40,6 +40,9 @@ for the full old-name -> new-location mapping and examples.
 - A SafePlan that omits `limit` now defaults to the policy's `max_result_rows`
   (was a fixed 50), so a valid query is not blocked under a tighter cap (e.g.
   healthcare's 30).
+- `ask`/`scan`/`protect` reject duplicate column names with a clear
+  `DataValidationError` (previously a duplicate name crashed the PII scan with a
+  raw `AttributeError`).
 - **`sd.Guard(profile, model)`** - reusable object with `ask/scan/protect/session`.
 - **Industry `Policy` profiles** - general/energy/banking/insurance/healthcare/
   strict; regulated profiles are SafePlan-only (`allow_python_fallback=False`).

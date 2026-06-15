@@ -59,6 +59,18 @@ def test_ask_unknown_mode_raises_policyerror():
         sd.ask(_banking(), "q", model=_plan("{}"), mode="bogus")
 
 
+def test_duplicate_columns_rejected_cleanly():
+    # Duplicate column names crashed deep in the analysis layer; the public doors
+    # must reject them with a clear DataValidationError, not an AttributeError.
+    import numpy as np
+    dup = pd.DataFrame(np.arange(20).reshape(10, 2), columns=["x", "x"])
+    for call in (lambda: sd.scan(dup),
+                 lambda: sd.protect(dup, question="q"),
+                 lambda: sd.ask(dup, "q", model=lambda p: "{}")):
+        with pytest.raises(DataValidationError):
+            call()
+
+
 def test_ask_without_model_raises_clearly():
     # ask needs a model in any non-summary mode; it must not silently return None.
     with pytest.raises(ModelAdapterError):

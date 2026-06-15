@@ -49,6 +49,14 @@ def _require_df(df):
     pdf = _as_pandas(df)
     if pdf is None or len(pdf.columns) == 0:
         raise DataValidationError("A non-empty DataFrame is required.")
+    # Duplicate column names make column-by-name analysis ambiguous (and crash
+    # downstream); reject them with a clear, actionable error.
+    cols = [str(c) for c in pdf.columns]
+    dups = sorted({c for c in cols if cols.count(c) > 1})
+    if dups:
+        raise DataValidationError(
+            f"Duplicate column names are not supported: {dups}. Rename or drop "
+            f"the duplicates before scanning/analysing.")
     return pdf
 
 
